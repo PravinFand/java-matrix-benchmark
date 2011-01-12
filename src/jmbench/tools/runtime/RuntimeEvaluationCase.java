@@ -31,9 +31,9 @@ import java.io.Serializable;
 public class RuntimeEvaluationCase implements Serializable {
     // the operation that this is evaluating
     private String opName;
-    // the different matrix sizes that can be evalued
+    // the different matrix sizes that can be evaluated
     private int dimens[];
-    // configures the librarys runtime environment
+    // configures the library's runtime environment
     private RuntimePerformanceFactory factory;
     // list of algorithms it it can run
     private AlgorithmInterface alg;

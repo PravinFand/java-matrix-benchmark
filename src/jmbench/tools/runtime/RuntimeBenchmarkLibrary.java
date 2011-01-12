@@ -178,11 +178,24 @@ public class RuntimeBenchmarkLibrary {
                 OperationResults oldResults = UtilXmlSerialization.deserializeXml(f.getAbsolutePath());
 
                 if( !oldResults.isComplete() ) {
-                    System.out.println("DELETING OLD RESULTS: Found previously incomplete results for "+c.getOpName()+" deleting");
-                    logStream.println("DELETING OLD RESULTS: Found previously incomplete results for "+c.getOpName()+" deleting");
+
                     if( !f.delete() )
                         throw new RuntimeException("Can't delete old unfinished results");
-                     states.add( new CaseState(c));
+                    CaseState cs = new CaseState(c);
+                    cs.score = oldResults.metrics;
+                    for( cs.matrixIndex = 0; cs.matrixIndex < cs.score.length; cs.matrixIndex++ ) {
+                        if( cs.score[cs.matrixIndex] == null )
+                            break;
+                    }
+                    // impossible to know if the last one was finished or not
+                    if( cs.matrixIndex > 0 ) {
+                        cs.matrixIndex--;
+                        cs.score[cs.matrixIndex] = null;
+                    }
+                    states.add( cs );
+                    int matrixSize = oldResults.getMatDimen()[cs.matrixIndex];
+                    System.out.println("RESUMING OLD RESULTS: Found previously incomplete results for "+c.getOpName()+" at size "+matrixSize);
+                    logStream.println("RESUMING OLD RESULTS: Found previously incomplete results for "+c.getOpName()+" at size "+matrixSize);
                 } else {
                     System.out.println("SKIPPING: Found previously completed results for "+c.getOpName());
                     logStream.println("SKIPPING: Found previously completed results for "+c.getOpName()+" skipping");
