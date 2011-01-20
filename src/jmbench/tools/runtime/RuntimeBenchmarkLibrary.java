@@ -178,18 +178,20 @@ public class RuntimeBenchmarkLibrary {
                 OperationResults oldResults = UtilXmlSerialization.deserializeXml(f.getAbsolutePath());
 
                 if( !oldResults.isComplete() ) {
-
-                    if( !f.delete() )
-                        throw new RuntimeException("Can't delete old unfinished results");
                     CaseState cs = new CaseState(c);
                     cs.score = oldResults.metrics;
+                    boolean foundNull = false;
                     for( cs.matrixIndex = 0; cs.matrixIndex < cs.score.length; cs.matrixIndex++ ) {
-                        if( cs.score[cs.matrixIndex] == null )
+                        if( cs.score[cs.matrixIndex] == null ) {
+                            foundNull = true;
                             break;
+                        }
                     }
                     // impossible to know if the last one was finished or not
                     if( cs.matrixIndex > 0 ) {
-                        cs.matrixIndex--;
+
+                        if( foundNull )
+                            cs.matrixIndex--;
                         cs.score[cs.matrixIndex] = null;
                     }
                     states.add( cs );
