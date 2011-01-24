@@ -42,7 +42,7 @@ public class RuntimeResultPlotter {
                                       boolean showWindow )
     {
         String opName = data.get(0).getOpName();
-        OperationsVersusSizePlot splot = new OperationsVersusSizePlot(opName,"Ops/Sex Range (%)");
+        OperationsVersusSizePlot splot = new OperationsVersusSizePlot(opName,"Ops/Sec Range (%)");
 
         splot.setLogScale(false,true);
         splot.setRange(0.0,0.4);
