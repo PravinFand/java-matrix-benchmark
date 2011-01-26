@@ -8,7 +8,7 @@
 - Can now query the library itself at runtime to determine its version
 - When resuming a trial it no longer overwrites the old log file and instead creates a new one.
 - Reworked memory benchmark to use unix specific tools to get a more accurate estimate
-- Improved runtime benchmark resume so that more of the old results are saved.
+- Improved runtime benchmark resume so that more of the old results are reused.
 
 ----- Version 0.7
 

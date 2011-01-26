@@ -122,7 +122,7 @@ public class RuntimeBenchmarkConfig implements Serializable {
         config.memorySlaveBase = 20;
         config.memorySlaveScale = 1;
         config.randizeOrder = true;
-        config.maxMatrixSize = 2000;
+        config.maxMatrixSize = 10000;
         config.minMatrixSize = 2;
         config.sanityCheck = false;
 
