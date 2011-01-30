@@ -28,6 +28,7 @@ import jmbench.tools.runtime.generator.ScaleGenerator;
 import org.ejml.alg.dense.decomposition.*;
 import org.ejml.alg.dense.linsol.LinearSolver;
 import org.ejml.alg.dense.linsol.LinearSolverFactory;
+import org.ejml.alg.dense.linsol.LinearSolverSafe;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 import org.ejml.ops.CovarianceOps;
@@ -72,14 +73,14 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
 
-            CholeskyDecomposition chol = DecompositionFactory.chol(matA.numRows, false, true);
+            CholeskyDecomposition<DenseMatrix64F> chol = DecompositionFactory.chol(matA.numRows, false, true);
 
             DenseMatrix64F L = new DenseMatrix64F(matA.numRows,matA.numCols);
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                if( !chol.decompose(matA) ) {
+                if( !DecompositionFactory.decomposeSafe(chol,matA) ) {
                     throw new RuntimeException("Decomposition failed");
                 }
                 chol.getT(L);
@@ -101,7 +102,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
 
-            LUDecomposition lu = DecompositionFactory.lu();
+            LUDecomposition<DenseMatrix64F> lu = DecompositionFactory.lu();
 
             DenseMatrix64F L = new DenseMatrix64F(matA.numRows,matA.numCols);
             DenseMatrix64F U = new DenseMatrix64F(matA.numRows,matA.numCols);
@@ -110,7 +111,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                if( !lu.decompose(matA) )
+                if( !DecompositionFactory.decomposeSafe(lu,matA) )
                     throw new RuntimeException("Decomposition failed");
 
                 lu.getLower(L);
@@ -136,7 +137,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
 
-            SingularValueDecomposition svd = DecompositionFactory.svd();
+            SingularValueDecomposition<DenseMatrix64F> svd = DecompositionFactory.svd();
 
             DenseMatrix64F U = null;
             DenseMatrix64F S = null;
@@ -145,7 +146,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                if( !svd.decompose(matA) )
+                if( !DecompositionFactory.decomposeSafe(svd,matA) )
                     throw new RuntimeException("Decomposition failed");
                 U = svd.getU(false);
                 S = svd.getW(S);
@@ -170,12 +171,12 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
 
-            EigenDecomposition eig = EigenOps.decompositionSymmetric(true);
+            EigenDecomposition<DenseMatrix64F> eig = EigenOps.decompositionSymmetric(true);
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                if( !eig.decompose(matA) )
+                if( !DecompositionFactory.decomposeSafe(eig,matA) )
                     throw new RuntimeException("Decomposition failed");
                 // this isn't necessary since eigenvalues and eigenvectors are always computed
                 eig.getEigenvalue(0);
@@ -199,14 +200,14 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
 
-            QRDecomposition qr = DecompositionFactory.qr();
+            QRDecomposition<DenseMatrix64F> qr = DecompositionFactory.qr();
             DenseMatrix64F Q = null;
             DenseMatrix64F R = null;
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                if( !qr.decompose(matA) )
+                if( !DecompositionFactory.decomposeSafe(qr,matA) )
                     throw new RuntimeException("Decomposition failed");
 
                 Q = qr.getQ(null,true);
@@ -401,12 +402,14 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
 
             DenseMatrix64F result = new DenseMatrix64F(matA.numCols,matB.numCols);
 
-            LinearSolver solver = LinearSolverFactory.linear();
+            LinearSolver<DenseMatrix64F> solver = LinearSolverFactory.linear();
+            // make sure the input is not modified
+            solver = new LinearSolverSafe<DenseMatrix64F>(solver);
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                if( !solver.setA(matA))
+                if( !solver.setA(matA) )
                     throw new IllegalArgumentException("Bad A");
 
                 solver.solve(matB,result);
@@ -431,12 +434,15 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
 
             DenseMatrix64F result = new DenseMatrix64F(matA.numCols,matB.numCols);
 
-            LinearSolver solver = LinearSolverFactory.leastSquares();
+            LinearSolver<DenseMatrix64F> solver = LinearSolverFactory.leastSquares();
+
+            // make sure the input is not modified
+            solver = new LinearSolverSafe<DenseMatrix64F>(solver);
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                if( !solver.setA(matA))
+                if( !solver.setA(matA) )
                     throw new IllegalArgumentException("Bad A");
 
                 solver.solve(matB,result);
