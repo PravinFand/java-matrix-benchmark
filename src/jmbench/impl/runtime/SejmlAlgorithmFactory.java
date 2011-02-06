@@ -26,8 +26,10 @@ import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
-import org.ejml.data.SimpleMatrix;
 import org.ejml.ops.EigenOps;
+import org.ejml.simple.SimpleEVD;
+import org.ejml.simple.SimpleMatrix;
+import org.ejml.simple.SimpleSVD;
 
 
 /**
@@ -81,7 +83,7 @@ public class SejmlAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                SimpleMatrix.SVD s = matA.svd();
+                SimpleSVD s = matA.svd();
                 U=s.getU();
                 W=s.getW();
                 V=s.getV();
@@ -100,12 +102,13 @@ public class SejmlAlgorithmFactory implements RuntimePerformanceFactory {
         return new MyEig();
     }
 
+    @SuppressWarnings({"ConstantConditions", "unchecked"})
     public static class MyEig extends MyInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             SimpleMatrix matA = inputs[0].getOriginal();
 
-            SimpleMatrix.EVD evd = null;
+            SimpleEVD evd = null;
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
@@ -115,6 +118,7 @@ public class SejmlAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime() - prev;
+
             outputs[0] = new EjmlBenchmarkMatrix(EigenOps.createMatrixD(evd.getEVD()));
             outputs[1] = new EjmlBenchmarkMatrix(EigenOps.createMatrixV(evd.getEVD()));
             return elapsedTime;

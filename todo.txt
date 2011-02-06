@@ -1,5 +1,8 @@
-
-- Tool to compare two sets of benchmark results on different computers or runs.
+- Randomly draw operation and matrix size
+ * first do a run through until an exception occurs
+ * once max matrix size is known randomly draw
+ * only save each trial results in XML
+ * terminating conditions. 1) number of trials per op. 2) total computational time per op.
 
 - only plot results if errors don't exist
 - use BigDecimal to compute accuracy of libraries

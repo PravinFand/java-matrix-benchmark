@@ -20,6 +20,7 @@
 package jmbench.impl;
 
 import org.ejml.UtilEjml;
+import org.ojalgo.OjAlgoUtils;
 
 /**
  *
@@ -72,12 +73,12 @@ public class AllLibraryVersion {
 
         @Override
         public String getVersionString() {
-            return "1.0.2";
+            return "1.2.0";
         }
 
         @Override
         public String getReleaseDate() {
-            return "2010-02-26";
+            return "2011-01-07";
         }
     }
 
@@ -111,12 +112,12 @@ public class AllLibraryVersion {
 
         @Override
         public String getVersionString() {
-            return "0.9.12";
+            return "0.9.13";
         }
 
         @Override
         public String getReleaseDate() {
-            return "";
+            return "2010-11-12";
         }
     }
 
@@ -125,12 +126,12 @@ public class AllLibraryVersion {
 
         @Override
         public String getVersionString() {
-            return "29.31";
+            return OjAlgoUtils.getVersion();
         }
 
         @Override
         public String getReleaseDate() {
-            return "2010-09-26";
+            return "2011-02-01";
         }
     }
 

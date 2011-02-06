@@ -20,7 +20,7 @@
 package jmbench.impl.wrapper;
 
 import jmbench.interfaces.BenchmarkMatrix;
-import org.ejml.data.SimpleMatrix;
+import org.ejml.simple.SimpleMatrix;
 
 
 /**

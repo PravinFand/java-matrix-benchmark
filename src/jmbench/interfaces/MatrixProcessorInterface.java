@@ -19,14 +19,32 @@
 
 package jmbench.interfaces;
 
-import org.ejml.data.DenseMatrix64F;
-
-
 /**
+ * <p>
+ * Generic interface for benchmarking elapsed time for a matrix operation.
+ * Each operation should be performed 'numTrial' times and the timing is performed inside this function.
+ * Inside of each iteration there should be no caching of past results.  Only numerically stable
+ * solvers should be used.  The same operations used here will be used in the stability benchmark.
+ * </p>
+ *
+ * <p>
+ * Upon exit the input and output matrices are (optionally) checked.  If the output matrices deviate
+ * too much from the expected value/properties then a fault is recorded.  If input matrices have been
+ * modified then a fault is recorded.
+ * </p>
+ * 
  * @author Peter Abeles
  */
 public interface MatrixProcessorInterface {
 
+    /**
+     * Measures the amount of time it takes to complete an operation 'numTrials' times.
+     *
+     * @param inputs Input matrices. MUST NOT BE MODIFIED.
+     * @param outputs Resulting output matrices.
+     * @param numTrials How many times the operation should be performed.
+     * @return Elapsed time in nanoseconds.
+     */
     public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials);
 
 }

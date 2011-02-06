@@ -76,15 +76,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/jblas/jblas-1.0.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/parallelcolt/csparsej.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -156,37 +147,44 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="ejml" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/mtj/mtj-0.9.12.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jblas/jblas-1.2.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/ojalgo/ojalgo-29.44.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/mtj/mtj-src.zip!/" />
+          <root url="jar://$MODULE_DIR$/lib/ojalgo/ojalgo-29.44-src.zip!/" />
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="ejml" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/ujmp/ujmp-complete-0.2.5-with-deps.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/../../thirdparty/ujmp-trunk/ujmp-core/src/main/java" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/ojalgo/ojalgo-29.31.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/mtj/mtj-0.9.13.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/ojalgo/ojalgo-29.31-src.zip!/" />
+          <root url="jar://$MODULE_DIR$/lib/mtj/mtj-0.9.13-src.zip!/" />
         </SOURCES>
       </library>
     </orderEntry>
