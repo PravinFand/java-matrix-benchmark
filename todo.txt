@@ -1,3 +1,8 @@
+- weight summary plot
+
+- get library version by spawning a new process
+  * RuntimeBenchmarkMaster.processLibraries
+
 - Randomly draw operation and matrix size
  * first do a run through until an exception occurs
  * once max matrix size is known randomly draw

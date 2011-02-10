@@ -21,12 +21,11 @@ package jmbench.tools.runtime.evaluation;
 
 import jmbench.impl.MatrixLibrary;
 import jmbench.plots.OperationsVersusSizePlot;
+import jmbench.plots.SummaryWhiskerPlot;
 import jmbench.tools.runtime.OperationResults;
 import jmbench.tools.runtime.RuntimeEvaluationMetrics;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -36,10 +35,74 @@ import java.util.List;
  */
 public class RuntimeResultPlotter {
 
+    public static void summaryPlots( List<RuntimePlotData> allResults , Reference referenceType ) {
+
+        Map<String,List<Double>> overallResults = new HashMap<String,List<Double>>();
+        Map<String,List<Double>> largeResults = new HashMap<String,List<Double>>();
+        Map<String,List<Double>> smallResults = new HashMap<String,List<Double>>();
+
+        for( RuntimePlotData opResults : allResults ) {
+            int numMatrixSizes = opResults.matrixSize.length;
+
+            // find the performance for each matrix size that each library will
+            // be compared against
+            double refValue[] = new double[ numMatrixSizes ];
+            computeReferenceValues(opResults, referenceType, -1, numMatrixSizes, refValue);
+
+
+            for( RuntimePlotData.SourceResults r : opResults.libraries ) {
+                List<Double> libOverall;
+                List<Double> libLarge;
+                List<Double> libSmall;
+
+                if( !overallResults.containsKey(r.label)) {
+                    libOverall = new ArrayList<Double>();
+                    libLarge = new ArrayList<Double>();
+                    libSmall = new ArrayList<Double>();
+                    overallResults.put(r.label,libOverall);
+                    largeResults.put(r.label,libLarge);
+                    smallResults.put(r.label,libSmall);
+                } else {
+                    libOverall = overallResults.get(r.label);
+                    libLarge = largeResults.get(r.label);
+                    libSmall = smallResults.get(r.label);
+                }
+
+                for( int i = 0; i < r.results.length; i++ ) {
+                    double a = r.getResult(i);
+                    if( !Double.isNaN(a) ) {
+                        libOverall.add(a/refValue[i]);
+                        if( i <= 2 )
+                            libSmall.add(a/refValue[i]);
+                        if( i >= r.results.length-4 )
+                            libLarge.add(a/refValue[i]);
+                    } else {
+                        libOverall.add(0.0);
+                        if( i <= 2 )
+                            libSmall.add(0.0);
+                        if( i >= r.results.length-4 )
+                            libLarge.add(0.0);
+                    }
+                }
+            }
+        }
+
+        SummaryWhiskerPlot plot = new SummaryWhiskerPlot();
+        for( String libName : overallResults.keySet() ) {
+            List<Double> overall = overallResults.get(libName);
+            List<Double> large = largeResults.get(libName);
+            List<Double> small = smallResults.get(libName);
+
+            plot.addLibrary(libName,overall,large,small);
+        }
+
+        plot.displayWindow(800,400);
+    }
+
     public static void variabilityPlots( List<OperationResults> data ,
-                                      String fileName ,
-                                      boolean savePDF ,
-                                      boolean showWindow )
+                                         String fileName ,
+                                         boolean savePDF ,
+                                         boolean showWindow )
     {
         String opName = data.get(0).getOpName();
         OperationsVersusSizePlot splot = new OperationsVersusSizePlot(opName,"Ops/Sec Range (%)");

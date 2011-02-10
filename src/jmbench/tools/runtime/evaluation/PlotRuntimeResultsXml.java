@@ -117,11 +117,18 @@ public class PlotRuntimeResultsXml {
         createPlots(minMatrixSize,maxMatrixSize,directory,whichMetric, opMap);
     }
 
-    public static void createPlots( int minMatrixSize , int maxMatrixSize , File outputDirectory , int whichMetric, Map<String, List> opMap) {
+    public static void createPlots( int minMatrixSize , int maxMatrixSize ,
+                                    File outputDirectory , int whichMetric,
+                                    Map<String, List> opMap ) {
+        List<RuntimePlotData> allResults = new ArrayList<RuntimePlotData>();
+
+        RuntimeResultPlotter.Reference refType = RuntimeResultPlotter.Reference.MAX;
+
         for( String key : opMap.keySet() ) {
             List<OperationResults> l = opMap.get(key);
 
             RuntimePlotData plotData = convertToPlotData(l,whichMetric);
+            allResults.add( plotData );
 
             truncatePlotData(minMatrixSize,maxMatrixSize,plotData);
 
@@ -129,12 +136,14 @@ public class PlotRuntimeResultsXml {
             String fileNameRel = outputDirectory.getPath()+"/plots/relative/"+key;
             String fileNameAbs = outputDirectory.getPath()+"/plots/absolute/"+key;
 
-            RuntimeResultPlotter.Reference refType = RuntimeResultPlotter.Reference.MAX;
+
             RuntimeResultPlotter.variabilityPlots(l, fileNameVar,true,false);
             // TODO change key in the line below to plot name
             RuntimeResultPlotter.relativePlots(plotData, refType,null,fileNameRel,plotData.plotName,true,true);
             RuntimeResultPlotter.absolutePlots(plotData, fileNameAbs,plotData.plotName,true,false);
         }
+
+        RuntimeResultPlotter.summaryPlots(allResults,refType);
     }
 
     /**

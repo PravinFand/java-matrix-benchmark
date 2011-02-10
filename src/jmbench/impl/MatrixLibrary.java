@@ -21,8 +21,14 @@ package jmbench.impl;
 
 import jmbench.tools.EvaluationTarget;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -74,6 +80,54 @@ public class MatrixLibrary implements Serializable {
 
     public MatrixLibrary() {
 
+    }
+
+    /**
+     * Loads the library's jars into memory
+     */
+    public void loadLibraryJars() {
+
+        List<String> jarNames = listOfJarFilePaths();
+
+        if( jarNames == null )
+            return;
+
+        for( String n : jarNames ) {
+            try {
+                EvaluationTarget.addURL(new URL("file:" + n));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
+    /**
+     * Returns a list of absolute paths to the library's jar files.
+     */
+    public List<String> listOfJarFilePaths() {
+        List<String> jarNames = new ArrayList<String>();
+
+        File rootDir = new File("lib/"+ libraryDirName);
+
+        File files[] = rootDir.listFiles();
+        if( files == null)
+            return null;
+
+        for( File f : files ) {
+            if( !f.isFile() ) continue;
+
+            String n = f.getName();
+            if( n.contains("-doc.") || n.contains("-src."))
+                continue;
+
+            if( n.contains(".jar") || n.contains(".zip")) {
+                jarNames.add(rootDir.getAbsolutePath()+"/"+n);
+            }
+        }
+        return jarNames;
     }
 
     public static MatrixLibrary lookup( String libraryPlotName ) {

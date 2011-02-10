@@ -9,6 +9,7 @@
 - When resuming a trial it no longer overwrites the old log file and instead creates a new one.
 - Reworked memory benchmark to use unix specific tools to get a more accurate estimate
 - Improved runtime benchmark resume so that more of the old results are reused.
+- Added summary plot.
 
 ----- Version 0.7
 

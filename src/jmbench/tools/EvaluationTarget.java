@@ -22,14 +22,12 @@ package jmbench.tools;
 import jmbench.impl.MatrixLibrary;
 import jmbench.interfaces.LibraryFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -78,28 +76,13 @@ public class EvaluationTarget implements Serializable {
         if( lib.libraryDirName == null )
             return;
 
-        List<String> jarNames = new ArrayList<String>();
+        List<String> jarNames = lib.listOfJarFilePaths();
 
-        File rootDir = new File("lib/"+ lib.libraryDirName);
-
-        File files[] = rootDir.listFiles();
-        if( files == null)
-            return;
-
-        for( File f : files ) {
-            if( !f.isFile() ) continue;
-
-            String n = f.getName();
-            if( n.contains("-doc.") || n.contains("-src."))
-                continue;
-
-            if( n.contains(".jar") || n.contains(".zip")) {
-                jarNames.add(rootDir.getAbsolutePath()+"/"+n);
-            }
-        }
+        if (jarNames == null) return;
 
         this.jarFiles = jarNames;
     }
+
 
     public List<String> getJarFiles() {
         return jarFiles;

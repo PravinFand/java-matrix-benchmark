@@ -75,6 +75,13 @@ public class RuntimeBenchmarkMaster {
         for( EvaluationTarget desc : libs ) {
 
             MatrixLibrary lib = MatrixLibrary.lookup(desc.getLibName());
+            // TODO is loading these library's into memory going to cause a conflict if
+            // they reference each other and have different versions?  Maybe launch and application
+            // to get this information
+            
+            // load the library into memory so that information (such as version)
+            // which requires the library can be loaded.
+            lib.loadLibraryJars();
             lib.addVersionInfo( desc );
 
             String libOutputDir = directorySave+"/"+lib.getSaveDirName();
