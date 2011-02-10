@@ -87,7 +87,7 @@ public class EjmlStabilityFactory implements StabilityFactory {
         public DenseMatrix64F[] process(DenseMatrix64F[] inputs) {
             DenseMatrix64F A = inputs[0];
 
-            SingularValueDecomposition<DenseMatrix64F> svd = DecompositionFactory.svd();
+            SingularValueDecomposition<DenseMatrix64F> svd = DecompositionFactory.svd(A.numRows,A.numCols);
             if( !svd.decompose(A) )
                 return null;
 
@@ -111,7 +111,7 @@ public class EjmlStabilityFactory implements StabilityFactory {
         public DenseMatrix64F[] process(DenseMatrix64F[] inputs) {
             DenseMatrix64F A = inputs[0];
 
-            EigenDecomposition<DenseMatrix64F> eig = EigenOps.decompositionSymmetric(true);
+            EigenDecomposition<DenseMatrix64F> eig = EigenOps.decompositionSymmetric(A.numCols,true);
 
             if( !eig.decompose(A) )
                 return null;

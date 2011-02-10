@@ -102,7 +102,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
 
-            LUDecomposition<DenseMatrix64F> lu = DecompositionFactory.lu();
+            LUDecomposition<DenseMatrix64F> lu = DecompositionFactory.lu(matA.numRows);
 
             DenseMatrix64F L = new DenseMatrix64F(matA.numRows,matA.numCols);
             DenseMatrix64F U = new DenseMatrix64F(matA.numRows,matA.numCols);
@@ -137,7 +137,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
 
-            SingularValueDecomposition<DenseMatrix64F> svd = DecompositionFactory.svd();
+            SingularValueDecomposition<DenseMatrix64F> svd = DecompositionFactory.svd(matA.numRows,matA.numCols);
 
             DenseMatrix64F U = null;
             DenseMatrix64F S = null;
@@ -171,7 +171,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
 
-            EigenDecomposition<DenseMatrix64F> eig = EigenOps.decompositionSymmetric(true);
+            EigenDecomposition<DenseMatrix64F> eig = EigenOps.decompositionSymmetric(matA.numCols,true);
 
             long prev = System.nanoTime();
 
@@ -200,7 +200,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
 
-            QRDecomposition<DenseMatrix64F> qr = DecompositionFactory.qr();
+            QRDecomposition<DenseMatrix64F> qr = DecompositionFactory.qr(matA.numRows,matA.numCols);
             DenseMatrix64F Q = null;
             DenseMatrix64F R = null;
 
@@ -402,7 +402,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
 
             DenseMatrix64F result = new DenseMatrix64F(matA.numCols,matB.numCols);
 
-            LinearSolver<DenseMatrix64F> solver = LinearSolverFactory.linear();
+            LinearSolver<DenseMatrix64F> solver = LinearSolverFactory.linear(matA.numRows);
             // make sure the input is not modified
             solver = new LinearSolverSafe<DenseMatrix64F>(solver);
 
@@ -434,7 +434,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
 
             DenseMatrix64F result = new DenseMatrix64F(matA.numCols,matB.numCols);
 
-            LinearSolver<DenseMatrix64F> solver = LinearSolverFactory.leastSquares();
+            LinearSolver<DenseMatrix64F> solver = LinearSolverFactory.leastSquares(matA.numRows,matA.numCols);
 
             // make sure the input is not modified
             solver = new LinearSolverSafe<DenseMatrix64F>(solver);
