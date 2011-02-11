@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -23,6 +23,7 @@ package jmbench.interfaces;
  * @author Peter Abeles
  */
 public interface MatrixFactory {
+    
     BenchmarkMatrix create( int numRows , int numCols );
 
     BenchmarkMatrix wrap( Object matrix );

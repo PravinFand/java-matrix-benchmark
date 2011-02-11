@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -24,6 +24,7 @@ import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 
 import java.awt.*;
@@ -41,31 +42,38 @@ public class SummaryWhiskerPlot {
             = new DefaultBoxAndWhiskerCategoryDataset();
 
     String title;
+    String subtitle;
 
-    public SummaryWhiskerPlot(String title) {
+    public SummaryWhiskerPlot(String title, String subtitle) {
         this.title = title;
+        this.subtitle = subtitle;
     }
 
     public void addLibrary( String name , List<Double> overall ,
                             List<Double> large , List<Double> small )
     {
-        dataSet.add(overall,"All",name);
-        dataSet.add(large,"Large",name);
-        dataSet.add(small,"Small",name);
+        dataSet.add(overall,"All Sizes",name);
+        dataSet.add(large,"Only Large",name);
+        dataSet.add(small,"Only Small",name);
     }
 
     public JFreeChart createChart() {
         JFreeChart chart = ChartFactory.createBoxAndWhiskerChart(
-                title, "Matrix Size", "Relative Performance", dataSet,
+                title, "Matrix Libraries", "Relative Performance", dataSet,
                 true);
-        CategoryPlot plot = (CategoryPlot) chart.getPlot();
+        CategoryPlot plot = chart.getCategoryPlot();
         plot.setDomainGridlinesVisible(true);
         plot.setBackgroundPaint(new Color(230,230,230));
         plot.setDomainGridlinePaint(new Color(50,50,50,50));
         plot.setDomainGridlineStroke(new BasicStroke(78f));
-//        BoxAndWhiskerRenderer r = (BoxAndWhiskerRenderer)plot.getRenderer();
-//
-//        r.setMedianVisible(false);
+
+        chart.getTitle().setFont(new Font("Times New Roman", Font.BOLD, 24));
+
+        String foo = "( Higher is Better )";
+        if( subtitle != null )
+            foo += "      ( "+subtitle+" )";
+
+        chart.addSubtitle(new TextTitle(foo,new Font("SansSerif", Font.ITALIC, 12)));
 
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
@@ -96,7 +104,7 @@ public class SummaryWhiskerPlot {
     public static void main( String args[] ) {
         Random rand = new Random(2344);
 
-        SummaryWhiskerPlot plot = new SummaryWhiskerPlot("Test Summary");
+        SummaryWhiskerPlot plot = new SummaryWhiskerPlot("Test Summary","Weighted by Operation Time");
 
         for( int i = 0; i < 3; i++ ) {
             List<Double> overall = new ArrayList<Double>();

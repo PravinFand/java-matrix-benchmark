@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -115,7 +115,7 @@ public class MemoryBenchmarkLibrary {
         while( !activeTasks.isEmpty() ) {
             Task task = activeTasks.get( rand.nextInt(activeTasks.size()));
 
-            System.out.println(libInfo.getNameWithVersion()+" operation "+task.results.nameOp);
+            System.out.println(libInfo.getPlotName()+" operation "+task.results.nameOp);
 
             boolean remove = false;
 

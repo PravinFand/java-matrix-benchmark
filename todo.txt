@@ -1,5 +1,7 @@
+- Improve memory benchmark by adjusting allocated heap size
+
 - get library version by spawning a new process
-  * RuntimeBenchmarkMaster.processLibraries
+  * MatrixLibrary.addVersionInfo
 
 - Randomly draw operation and matrix size
  * first do a run through until an exception occurs

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -41,12 +41,9 @@ public class JamaStabilityFactory implements StabilityFactory {
         return MatrixLibrary.JAMA;
     }
 
-    public static abstract class CommonOperation implements StabilityOperationInterface
-    {
-        @Override
-        public String getName() {
-            return MatrixLibrary.JAMA.getNameWithVersion();
-        }
+    @Override
+    public void configure() {
+        
     }
 
     public StabilityOperationInterface createLinearSolver() {
@@ -57,7 +54,7 @@ public class JamaStabilityFactory implements StabilityFactory {
         return new MyLinearSolver();
     }
 
-    public static class MyLinearSolver extends CommonOperation
+    public static class MyLinearSolver implements StabilityOperationInterface
     {
 
         @Override
@@ -74,7 +71,7 @@ public class JamaStabilityFactory implements StabilityFactory {
         return new MySvd();
     }
 
-   public static class MySvd extends CommonOperation
+   public static class MySvd implements StabilityOperationInterface
     {
 
         @Override
@@ -108,7 +105,7 @@ public class JamaStabilityFactory implements StabilityFactory {
         return new MySymmEig();
     }
 
-    public static class MySymmEig extends CommonOperation {
+    public static class MySymmEig implements StabilityOperationInterface {
         @Override
         public DenseMatrix64F[] process(DenseMatrix64F[] inputs) {
             Matrix matA = convertToJama(inputs[0]);
@@ -127,7 +124,7 @@ public class JamaStabilityFactory implements StabilityFactory {
         return new MySymmInverse();
     }
 
-    public static class MySymmInverse extends CommonOperation {
+    public static class MySymmInverse implements StabilityOperationInterface {
         @Override
         public DenseMatrix64F[] process(DenseMatrix64F[] inputs) {
             Matrix matA = convertToJama(inputs[0]);

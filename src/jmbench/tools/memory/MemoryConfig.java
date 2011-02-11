@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -41,6 +41,7 @@ public class MemoryConfig {
     public static EvaluationTarget mtj = new EvaluationTarget( MatrixLibrary.MTJ, MtjMemoryFactory.class.getName());
     public static EvaluationTarget pcolt = new EvaluationTarget( MatrixLibrary.PCOLT, PColtMemoryFactory.class.getName());
     public static EvaluationTarget ujmp = new EvaluationTarget( MatrixLibrary.UJMP, UjmpMemoryFactory.class.getName());
+    public static EvaluationTarget ujmp_j = new EvaluationTarget( MatrixLibrary.UJMP_JAVA , UjmpJavaMemoryFactory.class.getName());
     public static EvaluationTarget jblas = new EvaluationTarget( MatrixLibrary.JBLAS, JBlasMemoryFactory.class.getName());
 
     // random seed
@@ -102,6 +103,7 @@ public class MemoryConfig {
         ret.libraries.add( sejml);
         ret.libraries.add( pcolt );
         ret.libraries.add( ujmp );
+        ret.libraries.add( ujmp_j );
 
         ret.seed = 234234;
 

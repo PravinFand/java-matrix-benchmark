@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -40,6 +40,11 @@ public class ColtMemoryFactory implements MemoryFactory {
     @Override
     public MatrixLibrary getLibraryInfo() {
         return MatrixLibrary.COLT;
+    }
+
+    @Override
+    public void configure() {
+
     }
 
     @Override

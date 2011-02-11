@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -30,6 +30,4 @@ import org.ejml.data.DenseMatrix64F;
 public interface StabilityOperationInterface {
 
     public DenseMatrix64F[] process( DenseMatrix64F[] inputs );
-
-    public String getName();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -19,7 +19,6 @@
 
 package jmbench.impl.runtime;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.impl.wrapper.MtjBenchmarkMatrix;
 import jmbench.interfaces.AlgorithmInterface;
@@ -35,14 +34,6 @@ import org.ejml.ops.CommonOps;
  * @author Peter Abeles
  */
 public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
-
-    private static abstract class MyInterface implements AlgorithmInterface
-    {
-        @Override
-        public String getName() {
-            return MatrixLibrary.MTJ.getNameWithVersion();
-        }
-    }
 
     @Override
     public void configure() {
@@ -63,7 +54,7 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
         return new Chol();
     }
 
-    public static class Chol extends MyInterface {
+    public static class Chol implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -96,7 +87,7 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
         return new LU();
     }
 
-    public static class LU extends MyInterface {
+    public static class LU implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -137,7 +128,7 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
         return new MySVD();
     }
 
-    public static class MySVD extends MyInterface {
+    public static class MySVD implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -177,7 +168,7 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
         return new Eig();
     }
 
-    public static class Eig extends MyInterface {
+    public static class Eig implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -214,7 +205,7 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
         return new QR();
     }
 
-    public static class QR extends MyInterface {
+    public static class QR implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -253,7 +244,7 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
         return new Inv();
     }
 
-    public static class Inv extends MyInterface {
+    public static class Inv implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -278,7 +269,7 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
         return new InvSymmPosDef();
     }
 
-    public static class InvSymmPosDef extends MyInterface {
+    public static class InvSymmPosDef implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -311,7 +302,7 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
         return new Add();
     }
 
-    public static class Add extends MyInterface {
+    public static class Add implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -338,7 +329,7 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
         return new Mult();
     }
 
-    public static class Mult extends MyInterface {
+    public static class Mult implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -363,7 +354,7 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
         return new MulTranB();
     }
 
-    public static class MulTranB extends MyInterface {
+    public static class MulTranB implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -388,7 +379,7 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
         return new Scale();
     }
 
-    public static class Scale extends MyInterface {
+    public static class Scale implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -419,7 +410,7 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
         return new Solve();
     }
 
-    public static class Solve extends MyInterface {
+    public static class Solve implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -444,7 +435,7 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
         return new Transpose();
     }
 
-    public static class Transpose extends MyInterface {
+    public static class Transpose implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -41,12 +41,9 @@ public class JBlasStabilityFactory implements StabilityFactory {
         return MatrixLibrary.JBLAS;
     }
 
-    public static abstract class CommonOperation implements StabilityOperationInterface
-    {
-        @Override
-        public String getName() {
-            return MatrixLibrary.JBLAS.getNameWithVersion();
-        }
+    @Override
+    public void configure() {
+        
     }
 
     public StabilityOperationInterface createLinearSolver() {
@@ -57,7 +54,7 @@ public class JBlasStabilityFactory implements StabilityFactory {
         return null;
     }
 
-    public static class MyLinearSolver extends CommonOperation
+    public static class MyLinearSolver implements StabilityOperationInterface
     {
 
         @Override
@@ -82,7 +79,7 @@ public class JBlasStabilityFactory implements StabilityFactory {
         return new MySymmEig();
     }
 
-    public static class MySymmEig extends CommonOperation {
+    public static class MySymmEig implements StabilityOperationInterface {
         @Override
         public DenseMatrix64F[] process(DenseMatrix64F[] inputs) {
             DoubleMatrix matA = convertToJBlas(inputs[0]);
@@ -101,7 +98,7 @@ public class JBlasStabilityFactory implements StabilityFactory {
         return new MySymmInverse();
     }
 
-    public static class MySymmInverse extends CommonOperation {
+    public static class MySymmInverse implements StabilityOperationInterface {
         @Override
         public DenseMatrix64F[] process(DenseMatrix64F[] inputs) {
             DoubleMatrix matA = convertToJBlas(inputs[0]);

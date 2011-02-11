@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -19,6 +19,7 @@
 
 package jmbench.tools.stability.tests;
 
+import jmbench.interfaces.StabilityFactory;
 import jmbench.interfaces.StabilityOperationInterface;
 import jmbench.tools.stability.StabilityTestBase;
 import org.ejml.data.DenseMatrix64F;
@@ -39,12 +40,13 @@ public abstract class SolverCommon extends StabilityTestBase {
     protected transient DenseMatrix64F A,b;
 
     public SolverCommon(long randomSeed,
+                        StabilityFactory factory ,
                         StabilityOperationInterface operation,
                         int totalTrials,
                         double breakingPoint ,
                         int minLength, int maxLength,
                         boolean linearSolver) {
-        super(randomSeed, operation, totalTrials, breakingPoint);
+        super(randomSeed, factory , operation, totalTrials, breakingPoint);
         this.minLength = minLength;
         this.maxLength = maxLength;
         isLinearSolver = linearSolver;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -105,12 +105,9 @@ public class RuntimeResultPlotter {
         int maxSamples = weighted ? 100 : 1;
 
         String title = "Summary of Runtime Performance";
+        String subtitle = weighted ? "Weighted by Operation Time" : null;
 
-        if( weighted ) {
-            title += "\n Weighted by Operation Time";
-        }
-
-        SummaryWhiskerPlot plot = new SummaryWhiskerPlot(title);
+        SummaryWhiskerPlot plot = new SummaryWhiskerPlot(title,subtitle);
         for( String libName : overallResults.keySet() ) {
             List<OverallData> libOverall = overallResults.get(libName);
 

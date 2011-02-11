@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -19,6 +19,7 @@
 
 package jmbench.tools.stability;
 
+import jmbench.interfaces.StabilityFactory;
 import jmbench.interfaces.StabilityOperationInterface;
 import jmbench.tools.EvaluationTest;
 import jmbench.tools.OutputError;
@@ -32,6 +33,7 @@ import java.util.Random;
  */
 public abstract class StabilityTestBase extends EvaluationTest {
 
+    protected StabilityFactory factory;
     protected StabilityOperationInterface operation;
 
     protected int totalTrials;
@@ -44,10 +46,12 @@ public abstract class StabilityTestBase extends EvaluationTest {
     protected transient int numResults;
 
     protected StabilityTestBase(long randomSeed,
+                                StabilityFactory factory,
                                 StabilityOperationInterface operation,
                                 int totalTrials,
                                 double breakingPoint ) {
         super(randomSeed);
+        this.factory = factory;
         this.operation = operation;
         this.totalTrials = totalTrials;
         this.breakingPoint = breakingPoint;
@@ -75,6 +79,7 @@ public abstract class StabilityTestBase extends EvaluationTest {
     @Override
     public void init() {
         rand = new Random(randomSeed);
+        factory.configure();
     }
 
     @Override
@@ -83,7 +88,6 @@ public abstract class StabilityTestBase extends EvaluationTest {
 
     @Override
     public void printInfo() {
-        System.out.println("Library = "+operation.getName());
     }
 
     @Override
@@ -152,6 +156,14 @@ public abstract class StabilityTestBase extends EvaluationTest {
                 throw new RuntimeException("Unknown reason: "+reason);
         }
         System.gc();
+    }
+
+    public StabilityFactory getFactory() {
+        return factory;
+    }
+
+    public void setFactory(StabilityFactory factory) {
+        this.factory = factory;
     }
 
     public StabilityOperationInterface getOperation() {

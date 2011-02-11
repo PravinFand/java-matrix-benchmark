@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -66,6 +66,9 @@ public class MemoryBenchmark {
 
         long startTime = System.currentTimeMillis();
 
+        // save the description of each library
+        saveLibraryDescriptions(config.libraries);
+
         System.out.print("Computing overhead ");
         long overhead = new DetermineOverhead(config,10).computeOverhead();
         System.out.println(overhead/1024+" KB");
@@ -80,13 +83,11 @@ public class MemoryBenchmark {
 
     private void processLibraries( List<EvaluationTarget> libs, MemoryConfig config , long overhead ) {
 
-        saveLibraryDescriptions(libs);
-
         for(  EvaluationTarget desc : libs ) {
             // run the benchmark
             MemoryFactory l = desc.loadAlgorithmFactory();
 
-            String libOutputDir = directorySave+"/"+l.getLibraryInfo().getLibraryDirName();
+            String libOutputDir = directorySave+"/"+l.getLibraryInfo().getSaveDirName();
 
             MemoryBenchmarkLibrary bench = new MemoryBenchmarkLibrary(config,l,desc.getJarFiles(),libOutputDir,overhead);
 
@@ -105,7 +106,11 @@ public class MemoryBenchmark {
         for( EvaluationTarget desc : libs ) {
             try {
                 MatrixLibrary lib = MatrixLibrary.lookup(desc.getLibName());
-                String outputFile = directorySave+"/"+lib.getLibraryDirName()+".xml";
+
+                // Add version information to the target description
+                lib.addVersionInfo( desc );
+
+                String outputFile = directorySave+"/"+lib.getSaveDirName()+".xml";
                 UtilXmlSerialization.serializeXml(desc,outputFile);
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);

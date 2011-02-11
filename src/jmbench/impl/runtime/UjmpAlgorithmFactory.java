@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -19,7 +19,6 @@
 
 package jmbench.impl.runtime;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.impl.wrapper.UjmpBenchmarkMatrix;
 import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
@@ -52,13 +51,6 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
         UJMPSettings.setUseJBlas(useNative);
     }
 
-    private static abstract class MyInterface implements AlgorithmInterface {
-		@Override
-		public String getName() {
-			return MatrixLibrary.UJMP.getNameWithVersion();
-		}
-	}
-
     @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         return wrap( DenseDoubleMatrix2D.factory.zeros(numRows,numCols));
@@ -74,7 +66,7 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 		return new CholOp();
 	}
 
-	public static class CholOp extends MyInterface {
+	public static class CholOp implements AlgorithmInterface {
 		@Override
 		public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs,
 				long numTrials) {
@@ -100,7 +92,7 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 		return new LU();
 	}
 
-	public static class LU extends MyInterface {
+	public static class LU implements AlgorithmInterface {
 		@Override
 		public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs,
 				long numTrials) {
@@ -133,7 +125,7 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 		return new SVD();
 	}
 
-	public static class SVD extends MyInterface {
+	public static class SVD implements AlgorithmInterface {
 		@Override
 		public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs,
 				long numTrials) {
@@ -161,7 +153,7 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 		return new Eig();
 	}
 
-	public static class Eig extends MyInterface {
+	public static class Eig implements AlgorithmInterface {
 		@Override
 		public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs,
 				long numTrials) {
@@ -187,7 +179,7 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 		return new QR();
 	}
 
-	public static class QR extends MyInterface {
+	public static class QR implements AlgorithmInterface {
 		@Override
 		public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs,
 				long numTrials) {
@@ -217,7 +209,7 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 		return new Det();
 	}
 
-	public static class Det extends MyInterface {
+	public static class Det implements AlgorithmInterface {
 		@Override
 		public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs,
 				long numTrials) {
@@ -238,7 +230,7 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 		return new Inv();
 	}
 
-	public static class Inv extends MyInterface {
+	public static class Inv implements AlgorithmInterface {
 		@Override
 		public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs,
 				long numTrials) {
@@ -263,7 +255,7 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 		return new InvSymmPosDef();
 	}
 
-	public static class InvSymmPosDef extends MyInterface {
+	public static class InvSymmPosDef implements AlgorithmInterface {
 		@Override
 		public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs,
 				long numTrials) {
@@ -289,7 +281,7 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 		return new Add();
 	}
 
-	public static class Add extends MyInterface {
+	public static class Add implements AlgorithmInterface {
 		@Override
 		public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs,
 				long numTrials) {
@@ -316,7 +308,7 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 		return new Mult();
 	}
 
-	public static class Mult extends MyInterface {
+	public static class Mult implements AlgorithmInterface {
 		@Override
 		public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs,
 				long numTrials) {
@@ -343,7 +335,7 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 		return new MulTranB();
 	}
 
-	public static class MulTranB extends MyInterface {
+	public static class MulTranB implements AlgorithmInterface {
 		@Override
 		public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs,
 				long numTrials) {
@@ -369,7 +361,7 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 		return new Scale();
 	}
 
-	public static class Scale extends MyInterface {
+	public static class Scale implements AlgorithmInterface {
 		@Override
 		public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs,
 				long numTrials) {
@@ -396,7 +388,7 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 		return new Solve();
 	}
 
-	public static class Solve extends MyInterface {
+	public static class Solve implements AlgorithmInterface {
 		@Override
 		public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs,
 				long numTrials) {
@@ -427,7 +419,7 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 		return new Transpose();
 	}
 
-	public static class Transpose extends MyInterface {
+	public static class Transpose implements AlgorithmInterface {
 		@Override
 		public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs,
 				long numTrials) {

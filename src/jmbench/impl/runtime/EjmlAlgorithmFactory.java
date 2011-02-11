@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -19,7 +19,6 @@
 
 package jmbench.impl.runtime;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
@@ -40,13 +39,6 @@ import org.ejml.ops.EigenOps;
  */
 public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
 
-    private static abstract class MyInterface implements AlgorithmInterface
-    {
-        @Override
-        public String getName() {
-            return MatrixLibrary.EJML.getNameWithVersion();
-        }
-    }
 
     @Override
     public BenchmarkMatrix wrap(Object matrix) {
@@ -68,7 +60,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         return new Chol();
     }
 
-    public static class Chol extends MyInterface {
+    public static class Chol implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
@@ -97,7 +89,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         return new LU();
     }
 
-    public static class LU extends MyInterface {
+    public static class LU implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
@@ -132,7 +124,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         return new SVD();
     }
 
-    public static class SVD extends MyInterface {
+    public static class SVD implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
@@ -166,7 +158,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         return new MyEig();
     }
 
-    public static class MyEig extends MyInterface {
+    public static class MyEig implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
@@ -195,7 +187,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         return new QR();
     }
 
-    public static class QR extends MyInterface {
+    public static class QR implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
@@ -226,7 +218,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         return new Det();
     }
 
-    public static class Det extends MyInterface {
+    public static class Det implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
@@ -246,7 +238,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         return new Inv();
     }
 
-    public static class Inv extends MyInterface {
+    public static class Inv implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
@@ -271,7 +263,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         return new InvSymmPosDef();
     }
 
-    public static class InvSymmPosDef extends MyInterface {
+    public static class InvSymmPosDef implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
@@ -296,7 +288,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         return new Add();
     }
 
-    public static class Add extends MyInterface {
+    public static class Add implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
@@ -321,7 +313,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         return new Mult();
     }
 
-    public static class Mult extends MyInterface {
+    public static class Mult implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
@@ -346,7 +338,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         return new MulTranB();
     }
 
-    public static class MulTranB extends MyInterface {
+    public static class MulTranB implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
@@ -371,7 +363,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         return new Scale();
     }
 
-    public static class Scale extends MyInterface {
+    public static class Scale implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
@@ -394,7 +386,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
     public AlgorithmInterface solveExact() {
         return new SolveExact();
     }
-    public static class SolveExact extends MyInterface {
+    public static class SolveExact implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
@@ -426,7 +418,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         return new SolveOver();
     }
 
-    public static class SolveOver extends MyInterface {
+    public static class SolveOver implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
@@ -459,7 +451,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         return new Transpose();
     }
 
-    public static class Transpose extends MyInterface {
+    public static class Transpose implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();

@@ -17,33 +17,15 @@
  * along with JMatrixBenchmark.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jmbench.interfaces;
-
-import jmbench.impl.MatrixLibrary;
-
-import java.io.Serializable;
-
+package jmbench.impl.memory;
 
 /**
- * Memory tests see how much memory it takes a library to perform the specified operation. For
- * each operation tested the inputs should be created and filled with random elements in a row
- * major fashion.
+ * Only uses pure java functions.
  *
  * @author Peter Abeles
  */
-public interface MemoryFactory extends LibraryFactory, MatrixFactory, Serializable {
-
-    public MatrixLibrary getLibraryInfo();
-
-    public MemoryProcessorInterface mult();
-
-    public MemoryProcessorInterface add();
-
-    public MemoryProcessorInterface solveEq();
-    
-    public MemoryProcessorInterface solveLS();
-
-    public MemoryProcessorInterface svd();
-
-    public MemoryProcessorInterface eig();
+public class UjmpJavaMemoryFactory extends UjmpMemoryFactory {
+    public UjmpJavaMemoryFactory() {
+        super(false);
+    }
 }

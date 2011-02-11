@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -51,6 +51,8 @@ public class MemoryTest extends EvaluationTest {
 
     @Override
     public void init() {
+        if( factory != null )
+            factory.configure();
     }
 
     @Override
@@ -77,7 +79,6 @@ public class MemoryTest extends EvaluationTest {
 
         BenchmarkMatrix []inputs = gen != null ? gen.createInputs(factory,rand,false,size) : null;
         BenchmarkMatrix []outputs = gen != null ? new BenchmarkMatrix[ gen.numOutputs() ] : null;
-
 
         double mod[] = null;
 

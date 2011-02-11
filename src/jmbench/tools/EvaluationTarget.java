@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -67,7 +67,7 @@ public class EvaluationTarget implements Serializable {
     }
 
     /**
-     * Returns a list of jars that need to be added to the classpath.
+     * Examines the library's directory to get the list of jar files
      */
     private void loadJarNames() {
 

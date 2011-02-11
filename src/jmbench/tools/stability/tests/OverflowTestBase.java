@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -19,6 +19,7 @@
 
 package jmbench.tools.stability.tests;
 
+import jmbench.interfaces.StabilityFactory;
 import jmbench.interfaces.StabilityOperationInterface;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityTestBase;
@@ -43,11 +44,11 @@ public abstract class OverflowTestBase extends StabilityTestBase
 
     private volatile BreakingPointBinarySearch search;
 
-    public OverflowTestBase(long randomSeed, StabilityOperationInterface operation,
+    public OverflowTestBase(long randomSeed, StabilityFactory factory , StabilityOperationInterface operation,
                        int totalTrials, double breakingPoint, int minLength, int maxLength,
                        boolean overflow)
     {
-        super(randomSeed, operation, totalTrials, breakingPoint);
+        super(randomSeed, factory , operation, totalTrials, breakingPoint);
         this.minLength = minLength;
         this.maxLength = maxLength;
         this.overflow = overflow;

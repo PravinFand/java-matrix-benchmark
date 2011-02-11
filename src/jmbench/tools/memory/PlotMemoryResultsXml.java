@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -125,7 +125,7 @@ public class PlotMemoryResultsXml {
         long max = 0;
 
         for( MemoryResults m : l ) {
-            if( plotFailed || m.numFailed == 0 ) {
+            if( !m.results.isEmpty() && (plotFailed || m.numFailed == 0) ) {
                 long d = m.getScore(1.0);
                 if( d < Long.MAX_VALUE && max < d )
                     max = d;
@@ -137,7 +137,7 @@ public class PlotMemoryResultsXml {
         for( int i = 0; i < l.size(); i++ ) {
             MemoryResults m = l.get(i);
 
-            if( plotFailed || m.numFailed == 0 ) {
+            if( !m.results.isEmpty() && (plotFailed || m.numFailed == 0) ) {
                 long val = m.getScore(1.0);
 
                 if( val == Long.MAX_VALUE || val == 0)

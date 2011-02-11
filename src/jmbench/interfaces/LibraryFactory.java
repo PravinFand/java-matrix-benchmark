@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -21,7 +21,15 @@ package jmbench.interfaces;
 
 
 /**
+ * Interface that all factories must implement.  Each library in a benchmark will implement
+ * a factory that creates the operations that are being benchmarked.
+ *
  * @author Peter Abeles
  */
 public interface LibraryFactory {
+    /**
+     * Called before any other functions are called.  Any runtime configurations should
+     * be done here.
+     */
+    void configure();
 }

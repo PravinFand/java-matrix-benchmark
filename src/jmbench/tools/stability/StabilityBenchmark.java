@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -98,7 +98,7 @@ public class StabilityBenchmark {
         for( EvaluationTarget desc : libs ) {
             try {
                 MatrixLibrary lib = MatrixLibrary.lookup(desc.getLibName());
-                String outputFile = directorySave+"/"+lib.getLibraryDirName()+".xml";
+                String outputFile = directorySave+"/"+lib.getSaveDirName()+".xml";
                 UtilXmlSerialization.serializeXml(desc,outputFile);
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
@@ -115,7 +115,7 @@ public class StabilityBenchmark {
 //            if( desc.getLib() != MatrixLibrary.JAMA )
 //                continue;
             MatrixLibrary lib = MatrixLibrary.lookup(desc.getLibName());
-            String libOutputDir = directorySave+"/"+dirSize+"/"+lib.getLibraryDirName();
+            String libOutputDir = directorySave+"/"+dirSize+"/"+lib.getSaveDirName();
 
             // run the benchmark
             StabilityFactory l = desc.loadAlgorithmFactory();

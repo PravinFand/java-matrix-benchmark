@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -19,6 +19,7 @@
 
 package jmbench.tools.stability.tests;
 
+import jmbench.interfaces.StabilityFactory;
 import jmbench.interfaces.StabilityOperationInterface;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityBenchmark;
@@ -40,9 +41,9 @@ public class SvdAccuracy extends AccuracyTestBase {
     private volatile DenseMatrix64F A;
     private volatile double sv[];
 
-    public SvdAccuracy(long randomSeed, StabilityOperationInterface operation,
+    public SvdAccuracy(long randomSeed, StabilityFactory factory, StabilityOperationInterface operation,
                        int totalTrials, int minLength, int maxLength) {
-        super(randomSeed, operation, totalTrials, minLength, maxLength);
+        super(randomSeed, factory, operation, totalTrials, minLength, maxLength);
     }
 
     public SvdAccuracy(){}

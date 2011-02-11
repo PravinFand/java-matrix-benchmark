@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -20,7 +20,6 @@
 package jmbench.impl.runtime;
 
 import jmbench.PackageMatrixConversion;
-import jmbench.impl.MatrixLibrary;
 import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.impl.wrapper.OjAlgoBenchmarkMatrix;
 import jmbench.impl.wrapper.OjAlgoMatrixStoreBenchmarkMatrix;
@@ -60,7 +59,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         return new OjAlgoBenchmarkMatrix((PhysicalStore)matrix);
     }
 
-    public static class OpAdd extends MyInterface {
+    public static class OpAdd implements AlgorithmInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -81,7 +80,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpChol extends MyInterface {
+    public static class OpChol implements AlgorithmInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -107,7 +106,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpCholInvertSymmPosDef extends MyInterface {
+    public static class OpCholInvertSymmPosDef implements AlgorithmInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -131,7 +130,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpDet extends MyInterface {
+    public static class OpDet implements AlgorithmInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -152,7 +151,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpEigSymm extends MyInterface {
+    public static class OpEigSymm implements AlgorithmInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -180,7 +179,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpInvert extends MyInterface {
+    public static class OpInvert implements AlgorithmInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -205,7 +204,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpLu extends MyInterface {
+    public static class OpLu implements AlgorithmInterface {
 
         // TODO change to what Anders said
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
@@ -240,7 +239,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpMult extends MyInterface {
+    public static class OpMult implements AlgorithmInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -261,7 +260,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpMultTransB extends MyInterface {
+    public static class OpMultTransB implements AlgorithmInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -282,7 +281,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpQr extends MyInterface {
+    public static class OpQr implements AlgorithmInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -311,7 +310,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpScale extends MyInterface {
+    public static class OpScale implements AlgorithmInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -333,7 +332,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpSolveExact extends MyInterface {
+    public static class OpSolveExact implements AlgorithmInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -357,7 +356,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpSolveOver extends MyInterface {
+    public static class OpSolveOver implements AlgorithmInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -381,7 +380,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpSvd extends MyInterface {
+    public static class OpSvd implements AlgorithmInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -412,7 +411,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpTranspose extends MyInterface {
+    public static class OpTranspose implements AlgorithmInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -429,13 +428,6 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
             final long elapsedTime = System.nanoTime() - prev;
             outputs[0] = new OjAlgoBenchmarkMatrix(result);
             return elapsedTime;
-        }
-    }
-
-    private static abstract class MyInterface implements AlgorithmInterface {
-
-        public String getName() {
-            return MatrixLibrary.OJALGO.getNameWithVersion();
         }
     }
 

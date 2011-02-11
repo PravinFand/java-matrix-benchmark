@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -20,7 +20,7 @@
 package jmbench.impl.wrapper;
 
 import jmbench.interfaces.BenchmarkMatrix;
-import org.ujmp.core.*;
+import org.ujmp.core.Matrix;
 
 
 /**

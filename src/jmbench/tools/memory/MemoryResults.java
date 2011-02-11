@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -32,6 +32,7 @@ import java.util.List;
  */
 public class MemoryResults implements Serializable {
     String nameLibrary;
+    String versionLibrary;
     String nameOp;
 
     EvaluatorSlave.FailReason error;
@@ -45,6 +46,10 @@ public class MemoryResults implements Serializable {
     }
 
     public void printStatistics() {
+        if( results.size() == 0 ) {
+            System.out.println("No data to print!");
+            return;
+        }
         Collections.sort(results);
 
         long min = results.get(0);
@@ -76,6 +81,14 @@ public class MemoryResults implements Serializable {
 
     public void setNameOp(String nameOp) {
         this.nameOp = nameOp;
+    }
+
+    public String getVersionLibrary() {
+        return versionLibrary;
+    }
+
+    public void setVersionLibrary(String versionLibrary) {
+        this.versionLibrary = versionLibrary;
     }
 
     public EvaluatorSlave.FailReason getError() {

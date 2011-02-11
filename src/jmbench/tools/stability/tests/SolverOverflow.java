@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -19,6 +19,7 @@
 
 package jmbench.tools.stability.tests;
 
+import jmbench.interfaces.StabilityFactory;
 import jmbench.interfaces.StabilityOperationInterface;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityBenchmark;
@@ -44,6 +45,7 @@ public class SolverOverflow extends SolverCommon
     private volatile double scaling;
 
     public SolverOverflow(long randomSeed,
+                          StabilityFactory factory,
                           StabilityOperationInterface operation,
                           int totalTrials,
                           double breakingPoint ,
@@ -51,7 +53,7 @@ public class SolverOverflow extends SolverCommon
                           boolean linearSolver ,
                           boolean overflow )
     {
-        super(randomSeed, operation, totalTrials, breakingPoint , minLength, maxLength, linearSolver);
+        super(randomSeed, factory, operation, totalTrials, breakingPoint , minLength, maxLength, linearSolver);
 
         this.overflow = overflow;
     }

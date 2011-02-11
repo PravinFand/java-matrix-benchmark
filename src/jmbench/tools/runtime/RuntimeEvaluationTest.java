@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -19,7 +19,6 @@
 
 package jmbench.tools.runtime;
 
-import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MatrixProcessorInterface;
 import jmbench.interfaces.RuntimePerformanceFactory;
@@ -87,15 +86,9 @@ public class RuntimeEvaluationTest extends EvaluationTest {
 
     public RuntimeEvaluationTest(){}
 
+    @Override
     public void printInfo() {
-        if( getAlg() instanceof AlgorithmInterface) {
-            String name = ((AlgorithmInterface)getAlg()).getName();
-            System.out.println("Slave running: name = "+name+" dimen = "+getDimen()+
-                    "  seed = "+getRandomSeed());
-        } else {
-            System.out.println("Slave running: dimen = "+getDimen()+
-                    "  seed = "+getRandomSeed());
-        }
+
     }
 
     /**
@@ -105,6 +98,7 @@ public class RuntimeEvaluationTest extends EvaluationTest {
     public void init() {
         estimatedTrials = 0;
         rand = new Random(randomSeed);
+        factory.configure();
     }
 
     @Override
@@ -139,8 +133,6 @@ public class RuntimeEvaluationTest extends EvaluationTest {
         if( numTrials <= 0 ) {
             numTrials = 1;
         }
-
-        factory.configure();
 
         // try to purge all temporary data that has yet to be clean up so that the GC won't run
         // while performance is being measured

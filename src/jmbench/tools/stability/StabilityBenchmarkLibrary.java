@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -126,30 +126,35 @@ public class StabilityBenchmarkLibrary {
         if( config.checkOverflow ) {
             if( config.checkLinear )
                 operations.add( new SolverOverflow(config.randomSeed,
+                        library,
                         library.createLinearSolver(),
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,true,true) );
 
             if( config.checkLS )
                 operations.add( new SolverOverflow(config.randomSeed,
+                        library,
                         library.createLSSolver(),
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,false,true) );
 
             if( config.checkSVD )
                 operations.add( new SvdOverflow(config.randomSeed,
+                        library,
                         library.createSvd(),
                         numSvd/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,true) );
 
             if( config.checkEVD )
                 operations.add( new EigSymmOverflow(config.randomSeed,
+                        library,
                         library.createSymmEigen(),
                         numSvd/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,true) );
 
             if( config.checkSymInv )
                 operations.add( new InvSymmOverflow(config.randomSeed,
+                        library,
                         library.createSymmInverse(),
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,true) );
@@ -158,30 +163,35 @@ public class StabilityBenchmarkLibrary {
         if( config.checkUnderflow ) {
             if( config.checkLinear )
                 operations.add( new SolverOverflow(config.randomSeed,
+                        library,
                         library.createLinearSolver(),
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,true,false) );
 
             if( config.checkLS )
                 operations.add( new SolverOverflow(config.randomSeed,
+                        library,
                         library.createLSSolver(),
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,false,false) );
 
             if( config.checkSVD )
                 operations.add( new SvdOverflow(config.randomSeed,
+                        library,
                         library.createSvd(),
                         numSvd/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,false) );
 
             if( config.checkEVD )
                 operations.add( new EigSymmOverflow(config.randomSeed,
+                        library,
                         library.createSymmEigen(),
                         numSvd/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,false) );
 
             if( config.checkSymInv )
                 operations.add( new InvSymmOverflow(config.randomSeed,
+                        library,
                         library.createSymmInverse(),
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,false) );
@@ -190,12 +200,14 @@ public class StabilityBenchmarkLibrary {
         if( config.checkNearlySingular ) {
             if( config.checkLinear )
                 operations.add( new SolverSingular(config.randomSeed,
+                        library,
                         library.createLinearSolver(),
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,true) );
 
             if( config.checkLS )
                 operations.add( new SolverSingular(config.randomSeed,
+                        library,
                         library.createLSSolver(),
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,false) );
@@ -203,30 +215,35 @@ public class StabilityBenchmarkLibrary {
         if( config.checkAccuracy ) {
             if( config.checkLinear )
                 operations.add( new SolverAccuracy(config.randomSeed,
+                        library,
                         library.createLinearSolver(),
                         numSolve,
                         config.breakingPoint,sizeMin,sizeMax,true) );
 
             if( config.checkLS )
                 operations.add( new SolverAccuracy(config.randomSeed,
+                        library,
                         library.createLSSolver(),
                         numSolve,
                         config.breakingPoint,sizeMin,sizeMax,false) );
 
             if( config.checkSVD )
                 operations.add( new SvdAccuracy(config.randomSeed,
+                        library,
                         library.createSvd(),
                         numSvd,
                         sizeMin,sizeMax) );
 
             if( config.checkEVD )
                 operations.add( new EigSymmAccuracy(config.randomSeed,
+                        library,
                         library.createSymmEigen(),
                         numSvd,
                         sizeMin,sizeMax) );
 
             if( config.checkSymInv )
                 operations.add( new InvSymmAccuracy(config.randomSeed,
+                        library,
                         library.createSymmInverse(),
                         numSolve,
                         sizeMin,sizeMax) );
@@ -242,7 +259,7 @@ public class StabilityBenchmarkLibrary {
                 continue;
             }
 
-            System.out.println(libInfo.getNameWithVersion()+" :  Processing op: "+op.getTestName());
+            System.out.println(libInfo.getPlotName()+" :  Processing op: "+op.getTestName());
 
             StabilityTrialResults results = evaluateOperation(op);
 

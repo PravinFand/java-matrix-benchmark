@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -23,7 +23,6 @@ import cern.colt.matrix.DoubleFactory2D;
 import cern.colt.matrix.DoubleMatrix2D;
 import cern.colt.matrix.impl.DenseDoubleMatrix2D;
 import cern.colt.matrix.linalg.*;
-import jmbench.impl.MatrixLibrary;
 import jmbench.impl.wrapper.ColtBenchmarkMatrix;
 import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.interfaces.AlgorithmInterface;
@@ -43,14 +42,6 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
     public void configure() {
     }
 
-    private static abstract class MyInterface implements AlgorithmInterface
-    {
-        @Override
-        public String getName() {
-            return MatrixLibrary.COLT.getNameWithVersion();
-        }
-    }
-
     @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         DenseDoubleMatrix2D mat = new DenseDoubleMatrix2D(numRows,numCols);
@@ -68,7 +59,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new Chol();
     }
 
-    public static class Chol extends MyInterface {
+    public static class Chol implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -97,7 +88,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new LU();
     }
 
-    public static class LU extends MyInterface {
+    public static class LU implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -136,7 +127,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new SVD();
     }
 
-    public static class SVD extends MyInterface {
+    public static class SVD implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -167,7 +158,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new Eig();
     }
 
-    public static class Eig extends MyInterface {
+    public static class Eig implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -196,7 +187,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new QR();
     }
 
-    public static class QR extends MyInterface {
+    public static class QR implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -225,7 +216,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new Det();
     }
 
-    public static class Det extends MyInterface {
+    public static class Det implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -247,7 +238,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new Inv();
     }
 
-    public static class Inv extends MyInterface {
+    public static class Inv implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -275,7 +266,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new InvSymmPosDef();
     }
 
-    public static class InvSymmPosDef extends MyInterface {
+    public static class InvSymmPosDef implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -301,7 +292,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new Add();
     }
 
-    public static class Add extends MyInterface {
+    public static class Add implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -330,7 +321,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new Mult();
     }
 
-    public static class Mult extends MyInterface {
+    public static class Mult implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -358,7 +349,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new MulTranB();
     }
 
-    public static class MulTranB extends MyInterface {
+    public static class MulTranB implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -385,7 +376,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new Scale();
     }
 
-    public static class Scale extends MyInterface {
+    public static class Scale implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -418,7 +409,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new Solve();
     }
 
-    public static class Solve extends MyInterface {
+    public static class Solve implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();

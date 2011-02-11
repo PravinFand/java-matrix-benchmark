@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -40,8 +40,9 @@ public class MtjMemoryFactory implements MemoryFactory {
         return MatrixLibrary.MTJ;
     }
 
-    private static abstract class MyInterface implements MemoryProcessorInterface
-    {
+    @Override
+    public void configure() {
+        
     }
 
     @Override
@@ -59,7 +60,7 @@ public class MtjMemoryFactory implements MemoryFactory {
         return new Mult();
     }
 
-    public static class Mult extends MyInterface
+    public static class Mult implements MemoryProcessorInterface
     {
         @Override
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
@@ -78,7 +79,7 @@ public class MtjMemoryFactory implements MemoryFactory {
         return new Add();
     }
 
-    public static class Add extends MyInterface
+    public static class Add implements MemoryProcessorInterface
     {
         @Override
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
@@ -98,7 +99,7 @@ public class MtjMemoryFactory implements MemoryFactory {
         return new SolveLinear();
     }
 
-    public static class SolveLinear extends MyInterface
+    public static class SolveLinear implements MemoryProcessorInterface
     {
         @Override
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
@@ -116,7 +117,7 @@ public class MtjMemoryFactory implements MemoryFactory {
         return new SolveLS();
     }
 
-    public static class SolveLS extends MyInterface
+    public static class SolveLS implements MemoryProcessorInterface
     {
         @Override
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
@@ -134,7 +135,7 @@ public class MtjMemoryFactory implements MemoryFactory {
         return new SVD();
     }
 
-    public static class SVD extends MyInterface
+    public static class SVD implements MemoryProcessorInterface
     {
         @Override
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
@@ -167,7 +168,7 @@ public class MtjMemoryFactory implements MemoryFactory {
         return new Eig();
     }
 
-    public static class Eig extends MyInterface
+    public static class Eig implements MemoryProcessorInterface
     {
         @Override
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {

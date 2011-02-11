@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -47,8 +47,8 @@ public class MatrixLibrary implements Serializable {
     public static final MatrixLibrary COLT = new MatrixLibrary("Colt","colt","colt",AllLibraryVersion.Colt.class,true, false, 7);
     public static final MatrixLibrary PCOLT = new MatrixLibrary("PColt","parallelcolt","parallelcolt",AllLibraryVersion.PColt.class,true, false, 8);
     public static final MatrixLibrary UJMP = new MatrixLibrary("UJMP","ujmp","ujmp",AllLibraryVersion.UJMP.class,true, true, 9);
-    public static final MatrixLibrary UJMP_JAVA = new MatrixLibrary("UJMP-J","ujmp","ujmp-java",AllLibraryVersion.UJMP.class,true,false, 11);
     public static final MatrixLibrary JBLAS = new MatrixLibrary("JBLAS","jblas","jblas",AllLibraryVersion.JBLAS.class,true, true, 10);
+    public static final MatrixLibrary UJMP_JAVA = new MatrixLibrary("UJMP-J","ujmp","ujmp-java",AllLibraryVersion.UJMP.class,true,false, 11);
 
     public String plotName;
     // directory that it loads its libraries from
@@ -149,7 +149,18 @@ public class MatrixLibrary implements Serializable {
         return null;
     }
 
+    /**
+     * At runtime determines the library's version and release data. This information
+     * is then stored in the provided EvaluatonTarget.
+     *
+     * @param target Where version and date information is stored.
+     */
     public void addVersionInfo( EvaluationTarget target ) {
+        System.out.println("Adding version information by loading the jar!!!");
+        // todo don't do this!
+        loadLibraryJars();
+        // spawn a new process, serialize the version info to a file, load serialized data
+
         try {
             LibraryVersion v = versionClass.newInstance();
             target.setVersion(v.getVersionString());
@@ -160,16 +171,6 @@ public class MatrixLibrary implements Serializable {
 
         target.setVersion("VersionInfo didn't load");
         target.setModificationData("Unknown");
-    }
-
-    public String getNameWithVersion() {
-        try {
-            LibraryVersion v = versionClass.newInstance();
-            return plotName+" "+v.getVersionString();
-        } catch (InstantiationException e) {
-        } catch (IllegalAccessException e) {}
-
-        return plotName;
     }
 
     public String getPlotName() {

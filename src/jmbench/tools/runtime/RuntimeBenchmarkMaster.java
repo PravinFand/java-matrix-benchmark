@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -66,7 +66,9 @@ public class RuntimeBenchmarkMaster {
 
         processLibraries(config.getTargets(),config);
 
-        System.out.println("Total processing time = "+(System.currentTimeMillis()-startTime)/1000.0);
+        double seconds = (System.currentTimeMillis()-startTime)/1000.0;
+        double days = seconds/60.0/60.0/24.0;
+        System.out.println("Total processing time = "+seconds+" (s) or "+days+" days");
     }
 
     private void processLibraries( List<EvaluationTarget> libs, RuntimeBenchmarkConfig config ) {
@@ -75,13 +77,7 @@ public class RuntimeBenchmarkMaster {
         for( EvaluationTarget desc : libs ) {
 
             MatrixLibrary lib = MatrixLibrary.lookup(desc.getLibName());
-            // TODO is loading these library's into memory going to cause a conflict if
-            // they reference each other and have different versions?  Maybe launch and application
-            // to get this information
-            
-            // load the library into memory so that information (such as version)
-            // which requires the library can be loaded.
-            lib.loadLibraryJars();
+
             lib.addVersionInfo( desc );
 
             String libOutputDir = directorySave+"/"+lib.getSaveDirName();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -24,5 +24,4 @@ package jmbench.interfaces;
  */
 public interface AlgorithmInterface extends MatrixProcessorInterface {
 
-    public String getName();
 }

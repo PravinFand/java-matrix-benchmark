@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -19,6 +19,7 @@
 
 package jmbench.tools.stability.tests;
 
+import jmbench.interfaces.StabilityFactory;
 import jmbench.interfaces.StabilityOperationInterface;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityBenchmark;
@@ -37,9 +38,9 @@ public class InvSymmOverflow extends OverflowTestBase {
     protected volatile DenseMatrix64F I_found;
     protected volatile DenseMatrix64F I;
 
-    public InvSymmOverflow(long randomSeed, StabilityOperationInterface operation, int totalTrials,
+    public InvSymmOverflow(long randomSeed, StabilityFactory factory, StabilityOperationInterface operation, int totalTrials,
                            double breakingPoint, int minLength, int maxLength, boolean overflow) {
-        super(randomSeed, operation, totalTrials, breakingPoint, minLength, maxLength, overflow);
+        super(randomSeed, factory , operation, totalTrials, breakingPoint, minLength, maxLength, overflow);
     }
 
     public InvSymmOverflow() {

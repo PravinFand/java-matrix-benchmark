@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2009-2011, Peter Abeles. All Rights Reserved.
  *
  * This file is part of JMatrixBenchmark.
  *
@@ -25,7 +25,6 @@ import cern.colt.matrix.tdouble.algo.DenseDoubleAlgebra;
 import cern.colt.matrix.tdouble.algo.decomposition.*;
 import cern.colt.matrix.tdouble.impl.DenseDoubleMatrix2D;
 import cern.jet.math.tdouble.DoubleFunctions;
-import jmbench.impl.MatrixLibrary;
 import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.impl.wrapper.PColtBenchmarkMatrix;
 import jmbench.interfaces.AlgorithmInterface;
@@ -55,21 +54,13 @@ public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new PColtBenchmarkMatrix((DoubleMatrix2D)matrix);
     }
 
-    private static abstract class MyInterface implements AlgorithmInterface
-    {
-        @Override
-        public String getName() {
-            return MatrixLibrary.PCOLT.getNameWithVersion();
-        }
-    }
-
     @Override
     public AlgorithmInterface chol() {
         return new Chol();
     }
 
     // DenseDoubleAlgebra
-    public static class Chol extends MyInterface {
+    public static class Chol implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix2D matA = inputs[0].getOriginal();
@@ -98,7 +89,7 @@ public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new LU();
     }
 
-    public static class LU extends MyInterface {
+    public static class LU implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix2D matA = inputs[0].getOriginal();
@@ -139,7 +130,7 @@ public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new SVD();
     }
 
-    public static class SVD extends MyInterface {
+    public static class SVD implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix2D matA = inputs[0].getOriginal();
@@ -173,7 +164,7 @@ public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new Eig();
     }
 
-   public static class Eig extends MyInterface {
+   public static class Eig implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix2D matA = inputs[0].getOriginal();
@@ -203,7 +194,7 @@ public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new QR();
     }
 
-    public static class QR extends MyInterface {
+    public static class QR implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix2D matA = inputs[0].getOriginal();
@@ -234,7 +225,7 @@ public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new Det();
     }
 
-    public static class Det extends MyInterface {
+    public static class Det implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix2D matA = inputs[0].getOriginal();
@@ -256,7 +247,7 @@ public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new Inv();
     }
 
-    public static class Inv extends MyInterface {
+    public static class Inv implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix2D matA = inputs[0].getOriginal();
@@ -283,7 +274,7 @@ public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
     }
 
     // DenseDoubleAlgebra
-    public static class InvSymmPosDef extends MyInterface {
+    public static class InvSymmPosDef implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix2D matA = inputs[0].getOriginal();
@@ -313,7 +304,7 @@ public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new Add();
     }
 
-    public static class Add extends MyInterface {
+    public static class Add implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix2D matA = inputs[0].getOriginal();
@@ -340,7 +331,7 @@ public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new Mult();
     }
 
-    public static class Mult extends MyInterface {
+    public static class Mult implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix2D matA = inputs[0].getOriginal();
@@ -366,7 +357,7 @@ public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new MulTranB();
     }
 
-    public static class MulTranB extends MyInterface {
+    public static class MulTranB implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix2D matA = inputs[0].getOriginal();
@@ -391,7 +382,7 @@ public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new Scale();
     }
 
-    public static class Scale extends MyInterface {
+    public static class Scale implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix2D matA = inputs[0].getOriginal();
@@ -422,7 +413,7 @@ public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
         return new Solve();
     }
 
-    public static class Solve extends MyInterface {
+    public static class Solve implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix2D matA = inputs[0].getOriginal();
