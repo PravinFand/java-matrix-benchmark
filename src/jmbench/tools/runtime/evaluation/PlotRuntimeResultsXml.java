@@ -53,6 +53,9 @@ public class PlotRuntimeResultsXml {
     // it will only plot results which are of this size or less
     int maxMatrixSize = 0;
 
+    // should the summary plot weight the results based on how long an operation takes?
+    boolean weightedSummary=true;
+
     /**
      * Plots results from XML contained in the specified directory.
      *
@@ -114,12 +117,12 @@ public class PlotRuntimeResultsXml {
 
         }
 
-        createPlots(minMatrixSize,maxMatrixSize,directory,whichMetric, opMap);
+        createPlots(minMatrixSize,maxMatrixSize,directory,whichMetric, opMap, weightedSummary);
     }
 
     public static void createPlots( int minMatrixSize , int maxMatrixSize ,
                                     File outputDirectory , int whichMetric,
-                                    Map<String, List> opMap ) {
+                                    Map<String, List> opMap , boolean weightedSummary ) {
         List<RuntimePlotData> allResults = new ArrayList<RuntimePlotData>();
 
         RuntimeResultPlotter.Reference refType = RuntimeResultPlotter.Reference.MAX;
@@ -138,12 +141,12 @@ public class PlotRuntimeResultsXml {
 
 
             RuntimeResultPlotter.variabilityPlots(l, fileNameVar,true,false);
-            // TODO change key in the line below to plot name
+
             RuntimeResultPlotter.relativePlots(plotData, refType,null,fileNameRel,plotData.plotName,true,true);
             RuntimeResultPlotter.absolutePlots(plotData, fileNameAbs,plotData.plotName,true,false);
         }
 
-        RuntimeResultPlotter.summaryPlots(allResults,refType);
+        RuntimeResultPlotter.summaryPlots(allResults,refType,weightedSummary,outputDirectory.getPath()+"/plots",true,true);
     }
 
     /**
@@ -258,11 +261,12 @@ public class PlotRuntimeResultsXml {
         System.out.println("Creates plots from raw XML file results.  The plots can be generated from " +
                 "different statistical metric and filtered based on library features.");
         System.out.println();
-        System.out.println("--PlotNative=<true|false>    : Turns plotting results from native libraries on and off.");
-        System.out.println("--Metric=<?>                 : Changes the metric that is plotted.");
-        System.out.println("                             : MAX,MIN,STDEV,MEDIAN,MEAN");
-        System.out.println("--Display=<true|false>       : If true some results will be displayed.");
-        System.out.println("--Size=min:max               : Only plot data from matrix size min to max inclusive.");
+        System.out.println("--PlotNative=<true|false>      : Turns plotting results from native libraries on and off.");
+        System.out.println("--Metric=<?>                   : Changes the metric that is plotted.");
+        System.out.println("                               : MAX,MIN,STDEV,MEDIAN,MEAN");
+        System.out.println("--Display=<true|false>         : If true some results will be displayed.");
+        System.out.println("--Size=min:max                 : Only plot data from matrix size min to max inclusive.");
+        System.out.println("--WeightedSummary=<true|false> : Should the summary chart weight operations more if they take longer?");
         System.out.println();
         System.out.println("The last argument is the directory that contains the results.  If this is not specified");
         System.out.println("then the most recently modified directory is used.");
@@ -278,6 +282,8 @@ public class PlotRuntimeResultsXml {
 
         int maxSize = 0;
         int minSize = 0;
+
+        boolean weightedSummary = true;
 
         for( int i = 0; i < args.length; i++ ) {
             String splits[] = args[i].split("=");
@@ -317,6 +323,10 @@ public class PlotRuntimeResultsXml {
                 minSize = Integer.parseInt(rangeStr[0]);
                 maxSize = Integer.parseInt(rangeStr[1]);
                 System.out.println("Set plot min/max matrix size to: "+minSize+" "+maxSize);
+            } else if( flag.compareTo("WeightedSummary") == 0 ) {
+                if( splits.length != 2 ) {failed = true; break;}
+                weightedSummary = Boolean.parseBoolean(splits[1]);
+                System.out.println("WeightedSummary = "+weightedSummary);
             } else if( flag.compareTo("Display") ==0 ) {
                 if( splits.length != 2 ) {failed = true; break;}
                 displayResults = Boolean.parseBoolean(splits[1]);
@@ -344,6 +354,7 @@ public class PlotRuntimeResultsXml {
         p.displayResults = displayResults;
         p.minMatrixSize = minSize;
         p.maxMatrixSize = maxSize;
+        p.weightedSummary = weightedSummary;
         p.plot(metric);
     }
 }

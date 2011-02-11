@@ -1,5 +1,3 @@
-- weight summary plot
-
 - get library version by spawning a new process
   * RuntimeBenchmarkMaster.processLibraries
 

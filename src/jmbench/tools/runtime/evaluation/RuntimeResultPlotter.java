@@ -35,11 +35,36 @@ import java.util.*;
  */
 public class RuntimeResultPlotter {
 
-    public static void summaryPlots( List<RuntimePlotData> allResults , Reference referenceType ) {
+    public static void summaryPlots( List<RuntimePlotData> allResults , Reference referenceType , boolean weighted ,
+                                     String outputDirectory ,
+                                     boolean savePDF ,
+                                     boolean showWindow ) {
 
-        Map<String,List<Double>> overallResults = new HashMap<String,List<Double>>();
-        Map<String,List<Double>> largeResults = new HashMap<String,List<Double>>();
-        Map<String,List<Double>> smallResults = new HashMap<String,List<Double>>();
+        Map<String,List<OverallData>> overallResults = new HashMap<String,List<OverallData>>();
+
+        // find the number of matrices sizes tested
+        int numMatrices = 0;
+        for( RuntimePlotData opResults : allResults ) {
+            if( opResults.matrixSize.length > numMatrices )
+                numMatrices = opResults.matrixSize.length;
+        }
+
+        // find the relative speed of each operation for each matrix size so that they can be weighted
+        double slowestOperationByMatrix[] = new double[ numMatrices ];
+        for( RuntimePlotData opResults : allResults ) {
+            for( int i = 0; i < numMatrices; i++ ) {
+                double bestSpeed = opResults.findBest(i);
+
+                if( Double.isNaN(bestSpeed) )
+                    continue;
+
+                // convert from ops/sec to sec/op
+                bestSpeed = 1.0/bestSpeed;
+
+                if( bestSpeed > slowestOperationByMatrix[i] )
+                    slowestOperationByMatrix[i] = bestSpeed;
+            }
+        }
 
         for( RuntimePlotData opResults : allResults ) {
             int numMatrixSizes = opResults.matrixSize.length;
@@ -51,52 +76,97 @@ public class RuntimeResultPlotter {
 
 
             for( RuntimePlotData.SourceResults r : opResults.libraries ) {
-                List<Double> libOverall;
-                List<Double> libLarge;
-                List<Double> libSmall;
+                List<OverallData> libOverall;
 
                 if( !overallResults.containsKey(r.label)) {
-                    libOverall = new ArrayList<Double>();
-                    libLarge = new ArrayList<Double>();
-                    libSmall = new ArrayList<Double>();
+                    libOverall = new ArrayList<OverallData>();
                     overallResults.put(r.label,libOverall);
-                    largeResults.put(r.label,libLarge);
-                    smallResults.put(r.label,libSmall);
                 } else {
                     libOverall = overallResults.get(r.label);
-                    libLarge = largeResults.get(r.label);
-                    libSmall = smallResults.get(r.label);
                 }
 
                 for( int i = 0; i < r.results.length; i++ ) {
+                    // the weight is determined by how slow this operation is relative to the slowest
+                    double weight = (1.0/refValue[i])/slowestOperationByMatrix[i];
+
                     double a = r.getResult(i);
                     if( !Double.isNaN(a) ) {
-                        libOverall.add(a/refValue[i]);
-                        if( i <= 2 )
-                            libSmall.add(a/refValue[i]);
-                        if( i >= r.results.length-4 )
-                            libLarge.add(a/refValue[i]);
+                        // its relative ranking compared to other libraries in this operation
+                        double score = a/refValue[i];
+                        libOverall.add(new OverallData(weight,score,i));
                     } else {
-                        libOverall.add(0.0);
-                        if( i <= 2 )
-                            libSmall.add(0.0);
-                        if( i >= r.results.length-4 )
-                            libLarge.add(0.0);
+                        libOverall.add(new OverallData(weight,0.0,i));
                     }
                 }
             }
         }
 
-        SummaryWhiskerPlot plot = new SummaryWhiskerPlot();
-        for( String libName : overallResults.keySet() ) {
-            List<Double> overall = overallResults.get(libName);
-            List<Double> large = largeResults.get(libName);
-            List<Double> small = smallResults.get(libName);
+        // If set to one results will not be weighted
+        int maxSamples = weighted ? 100 : 1;
 
-            plot.addLibrary(libName,overall,large,small);
+        String title = "Summary of Runtime Performance";
+
+        if( weighted ) {
+            title += "\n Weighted by Operation Time";
         }
 
-        plot.displayWindow(800,400);
+        SummaryWhiskerPlot plot = new SummaryWhiskerPlot(title);
+        for( String libName : overallResults.keySet() ) {
+            List<OverallData> libOverall = overallResults.get(libName);
+
+
+            plot.addLibrary(libName,
+                    addSample(libOverall,0,numMatrices,maxSamples),
+                    addSample(libOverall,numMatrices-3,numMatrices,maxSamples),
+                    addSample(libOverall,0,3,maxSamples));
+        }
+
+        if( showWindow )
+            plot.displayWindow(1000,450);
+
+        if( savePDF )
+            plot.savePDF(outputDirectory+"/summary.pdf",1000,450);
+    }
+
+
+    /**
+     * For each result it will add the score a number of times depending upon its weight.
+     *
+     * @param results benchmark results across all the trials.
+     * @param minIndex Only consider matrices that are this size or more.
+     * @param maxIndex Only consider matrices that are less than this size.
+     * @param maxSamples The maximum number of samples that can be added per result.
+     * @return  List containing weighted results.
+     */
+    private static List<Double> addSample( List<OverallData> results , int minIndex , int maxIndex , int maxSamples ) {
+
+        List<Double> ret = new ArrayList<Double>();
+
+        for( OverallData d : results ) {
+            if( d.matrixSize < minIndex || d.matrixSize >= maxIndex )
+                continue;
+
+            int num = (int)Math.ceil(d.weight*maxSamples);
+
+            for( int i = 0; i < num; i++ ) {
+                ret.add(d.score);
+            }
+        }
+
+        return ret;
+    }
+
+    private static class OverallData
+    {
+        double weight;
+        double score;
+        int matrixSize;
+
+        private OverallData(double weight, double score, int matrixSize) {
+            this.weight = weight;
+            this.score = score;
+            this.matrixSize = matrixSize;
+        }
     }
 
     public static void variabilityPlots( List<OperationResults> data ,

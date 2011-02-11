@@ -40,23 +40,37 @@ public class SummaryWhiskerPlot {
     DefaultBoxAndWhiskerCategoryDataset dataSet
             = new DefaultBoxAndWhiskerCategoryDataset();
 
+    String title;
+
+    public SummaryWhiskerPlot(String title) {
+        this.title = title;
+    }
+
     public void addLibrary( String name , List<Double> overall ,
                             List<Double> large , List<Double> small )
     {
-        dataSet.add(overall,"Overall",name);
+        dataSet.add(overall,"All",name);
         dataSet.add(large,"Large",name);
         dataSet.add(small,"Small",name);
     }
 
     public JFreeChart createChart() {
         JFreeChart chart = ChartFactory.createBoxAndWhiskerChart(
-                "Summary of Runtime Performance", "Matrix Size", "Relative Performance", dataSet,
+                title, "Matrix Size", "Relative Performance", dataSet,
                 true);
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
         plot.setDomainGridlinesVisible(true);
+        plot.setBackgroundPaint(new Color(230,230,230));
+        plot.setDomainGridlinePaint(new Color(50,50,50,50));
+        plot.setDomainGridlineStroke(new BasicStroke(78f));
+//        BoxAndWhiskerRenderer r = (BoxAndWhiskerRenderer)plot.getRenderer();
+//
+//        r.setMedianVisible(false);
 
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
+
         return chart;
     }
 
@@ -71,10 +85,18 @@ public class SummaryWhiskerPlot {
         window.setVisible(true);
     }
 
+    public void saveJpeg( String fileName , int width , int height ) {
+        UtilPlotPdf.saveAsJpeg(createChart(),fileName,width,height,0.95);
+    }
+
+    public void savePDF( String fileName , int width , int height ) {
+        UtilPlotPdf.saveAsPdf(createChart(),fileName,width,height);
+    }
+
     public static void main( String args[] ) {
         Random rand = new Random(2344);
 
-        SummaryWhiskerPlot plot = new SummaryWhiskerPlot();
+        SummaryWhiskerPlot plot = new SummaryWhiskerPlot("Test Summary");
 
         for( int i = 0; i < 3; i++ ) {
             List<Double> overall = new ArrayList<Double>();
@@ -90,7 +112,7 @@ public class SummaryWhiskerPlot {
             plot.addLibrary("Lib "+i,overall,large,small);
         }
 
-        plot.displayWindow(400,300);
+        plot.displayWindow(600,350);
     }
 
 }

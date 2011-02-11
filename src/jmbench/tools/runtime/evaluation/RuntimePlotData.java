@@ -42,6 +42,26 @@ public class RuntimePlotData {
         this.matrixSize = matrixSize;
     }
 
+    /**
+     * Returns the best score across all libraries for this matrix size
+     *
+     * @param matrixIndex which matrix.
+     * @return the best score
+     */
+    public double findBest( int matrixIndex ) {
+        double best = -1;
+
+        for( SourceResults s : libraries ) {
+            double v = s.getResult(matrixIndex);
+
+            if( !Double.isNaN(v) && best < v ) {
+                best = v;
+            }
+        }
+
+        return best;
+    }
+
     public void addLibrary( String label , double[] results , int plotLineType ) {
         SourceResults s = new SourceResults();
         s.plotLineType = plotLineType;
