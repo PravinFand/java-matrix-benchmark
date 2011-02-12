@@ -20,6 +20,7 @@
 package jmbench.impl;
 
 import jmbench.tools.EvaluationTarget;
+import jmbench.tools.ExternalExecFunction;
 
 import java.io.File;
 import java.io.IOException;
@@ -156,21 +157,16 @@ public class MatrixLibrary implements Serializable {
      * @param target Where version and date information is stored.
      */
     public void addVersionInfo( EvaluationTarget target ) {
-        System.out.println("Adding version information by loading the jar!!!");
-        // todo don't do this!
-        loadLibraryJars();
-        // spawn a new process, serialize the version info to a file, load serialized data
+        // need to jump through extra hoops to avoiding having any of these library's in memory
+        // for the master application.  Some libraries use other libraries which might be different
+        // version.
+        ExternalExecFunction exec = new ExternalExecFunction(versionClass,listOfJarFilePaths());
 
-        try {
-            LibraryVersion v = versionClass.newInstance();
-            target.setVersion(v.getVersionString());
-            target.setModificationData(v.getReleaseDate());
-            return;
-        } catch (InstantiationException e) {
-        } catch (IllegalAccessException e) {}
+        String version = exec.call("getVersionString");
+        String date = exec.call("getReleaseDate");
 
-        target.setVersion("VersionInfo didn't load");
-        target.setModificationData("Unknown");
+        target.setVersion(version);
+        target.setModificationData(date);
     }
 
     public String getPlotName() {

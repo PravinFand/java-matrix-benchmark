@@ -127,13 +127,13 @@ public class StabilityBenchmarkConfig implements Serializable {
         config.trialsLargeSvd = 7*off;
 
         config.targets.add(ejml);
-//        config.targets.add(jama);
+        config.targets.add(jama);
         config.targets.add(ojalgo);
-//        config.targets.add(commons);
-//        config.targets.add(colt);
-//        config.targets.add(mtj);
-//        config.targets.add(pcolt);
-//        config.targets.add(ujmp);
+        config.targets.add(commons);
+        config.targets.add(colt);
+        config.targets.add(mtj);
+        config.targets.add(pcolt);
+        config.targets.add(ujmp);
         config.targets.add(jblas);
 
         config.checkAccuracy = true;
