@@ -25,7 +25,7 @@ import jmbench.tools.OutputError;
 import jmbench.tools.runtime.InputOutputGenerator;
 import jmbench.tools.stability.StabilityBenchmark;
 import org.ejml.data.DenseMatrix64F;
-import org.ejml.data.SimpleMatrix;
+import org.ejml.simple.SimpleMatrix;
 
 import java.util.Random;
 

@@ -75,9 +75,6 @@
   </component>
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
-    <excludeFromCompile>
-      <file url="file://$PROJECT_DIR$/../../ejml/trunk/test/org/ejml/alg/dense/decomposition/eig/symm/TestSymmetricQrAlgorithm.java" />
-    </excludeFromCompile>
     <resourceExtensions>
       <entry name=".+\.(properties|xml|html|dtd|tld)" />
       <entry name=".+\.(gif|png|jpeg|jpg)" />

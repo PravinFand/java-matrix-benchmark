@@ -62,6 +62,23 @@ public class RuntimePlotData {
         return best;
     }
 
+    /**
+     * Returns how many different matrix sizes have results.
+     */
+    public int getNumMatrices() {
+        int max = 0;
+
+        for( SourceResults s : libraries ) {
+            for( int i = max; i < matrixSize.length; i++ ) {
+                if( Double.isNaN(s.getResult(i)))
+                    break;
+                max = i;
+            }
+        }
+
+        return max;
+    }
+
     public void addLibrary( String label , double[] results , int plotLineType ) {
         SourceResults s = new SourceResults();
         s.plotLineType = plotLineType;

@@ -24,9 +24,9 @@ import jmbench.interfaces.StabilityOperationInterface;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityBenchmark;
 import org.ejml.data.DenseMatrix64F;
-import org.ejml.data.SimpleMatrix;
 import org.ejml.ops.MatrixFeatures;
 import org.ejml.ops.RandomMatrices;
+import org.ejml.simple.SimpleMatrix;
 
 import java.util.Arrays;
 

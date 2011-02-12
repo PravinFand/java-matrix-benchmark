@@ -74,6 +74,8 @@ public class RuntimeResultPlotter {
             double refValue[] = new double[ numMatrixSizes ];
             computeReferenceValues(opResults, referenceType, -1, numMatrixSizes, refValue);
 
+            // find the largest matrix with results in it
+            int maxValidMatrix = opResults.getNumMatrices();
 
             for( RuntimePlotData.SourceResults r : opResults.libraries ) {
                 List<OverallData> libOverall;
@@ -85,7 +87,7 @@ public class RuntimeResultPlotter {
                     libOverall = overallResults.get(r.label);
                 }
 
-                for( int i = 0; i < r.results.length; i++ ) {
+                for( int i = 0; i < maxValidMatrix; i++ ) {
                     // the weight is determined by how slow this operation is relative to the slowest
                     double weight = (1.0/refValue[i])/slowestOperationByMatrix[i];
 

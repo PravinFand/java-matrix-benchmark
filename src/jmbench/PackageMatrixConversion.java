@@ -24,7 +24,6 @@ import no.uib.cipr.matrix.DenseMatrix;
 import org.apache.commons.math.linear.Array2DRowRealMatrix;
 import org.apache.commons.math.linear.BlockRealMatrix;
 import org.ejml.data.DenseMatrix64F;
-import org.jscience.mathematics.vector.Float64Matrix;
 import org.ojalgo.matrix.store.PhysicalStore;
 
 
@@ -45,17 +44,18 @@ public class PackageMatrixConversion {
         }
     }
 
-    public static void convertToEjml( Float64Matrix src , DenseMatrix64F dst )
-    {
-        if( src.getNumberOfRows() != dst.getNumRows() || src.getNumberOfColumns() != dst.getNumCols() )
-            throw new IllegalArgumentException("Matrices are not the same shape");
-
-        for( int y = 0; y < src.getNumberOfRows(); y++ ) {
-            for( int x = 0; x < src.getNumberOfColumns(); x++ ) {
-                dst.set(y,x,src.get(y,x).doubleValue());
-            }
-        }
-    }
+    // JScience
+//    public static void convertToEjml( Float64Matrix src , DenseMatrix64F dst )
+//    {
+//        if( src.getNumberOfRows() != dst.getNumRows() || src.getNumberOfColumns() != dst.getNumCols() )
+//            throw new IllegalArgumentException("Matrices are not the same shape");
+//
+//        for( int y = 0; y < src.getNumberOfRows(); y++ ) {
+//            for( int x = 0; x < src.getNumberOfColumns(); x++ ) {
+//                dst.set(y,x,src.get(y,x).doubleValue());
+//            }
+//        }
+//    }
 
     public static void convertToEjml( BlockRealMatrix src , DenseMatrix64F dst )
     {
