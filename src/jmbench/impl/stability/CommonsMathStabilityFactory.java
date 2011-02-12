@@ -19,7 +19,6 @@
 
 package jmbench.impl.stability;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.interfaces.StabilityFactory;
 import jmbench.interfaces.StabilityOperationInterface;
 import org.apache.commons.math.linear.*;
@@ -34,11 +33,6 @@ import static jmbench.impl.runtime.CommonsMathAlgorithmFactory.realToEjml;
  * @author Peter Abeles
  */
 public class CommonsMathStabilityFactory implements StabilityFactory {
-
-    @Override
-    public MatrixLibrary getLibrary() {
-        return MatrixLibrary.CM;
-    }
 
     @Override
     public void configure() {

@@ -19,10 +19,9 @@
 
 package jmbench.tools.memory;
 
-import jmbench.impl.MatrixLibrary;
-import jmbench.impl.memory.EjmlMemoryFactory;
 import jmbench.interfaces.MemoryFactory;
 import jmbench.interfaces.MemoryProcessorInterface;
+import jmbench.tools.EvaluationTarget;
 import jmbench.tools.runtime.InputOutputGenerator;
 import jmbench.tools.runtime.generator.*;
 import pja.util.UtilXmlSerialization;
@@ -42,7 +41,7 @@ public class MemoryBenchmarkLibrary {
 
     Random rand;
 
-    MatrixLibrary libInfo;
+    String libraryName;
     MemoryConfig config;
 
     MemoryBenchmarkTools tool = new MemoryBenchmarkTools();
@@ -60,22 +59,20 @@ public class MemoryBenchmarkLibrary {
     private MemoryFactory factory;
 
     public MemoryBenchmarkLibrary( MemoryConfig config ,
-                                   MemoryFactory factory ,
-                                   List<String> jarNames ,
+                                   EvaluationTarget desc,
                                    String directorySave ,
-                                   long memoryOverhead ) {
+                                   long memoryOverhead )
+    {
         this.rand = new Random(config.seed);
         this.config = config;
         this.directorySave = directorySave;
-        this.libInfo = factory.getLibraryInfo();
+        this.libraryName = desc.getLibName();
         this.memoryOverhead = memoryOverhead;
-        this.factory = factory;
+        this.factory = desc.loadAlgorithmFactory();
 
-        tool.setJars(jarNames);
+        tool.setJars(desc.getJarFiles());
         tool.setVerbose(false);
         tool.sampleType = config.memorySampleType;
-
-        String libraryName = factory.getLibraryInfo().getPlotName();
 
         if( config.add )
             addOperation(config, new AddGenerator(), factory.add(), "add", libraryName, 0 , config.matrixSize);
@@ -115,7 +112,7 @@ public class MemoryBenchmarkLibrary {
         while( !activeTasks.isEmpty() ) {
             Task task = activeTasks.get( rand.nextInt(activeTasks.size()));
 
-            System.out.println(libInfo.getPlotName()+" operation "+task.results.nameOp);
+            System.out.println(libraryName+" operation "+task.results.nameOp);
 
             boolean remove = false;
 
@@ -240,8 +237,7 @@ public class MemoryBenchmarkLibrary {
     public static void main( String []args ) {
         MemoryConfig config = MemoryConfig.createDefault();
 
-        MemoryBenchmarkLibrary benchmark = new MemoryBenchmarkLibrary(config,
-                new EjmlMemoryFactory(),null,null,0);
+        MemoryBenchmarkLibrary benchmark = new MemoryBenchmarkLibrary(config,MemoryConfig.ejml,null,0);
 
         benchmark.process();
     }

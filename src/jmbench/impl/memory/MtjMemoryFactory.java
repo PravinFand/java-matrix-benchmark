@@ -19,7 +19,6 @@
 
 package jmbench.impl.memory;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.impl.wrapper.MtjBenchmarkMatrix;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
@@ -33,12 +32,6 @@ import no.uib.cipr.matrix.NotConvergedException;
  * @author Peter Abeles
  */
 public class MtjMemoryFactory implements MemoryFactory {
-
-
-    @Override
-    public MatrixLibrary getLibraryInfo() {
-        return MatrixLibrary.MTJ;
-    }
 
     @Override
     public void configure() {

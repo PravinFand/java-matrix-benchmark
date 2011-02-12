@@ -20,9 +20,9 @@
 package jmbench.tools.stability;
 
 import jmbench.impl.MatrixLibrary;
-import jmbench.interfaces.StabilityFactory;
 import jmbench.tools.EvaluationTarget;
 import jmbench.tools.SystemInfo;
+import jmbench.tools.memory.MemoryBenchmark;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 import org.ejml.ops.NormOps;
@@ -68,6 +68,8 @@ public class StabilityBenchmark {
             throw new RuntimeException(e);
         }
 
+        MemoryBenchmark.saveLibraryDescriptions(directorySave,config.targets);
+
         long timeBefore = System.currentTimeMillis();
         processLibraries(config.targets,config);
         long timeAfter = System.currentTimeMillis();
@@ -78,8 +80,6 @@ public class StabilityBenchmark {
 
     private void processLibraries( List<EvaluationTarget> libs, StabilityBenchmarkConfig config ) {
 
-        saveLibraryDescriptions(libs);
-
         benchmarkLibraries(libs, config, "small",config.smallSizeMin,config.smallSizeMax,
                     config.trialsSmallSolve,config.trialsSmallSvd );
 
@@ -88,22 +88,6 @@ public class StabilityBenchmark {
 
         benchmarkLibraries(libs, config, "large",config.largeSizeMin,config.largeSizeMax,
                 config.trialsLargeSolve,config.trialsLargeSvd );
-    }
-
-    /**
-     * Save the description so that where this came from can be easily extracted
-     */
-    private void saveLibraryDescriptions( List<EvaluationTarget> libs )
-    {
-        for( EvaluationTarget desc : libs ) {
-            try {
-                MatrixLibrary lib = MatrixLibrary.lookup(desc.getLibName());
-                String outputFile = directorySave+"/"+lib.getSaveDirName()+".xml";
-                UtilXmlSerialization.serializeXml(desc,outputFile);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     private void benchmarkLibraries(List<EvaluationTarget> libs,
@@ -117,12 +101,8 @@ public class StabilityBenchmark {
             MatrixLibrary lib = MatrixLibrary.lookup(desc.getLibName());
             String libOutputDir = directorySave+"/"+dirSize+"/"+lib.getSaveDirName();
 
-            // run the benchmark
-            StabilityFactory l = desc.loadAlgorithmFactory();
-
             StabilityBenchmarkLibrary benchmark = new StabilityBenchmarkLibrary(
-                    libOutputDir,config,l,
-                    desc.getJarFiles(),sizeMin,sizeMax,
+                    libOutputDir,config,desc,sizeMin,sizeMax,
                     numTrialsSolve,numTrialsSvd);
 
             benchmark.process();

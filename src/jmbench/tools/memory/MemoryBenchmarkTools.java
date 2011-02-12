@@ -464,7 +464,9 @@ public class MemoryBenchmarkTools {
             int val = error.read();
             if( val < 0 ) break;
 
-            System.out.print(Character.toChars(val));
+            char []message = Character.toChars(val);
+            System.out.print(message);
+            errorStream.print(message);
         }
     }
 

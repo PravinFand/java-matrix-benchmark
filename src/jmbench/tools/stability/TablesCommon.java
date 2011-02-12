@@ -19,6 +19,7 @@
 
 package jmbench.tools.stability;
 
+import jmbench.impl.MatrixLibrary;
 import pja.util.UtilXmlSerialization;
 
 import java.io.File;
@@ -98,8 +99,10 @@ public abstract class TablesCommon {
             List<StabilityTrialResults> l = e.getValue();
 
             for( StabilityTrialResults s : l ) {
-                if( !names.contains(s.library.getPlotName()) )
-                    names.add(s.library.getPlotName());
+                MatrixLibrary lib = MatrixLibrary.lookup(s.getLibraryName());
+                
+                if( !names.contains(lib.getPlotName()) )
+                    names.add(lib.getPlotName());
             }
         }
 
@@ -109,7 +112,9 @@ public abstract class TablesCommon {
     protected Data findByName(List<StabilityTrialResults> l , String name )
     {
         for( StabilityTrialResults s : l ) {
-            if( name.compareTo(s.getLibrary().getPlotName()) == 0 ) {
+            MatrixLibrary lib = MatrixLibrary.lookup(s.getLibraryName());
+
+            if( name.compareTo(lib.getPlotName()) == 0 ) {
                 Data d = new Data();
 
                 List<Double> breaking = s.getBreakingPoints();

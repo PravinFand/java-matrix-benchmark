@@ -19,7 +19,6 @@
 
 package jmbench.impl.stability;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.interfaces.StabilityFactory;
 import jmbench.interfaces.StabilityOperationInterface;
 import org.ejml.alg.dense.decomposition.DecompositionFactory;
@@ -35,12 +34,6 @@ import org.ejml.ops.EigenOps;
  * @author Peter Abeles
  */
 public class EjmlStabilityFactory implements StabilityFactory {
-
-
-    @Override
-    public MatrixLibrary getLibrary() {
-        return MatrixLibrary.EJML;
-    }
 
     @Override
     public void configure() {
@@ -85,7 +78,8 @@ public class EjmlStabilityFactory implements StabilityFactory {
             DenseMatrix64F A = inputs[0];
 
             SingularValueDecomposition<DenseMatrix64F> svd = DecompositionFactory.svd(A.numRows,A.numCols);
-            if( !svd.decompose(A) )
+
+            if( !DecompositionFactory.decomposeSafe(svd,A) )
                 return null;
 
             DenseMatrix64F U = svd.getU(false);
@@ -110,7 +104,7 @@ public class EjmlStabilityFactory implements StabilityFactory {
 
             EigenDecomposition<DenseMatrix64F> eig = EigenOps.decompositionSymmetric(A.numCols,true);
 
-            if( !eig.decompose(A) )
+            if( !DecompositionFactory.decomposeSafe(eig,A) )
                 return null;
 
             DenseMatrix64F D = EigenOps.createMatrixD(eig);

@@ -22,7 +22,6 @@ package jmbench.impl.memory;
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 import Jama.SingularValueDecomposition;
-import jmbench.impl.MatrixLibrary;
 import jmbench.impl.wrapper.JavaBenchmarkMatrix;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
@@ -33,13 +32,7 @@ import jmbench.interfaces.MemoryProcessorInterface;
  * @author Peter Abeles
  */
 public class JamaMemoryFactory implements MemoryFactory {
-
-
-    @Override
-    public MatrixLibrary getLibraryInfo() {
-        return MatrixLibrary.JAMA;
-    }
-
+    
     @Override
     public void configure() {
         

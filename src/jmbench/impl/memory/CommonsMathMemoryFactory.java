@@ -19,7 +19,6 @@
 
 package jmbench.impl.memory;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.impl.wrapper.CommonsMathBenchmarkMatrix;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
@@ -32,12 +31,6 @@ import org.apache.commons.math.util.MathUtils;
  * @author Peter Abeles
  */
 public class CommonsMathMemoryFactory implements MemoryFactory {
-
-
-    @Override
-    public MatrixLibrary getLibraryInfo() {
-        return MatrixLibrary.CM;
-    }
 
     @Override
     public void configure() {

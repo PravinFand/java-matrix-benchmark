@@ -19,8 +19,6 @@
 
 package jmbench.interfaces;
 
-import jmbench.impl.MatrixLibrary;
-
 import java.io.Serializable;
 
 
@@ -32,8 +30,6 @@ import java.io.Serializable;
  * @author Peter Abeles
  */
 public interface MemoryFactory extends LibraryFactory, MatrixFactory, Serializable {
-
-    public MatrixLibrary getLibraryInfo();
 
     public MemoryProcessorInterface mult();
 

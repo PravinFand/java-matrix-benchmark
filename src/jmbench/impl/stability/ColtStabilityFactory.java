@@ -26,7 +26,6 @@ import cern.colt.matrix.linalg.Algebra;
 import cern.colt.matrix.linalg.CholeskyDecomposition;
 import cern.colt.matrix.linalg.EigenvalueDecomposition;
 import cern.colt.matrix.linalg.SingularValueDecomposition;
-import jmbench.impl.MatrixLibrary;
 import jmbench.interfaces.StabilityFactory;
 import jmbench.interfaces.StabilityOperationInterface;
 import org.ejml.data.DenseMatrix64F;
@@ -39,11 +38,6 @@ import static jmbench.impl.runtime.ColtAlgorithmFactory.convertToColt;
  * @author Peter Abeles
  */
 public class ColtStabilityFactory implements StabilityFactory {
-
-    @Override
-    public MatrixLibrary getLibrary() {
-        return MatrixLibrary.COLT;
-    }
 
     @Override
     public void configure() {

@@ -24,7 +24,6 @@ import cern.colt.matrix.impl.DenseDoubleMatrix2D;
 import cern.colt.matrix.linalg.Algebra;
 import cern.colt.matrix.linalg.EigenvalueDecomposition;
 import cern.colt.matrix.linalg.SingularValueDecomposition;
-import jmbench.impl.MatrixLibrary;
 import jmbench.impl.wrapper.ColtBenchmarkMatrix;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
@@ -35,12 +34,6 @@ import jmbench.interfaces.MemoryProcessorInterface;
  * @author Peter Abeles
  */
 public class ColtMemoryFactory implements MemoryFactory {
-
-
-    @Override
-    public MatrixLibrary getLibraryInfo() {
-        return MatrixLibrary.COLT;
-    }
 
     @Override
     public void configure() {

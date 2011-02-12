@@ -19,7 +19,6 @@
 
 package jmbench.impl.stability;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.interfaces.StabilityFactory;
 import jmbench.interfaces.StabilityOperationInterface;
 import org.ejml.data.DenseMatrix64F;
@@ -38,11 +37,6 @@ import static jmbench.impl.runtime.OjAlgoAlgorithmFactory.ojAlgoToEjml;
  */
 @SuppressWarnings({"unchecked"})
 public class OjAlgoStabilityFactory implements StabilityFactory {
-
-    @Override
-    public MatrixLibrary getLibrary() {
-        return MatrixLibrary.OJALGO;
-    }
 
     @Override
     public void configure() {

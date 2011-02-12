@@ -19,9 +19,9 @@
 
 package jmbench.tools.stability;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.interfaces.StabilityFactory;
 import jmbench.tools.BenchmarkTools;
+import jmbench.tools.EvaluationTarget;
 import jmbench.tools.EvaluatorSlave;
 import jmbench.tools.TestResults;
 import jmbench.tools.stability.tests.*;
@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class StabilityBenchmarkLibrary {
 
-    private StabilityFactory library;
+    private String libraryName;
     private BenchmarkTools tools;
 
     private List<StabilityTestBase> operations;
@@ -65,8 +65,7 @@ public class StabilityBenchmarkLibrary {
 
     public StabilityBenchmarkLibrary(  String outputDir ,
                                        StabilityBenchmarkConfig config ,
-                                       StabilityFactory library,
-                                       List<String> jarNames ,
+                                       EvaluationTarget target,
                                        int sizeMin ,
                                        int sizeMax ,
                                        int numSolve ,
@@ -74,7 +73,7 @@ public class StabilityBenchmarkLibrary {
 
         this.directorySave = outputDir;
 
-        tools = new BenchmarkTools(1,config.baseMemory,config.scaleMemory,jarNames);
+        tools = new BenchmarkTools(1,config.baseMemory,config.scaleMemory,target.getJarFiles());
         tools.setFrozenDefaultTime(config.maxProcessingTime);
 
         if( directorySave != null ) {
@@ -83,15 +82,15 @@ public class StabilityBenchmarkLibrary {
         }
 
         this.config = config;
-        this.library = library;
-
+        this.libraryName = target.getLibName();
+        
         this.sizeMin = sizeMin;
         this.sizeMax = sizeMax;
 
         this.numSolve = numSolve;
         this.numSvd = numSvd;
 
-        createOperationsList(library);
+        createOperationsList((StabilityFactory)target.loadAlgorithmFactory());
     }
 
     private void setupOutputDirectory() {
@@ -251,7 +250,7 @@ public class StabilityBenchmarkLibrary {
     }
 
     public void process() {
-        MatrixLibrary libInfo = library.getLibrary();
+//        MatrixLibrary libInfo = library.getLibrary();
 
         for( StabilityTestBase op : operations ) {
             if( op.getOperation() == null ) {
@@ -259,7 +258,7 @@ public class StabilityBenchmarkLibrary {
                 continue;
             }
 
-            System.out.println(libInfo.getPlotName()+" :  Processing op: "+op.getTestName());
+            System.out.println(libraryName+" :  Processing op: "+op.getTestName());
 
             StabilityTrialResults results = evaluateOperation(op);
 
@@ -271,7 +270,7 @@ public class StabilityBenchmarkLibrary {
             }
             // add environmental information for debugging later on
             results.durationMilli = tools.getDurationMilli();
-            results.library = libInfo;
+            results.libraryName = libraryName;
             results.benchmarkName = op.getTestName();
             results.memoryBytes = slaveMemoryMegaBytes;
 

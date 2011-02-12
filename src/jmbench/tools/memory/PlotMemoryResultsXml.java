@@ -39,6 +39,9 @@ public class PlotMemoryResultsXml {
     boolean displayResults = true;
     boolean plotFailed = false;
 
+    // specifies which metric is used to compare libraries.  1.0 = max 0.0 = min
+    double scoreFrac = 0.0;
+
     public PlotMemoryResultsXml( String dir ) {
         directory = new File(dir);
 
@@ -126,7 +129,7 @@ public class PlotMemoryResultsXml {
 
         for( MemoryResults m : l ) {
             if( !m.results.isEmpty() && (plotFailed || m.numFailed == 0) ) {
-                long d = m.getScore(1.0);
+                long d = m.getScore(scoreFrac);
                 if( d < Long.MAX_VALUE && max < d )
                     max = d;
             }
@@ -138,7 +141,7 @@ public class PlotMemoryResultsXml {
             MemoryResults m = l.get(i);
 
             if( !m.results.isEmpty() && (plotFailed || m.numFailed == 0) ) {
-                long val = m.getScore(1.0);
+                long val = m.getScore(scoreFrac);
 
                 if( val == Long.MAX_VALUE || val == 0)
                     continue;

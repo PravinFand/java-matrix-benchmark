@@ -54,7 +54,7 @@ public class MemoryResults implements Serializable {
 
         long min = results.get(0);
         long max = results.get(results.size()-1);
-        System.out.printf(" max %6.2f  spread %5.2f\n",(max/1024/1024.0),(100.0*(max-min)/min));
+        System.out.printf(" min %6.2f max %6.2f  spread %5.2f\n",(min/1024/1024.0),(max/1024/1024.0),(100.0*(max-min)/min));
     }
 
     public long getScore( double frac ) {

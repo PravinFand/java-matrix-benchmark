@@ -22,7 +22,6 @@ package jmbench.impl.stability;
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 import Jama.SingularValueDecomposition;
-import jmbench.impl.MatrixLibrary;
 import jmbench.interfaces.StabilityFactory;
 import jmbench.interfaces.StabilityOperationInterface;
 import org.ejml.data.DenseMatrix64F;
@@ -35,12 +34,7 @@ import static jmbench.impl.runtime.JamaAlgorithmFactory.jamaToEjml;
  * @author Peter Abeles
  */
 public class JamaStabilityFactory implements StabilityFactory {
-
-    @Override
-    public MatrixLibrary getLibrary() {
-        return MatrixLibrary.JAMA;
-    }
-
+    
     @Override
     public void configure() {
         

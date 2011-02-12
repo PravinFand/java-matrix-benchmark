@@ -25,7 +25,6 @@ import cern.colt.matrix.tdouble.algo.DenseDoubleAlgebra;
 import cern.colt.matrix.tdouble.algo.decomposition.DenseDoubleCholeskyDecomposition;
 import cern.colt.matrix.tdouble.algo.decomposition.DenseDoubleEigenvalueDecomposition;
 import cern.colt.matrix.tdouble.algo.decomposition.DenseDoubleSingularValueDecomposition;
-import jmbench.impl.MatrixLibrary;
 import jmbench.interfaces.StabilityFactory;
 import jmbench.interfaces.StabilityOperationInterface;
 import org.ejml.data.DenseMatrix64F;
@@ -38,11 +37,6 @@ import static jmbench.impl.runtime.PColtAlgorithmFactory.parallelColtToEjml;
  * @author Peter Abeles
  */
 public class ParallelColtStabilityFactory implements StabilityFactory {
-
-    @Override
-    public MatrixLibrary getLibrary() {
-        return MatrixLibrary.PCOLT;
-    }
 
     @Override
     public void configure() {

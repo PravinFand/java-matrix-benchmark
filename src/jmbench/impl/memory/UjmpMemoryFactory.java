@@ -19,7 +19,6 @@
 
 package jmbench.impl.memory;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.impl.wrapper.UjmpBenchmarkMatrix;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
@@ -47,11 +46,6 @@ public class UjmpMemoryFactory implements MemoryFactory {
     @Override
     public void configure() {
         UJMPSettings.setUseJBlas(useNative);
-    }
-    
-    @Override
-    public MatrixLibrary getLibraryInfo() {
-        return MatrixLibrary.UJMP;
     }
 
     @Override

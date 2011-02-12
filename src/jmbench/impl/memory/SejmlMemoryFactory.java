@@ -19,7 +19,6 @@
 
 package jmbench.impl.memory;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.impl.wrapper.SejmlBenchmarkMatrix;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
@@ -31,12 +30,6 @@ import org.ejml.simple.SimpleMatrix;
  * @author Peter Abeles
  */
 public class SejmlMemoryFactory implements MemoryFactory {
-
-
-    @Override
-    public MatrixLibrary getLibraryInfo() {
-        return MatrixLibrary.SEJML;
-    }
 
     @Override
     public void configure() {

@@ -19,7 +19,6 @@
 
 package jmbench.impl.memory;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
@@ -35,12 +34,6 @@ import org.ejml.ops.CommonOps;
  * @author Peter Abeles
  */
 public class EjmlMemoryFactory implements MemoryFactory {
-
-
-    @Override
-    public MatrixLibrary getLibraryInfo() {
-        return MatrixLibrary.EJML;
-    }
 
     @Override
     public void configure() {
@@ -145,7 +138,9 @@ public class EjmlMemoryFactory implements MemoryFactory {
 
             DenseMatrix64F U =null,V =null, S=null;
             for( int i = 0; i < numTrials; i++ ) {
-                svd.decompose(A);
+                if( !DecompositionFactory.decomposeSafe(svd,A) ) {
+                    throw new RuntimeException("SVD failed?!?");
+                }
 
                 U = svd.getU(false);
                 V = svd.getV(false);
@@ -170,7 +165,9 @@ public class EjmlMemoryFactory implements MemoryFactory {
             EigenDecomposition<DenseMatrix64F> eig = DecompositionFactory.eig(A.numRows);
             DenseMatrix64F v[] =  new DenseMatrix64F[Math.min(A.numRows,A.numCols)];
             for( int i = 0; i < numTrials; i++ ) {
-                eig.decompose(A);
+                if( !DecompositionFactory.decomposeSafe(eig,A) ) {
+                    throw new RuntimeException("SVD failed?!?");
+                }
 
                 for( int j = 0; j < v.length; j++ ) {
                     v[j] = eig.getEigenVector(j);

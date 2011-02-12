@@ -19,7 +19,6 @@
 
 package jmbench.impl.memory;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.impl.wrapper.OjAlgoBenchmarkMatrix;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
@@ -35,13 +34,7 @@ import org.ojalgo.matrix.store.PrimitiveDenseStore;
  * @author Peter Abeles
  */
 public class OjAlgoMemoryFactory implements MemoryFactory {
-
-
-    @Override
-    public MatrixLibrary getLibraryInfo() {
-        return MatrixLibrary.OJALGO;
-    }
-
+    
     @Override
     public void configure() {
         

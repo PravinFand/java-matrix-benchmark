@@ -19,7 +19,6 @@
 
 package jmbench.tools.stability;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.tools.TestResults;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class StabilityTrialResults implements TestResults {
     // A runtime exception was thrown that was not expected.
     int numUnexpectedException;
 
-    MatrixLibrary library;
+    String libraryName;
     String benchmarkName;
 
     FatalError fatalError;
@@ -148,12 +147,12 @@ public class StabilityTrialResults implements TestResults {
         this.numUnexpectedException = numUnexpectedException;
     }
 
-    public MatrixLibrary getLibrary() {
-        return library;
+    public String getLibraryName() {
+        return libraryName;
     }
 
-    public void setLibrary(MatrixLibrary library) {
-        this.library = library;
+    public void setLibraryName(String libraryName) {
+        this.libraryName = libraryName;
     }
 
     public String getBenchmarkName() {

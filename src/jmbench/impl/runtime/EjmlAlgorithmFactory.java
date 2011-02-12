@@ -65,7 +65,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
 
-            CholeskyDecomposition<DenseMatrix64F> chol = DecompositionFactory.chol(matA.numRows, false, true);
+            CholeskyDecomposition<DenseMatrix64F> chol = DecompositionFactory.chol(matA.numRows, true);
 
             DenseMatrix64F L = new DenseMatrix64F(matA.numRows,matA.numCols);
 

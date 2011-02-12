@@ -25,7 +25,6 @@ import cern.colt.matrix.tdouble.algo.decomposition.DenseDoubleEigenvalueDecompos
 import cern.colt.matrix.tdouble.algo.decomposition.DenseDoubleSingularValueDecomposition;
 import cern.colt.matrix.tdouble.impl.DenseDoubleMatrix2D;
 import cern.jet.math.tdouble.DoubleFunctions;
-import jmbench.impl.MatrixLibrary;
 import jmbench.impl.wrapper.PColtBenchmarkMatrix;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
@@ -36,12 +35,6 @@ import jmbench.interfaces.MemoryProcessorInterface;
  * @author Peter Abeles
  */
 public class PColtMemoryFactory implements MemoryFactory {
-
-
-    @Override
-    public MatrixLibrary getLibraryInfo() {
-        return MatrixLibrary.PCOLT;
-    }
 
     @Override
     public void configure() {

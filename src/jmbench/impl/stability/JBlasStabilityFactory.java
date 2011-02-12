@@ -19,7 +19,6 @@
 
 package jmbench.impl.stability;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.interfaces.StabilityFactory;
 import jmbench.interfaces.StabilityOperationInterface;
 import org.ejml.data.DenseMatrix64F;
@@ -35,11 +34,6 @@ import static jmbench.impl.runtime.JBlasAlgorithmFactory.jblasToEjml;
  * @author Peter Abeles
  */
 public class JBlasStabilityFactory implements StabilityFactory {
-
-    @Override
-    public MatrixLibrary getLibrary() {
-        return MatrixLibrary.JBLAS;
-    }
 
     @Override
     public void configure() {

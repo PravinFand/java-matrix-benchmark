@@ -20,7 +20,6 @@
 package jmbench.tools.memory;
 
 import jmbench.impl.MatrixLibrary;
-import jmbench.interfaces.MemoryFactory;
 import jmbench.tools.EvaluationTarget;
 import jmbench.tools.SystemInfo;
 import pja.util.UtilXmlSerialization;
@@ -67,7 +66,7 @@ public class MemoryBenchmark {
         long startTime = System.currentTimeMillis();
 
         // save the description of each library
-        saveLibraryDescriptions(config.libraries);
+        saveLibraryDescriptions(directorySave,config.libraries);
 
         System.out.print("Computing overhead ");
         long overhead = new DetermineOverhead(config,10).computeOverhead();
@@ -85,11 +84,11 @@ public class MemoryBenchmark {
 
         for(  EvaluationTarget desc : libs ) {
             // run the benchmark
-            MemoryFactory l = desc.loadAlgorithmFactory();
+            MatrixLibrary lib = MatrixLibrary.lookup(desc.getLibName());
 
-            String libOutputDir = directorySave+"/"+l.getLibraryInfo().getSaveDirName();
+            String libOutputDir = directorySave+"/"+lib.getSaveDirName();
 
-            MemoryBenchmarkLibrary bench = new MemoryBenchmarkLibrary(config,l,desc.getJarFiles(),libOutputDir,overhead);
+            MemoryBenchmarkLibrary bench = new MemoryBenchmarkLibrary(config,desc,libOutputDir,overhead);
 
             bench.process();
 
@@ -101,7 +100,7 @@ public class MemoryBenchmark {
     /**
      * Save the description so that where this came from can be easily extracted
      */
-    private void saveLibraryDescriptions( List<EvaluationTarget> libs )
+    public static void saveLibraryDescriptions( String directorySave , List<EvaluationTarget> libs )
     {
         for( EvaluationTarget desc : libs ) {
             try {

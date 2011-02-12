@@ -19,7 +19,6 @@
 
 package jmbench.impl.stability;
 
-import jmbench.impl.MatrixLibrary;
 import jmbench.interfaces.StabilityFactory;
 import jmbench.interfaces.StabilityOperationInterface;
 import no.uib.cipr.matrix.*;
@@ -34,11 +33,6 @@ import static jmbench.impl.runtime.MtjAlgorithmFactory.mtjToEjml;
  * @author Peter Abeles
  */
 public class MtjStabilityFactory implements StabilityFactory {
-
-    @Override
-    public MatrixLibrary getLibrary() {
-        return MatrixLibrary.MTJ;
-    }
     
     @Override
     public void configure() {
