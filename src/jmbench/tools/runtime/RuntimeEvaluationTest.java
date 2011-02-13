@@ -35,6 +35,9 @@ public class RuntimeEvaluationTest extends EvaluationTest {
 
     public static final double MAX_ERROR_THRESHOLD = 0.05;
 
+    // how many trials have already been completed.  Used to determine which random seed is used
+    private int numTrials;
+
     private int dimen;
     private RuntimePerformanceFactory factory;
     private MatrixProcessorInterface alg;
@@ -46,7 +49,7 @@ public class RuntimeEvaluationTest extends EvaluationTest {
     private long maxRuntime;
 
     // randomly generated input matrices
-    private volatile Random rand;
+    private volatile Random masterRand;
     private volatile BenchmarkMatrix inputs[];
     private volatile BenchmarkMatrix outputs[];
 
@@ -67,7 +70,8 @@ public class RuntimeEvaluationTest extends EvaluationTest {
      * @param maxRuntime  How long it will let a test run for in milliseconds
      * @param randomSeed The random seed used for the tests.
      */
-    public RuntimeEvaluationTest( int dimen ,
+    public RuntimeEvaluationTest( int numTrials,
+                                  int dimen ,
                                   RuntimePerformanceFactory factory,
                                   MatrixProcessorInterface alg ,
                                   InputOutputGenerator generator ,
@@ -75,6 +79,7 @@ public class RuntimeEvaluationTest extends EvaluationTest {
                                   long goalRuntime, long maxRuntime , long randomSeed )
     {
         super(randomSeed);
+        this.numTrials = numTrials;
         this.dimen = dimen;
         this.factory = factory;
         this.alg = alg;
@@ -97,13 +102,17 @@ public class RuntimeEvaluationTest extends EvaluationTest {
     @Override
     public void init() {
         estimatedTrials = 0;
-        rand = new Random(randomSeed);
+        masterRand = new Random(randomSeed);
+        for( int i = 0; i < numTrials; i++ )
+            masterRand.nextLong();
         factory.configure();
     }
 
     @Override
     public void setupTrial()
     {
+        Random rand = new Random(masterRand.nextLong());
+
         inputs = generator.createInputs(factory,rand,sanityCheck,dimen);
         outputs = new BenchmarkMatrix[ generator.numOutputs() ];
     }
@@ -236,6 +245,14 @@ public class RuntimeEvaluationTest extends EvaluationTest {
 
     public void setFactory(RuntimePerformanceFactory factory) {
         this.factory = factory;
+    }
+
+    public int getNumTrials() {
+        return numTrials;
+    }
+
+    public void setNumTrials(int numTrials) {
+        this.numTrials = numTrials;
     }
 
     @Override

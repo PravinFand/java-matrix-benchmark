@@ -10,6 +10,7 @@
 - Reworked memory benchmark to use unix specific tools to get a more accurate estimate
 - Improved runtime benchmark resume so that more of the old results are reused.
 - Added summary box and whisker plot.
+- Runtime now uses a CSV format for results.  More human readable and refactoring won't screw things up constantly now.
 
 ----- Version 0.7
 

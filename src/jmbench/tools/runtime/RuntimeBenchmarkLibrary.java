@@ -26,7 +26,7 @@ import jmbench.tools.BenchmarkTools;
 import jmbench.tools.EvaluationTest;
 import jmbench.tools.EvaluatorSlave;
 import jmbench.tools.TestResults;
-import pja.util.UtilXmlSerialization;
+import jmbench.tools.runtime.evaluation.RuntimeResultsCsvIO;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -75,8 +75,8 @@ public class RuntimeBenchmarkLibrary {
     // used to randomize the order of processes
     private Random rand;
 
-    // have a different random seed for each block
-    private long randSeed[];
+    // random seed for RNG.  Each trial's seed is generated from this
+    private long randSeedTrials;
 
     // where the results be saved to
     private String directorySave;
@@ -123,12 +123,8 @@ public class RuntimeBenchmarkLibrary {
         this.library = library;
 
         // create the random seeds for each block
-        this.randSeed = new long[ config.numBlocks ];
         this.rand = new Random(config.seed);
-
-        for( int i = 0; i < this.randSeed.length; i++ ) {
-            this.randSeed[i] = rand.nextLong();
-        }
+        this.randSeedTrials = rand.nextLong();
 
         tools = new BenchmarkTools(config.numBlockTrials,config.memorySlaveBase,config.memorySlaveScale,jarNames);
 
@@ -171,11 +167,12 @@ public class RuntimeBenchmarkLibrary {
 
         for( RuntimeEvaluationCase c : cases ) {
             // see if the file already exists
-            File f = new File(directorySave+"/"+c.getFileName()+".xml");
+            File f = new File(directorySave+"/"+c.getFileName()+".csv");
 
             if( f.exists() ) {
                 // if it exists read it in and see if it finished
-                RuntimeResults oldResults = UtilXmlSerialization.deserializeXml(f.getAbsolutePath());
+                RuntimeResults oldResults = RuntimeResultsCsvIO.read(f);
+//                UtilXmlSerialization.deserializeXml(f.getAbsolutePath());
 
                 if( !oldResults.isComplete() ) {
                     CaseState cs = new CaseState(c);
@@ -187,12 +184,32 @@ public class RuntimeBenchmarkLibrary {
                             break;
                         }
                     }
-                    // impossible to know if the last one was finished or not
+                    // see if the last matrix size is finished or not
                     if( cs.matrixIndex > 0 ) {
-
-                        if( foundNull )
+                        if( foundNull ) {
                             cs.matrixIndex--;
-                        cs.score[cs.matrixIndex] = null;
+                        }
+                        List<RuntimeMeasurement> rawResults = cs.score[cs.matrixIndex].getRawResults();
+
+                        // see if it has enough trials to move on to the next matrix size
+                        if( rawResults.size() >= config.maxTrials ) {
+                            cs.matrixIndex++;
+                        } else {
+                            // see if any of the current results are too long and it should move on
+                            for( RuntimeMeasurement r : rawResults ) {
+                                double time = 1.0/r.getOpsPerSec();
+
+                                if( time > config.getMaxTrialTime() ) {
+                                    cs.matrixIndex++;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if( cs.matrixIndex >= cs.score.length ) {
+                            throw new RuntimeException("Old result isn't flag as being done, but it really is?");
+                        }
+                        cs.results.addAll(rawResults);
                     }
                     states.add( cs );
                     int matrixSize = oldResults.getMatDimen()[cs.matrixIndex];
@@ -251,9 +268,9 @@ public class RuntimeBenchmarkLibrary {
 
         RuntimeEvaluationMetrics score[] = state.score;
 
-        System.out.println("#### "+libraryType.getPlotName()+"  op "+e.getOpName()+"  Size "+matDimen[state.matrixIndex]+"  block "+state.blockIndex+"  ####");
+        System.out.println("#### "+libraryType.getPlotName()+"  op "+e.getOpName()+"  Size "+matDimen[state.matrixIndex]+" numTrials "+state.results.size()+"  ####");
 
-        RuntimeResults r = computeResults(e, state.matrixIndex , randSeed[state.blockIndex] , score , state.results);
+        RuntimeResults r = computeResults(e, state.matrixIndex , randSeedTrials , score , state.results);
 
         if( r == null )
             throw new RuntimeException("Shouldn't return null any more.  This is a bug.");
@@ -261,9 +278,8 @@ public class RuntimeBenchmarkLibrary {
         boolean done = tooSlow || caseFailed;
 
         // increment the number of blocks
-        if( !done && ++state.blockIndex >= config.numBlocks ) {
+        if( !done && state.results.size() >= config.maxTrials ) {
             state.results.clear();
-            state.blockIndex = 0;
             state.matrixIndex++;
 
             // see if its done processing all the matrices
@@ -276,7 +292,8 @@ public class RuntimeBenchmarkLibrary {
         r.complete = done;
 
         // save the current state of the test
-        UtilXmlSerialization.serializeXml(r,directorySave+"/"+e.getFileName()+".xml");
+        RuntimeResultsCsvIO.write(r,directorySave+"/"+e.getFileName()+".csv");
+//        UtilXmlSerialization.serializeXml(r,directorySave+"/"+e.getFileName()+".xml");
 
         return done;
     }
@@ -289,7 +306,7 @@ public class RuntimeBenchmarkLibrary {
                                              RuntimeEvaluationMetrics score[] , List<RuntimeMeasurement> rawResults )
             throws FileNotFoundException {
 
-        List<RuntimeMeasurement> opsPerSecond = evaluateCase( e , randSeed , matrixIndex );
+        List<RuntimeMeasurement> opsPerSecond = evaluateCase( e , randSeed , matrixIndex , rawResults.size() );
 
         if( caseFailed ) {
             System.out.println("      ---- ***** -----");
@@ -310,11 +327,11 @@ public class RuntimeBenchmarkLibrary {
         return results;
     }
 
-    private List<RuntimeMeasurement> evaluateCase( RuntimeEvaluationCase e , long seed , int indexDimen) {
+    private List<RuntimeMeasurement> evaluateCase( RuntimeEvaluationCase e , long seed , int indexDimen, int numTrials ) {
         if( config.memoryTrial == 0 ) {
-            return evaluateCaseDynamic(e,seed,indexDimen);
+            return evaluateCaseDynamic(e,seed,indexDimen,numTrials);
         } else {
-            return evaluateCaseFixedMemory(e,seed,indexDimen);
+            return evaluateCaseFixedMemory(e,seed,indexDimen,numTrials);
         }
     }
 
@@ -325,8 +342,8 @@ public class RuntimeBenchmarkLibrary {
      * @return The operations per second for this case.
      */
     @SuppressWarnings({"RedundantCast", "unchecked"})
-    private List<RuntimeMeasurement> evaluateCaseDynamic( RuntimeEvaluationCase e , long seed , int indexDimen) {
-        EvaluationTest test = e.createTest(indexDimen,config.trialTime,config.maxTrialTime,config.sanityCheck);
+    private List<RuntimeMeasurement> evaluateCaseDynamic( RuntimeEvaluationCase e , long seed , int indexDimen, int numTrials) {
+        EvaluationTest test = e.createTest(numTrials,indexDimen,config.trialTime,config.maxTrialTime,config.sanityCheck);
         test.setRandomSeed(seed);
 
         int matrixSize = e.getDimens()[indexDimen];
@@ -380,8 +397,8 @@ public class RuntimeBenchmarkLibrary {
      */
     @SuppressWarnings({"RedundantCast", "unchecked"})
     private List<RuntimeMeasurement> evaluateCaseFixedMemory( RuntimeEvaluationCase e ,
-                                                          long seed , int indexDimen) {
-        EvaluationTest test = e.createTest(indexDimen,config.trialTime,config.maxTrialTime,config.sanityCheck);
+                                                          long seed , int indexDimen, int numTrials ) {
+        EvaluationTest test = e.createTest(numTrials,indexDimen,config.trialTime,config.maxTrialTime,config.sanityCheck);
         test.setRandomSeed(seed);
 
         int matrixSize = e.getDimens()[indexDimen];
@@ -459,7 +476,6 @@ public class RuntimeBenchmarkLibrary {
         RuntimeEvaluationMetrics score[];
 
         int matrixIndex = 0;
-        int blockIndex = 0;
 
         public CaseState( RuntimeEvaluationCase e ) {
             this.evalCase = e;

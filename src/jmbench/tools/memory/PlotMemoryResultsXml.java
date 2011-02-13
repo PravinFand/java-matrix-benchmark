@@ -20,7 +20,7 @@
 package jmbench.tools.memory;
 
 import jmbench.plots.MemoryRelativeBarPlot;
-import jmbench.tools.runtime.evaluation.PlotRuntimeResultsXml;
+import jmbench.tools.runtime.evaluation.PlotRuntimeResults;
 import pja.util.UtilXmlSerialization;
 
 import java.io.File;
@@ -159,7 +159,7 @@ public class PlotMemoryResultsXml {
         String dir;
 
         if( args.length == 0 ) {
-            dir = PlotRuntimeResultsXml.findMostRecentDirectory();
+            dir = PlotRuntimeResults.findMostRecentDirectory();
         } else {
             dir = args[0];
         }

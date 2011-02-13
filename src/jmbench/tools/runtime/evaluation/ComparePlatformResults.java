@@ -33,7 +33,7 @@ import java.util.*;
  *
  * @author Peter Abeles
  */
-public class ComparePlatformResultsXml {
+public class ComparePlatformResults {
 
     // should it display results to the screen
     private static boolean displayResults = true;
@@ -228,7 +228,7 @@ public class ComparePlatformResultsXml {
      */
     public void createPlots( RuntimePlotData plotData , String fileName , String plotName) {
 
-        PlotRuntimeResultsXml.truncatePlotData(minMatrixSize,maxMatrixSize,plotData);
+        PlotRuntimeResults.truncatePlotData(minMatrixSize,maxMatrixSize,plotData);
 
         String fileNameRel = outputDirectory.getPath()+"/plots/relative/"+fileName;
         String fileNameAbs = outputDirectory.getPath()+"/plots/absolute/"+fileName;
@@ -278,7 +278,7 @@ public class ComparePlatformResultsXml {
     }
 
     public static void parseInput( String args[] ) {
-        ComparePlatformResultsXml app = new ComparePlatformResultsXml();
+        ComparePlatformResults app = new ComparePlatformResults();
 
         int metric = RuntimeEvaluationMetrics.METRIC_MAX;
         boolean displayResults = true;
@@ -360,7 +360,7 @@ public class ComparePlatformResultsXml {
 
             app.minMatrixSize = minSize;
             app.maxMatrixSize = maxSize;
-            ComparePlatformResultsXml.displayResults = displayResults;
+            ComparePlatformResults.displayResults = displayResults;
 
             app.plot(metric);
         } else {

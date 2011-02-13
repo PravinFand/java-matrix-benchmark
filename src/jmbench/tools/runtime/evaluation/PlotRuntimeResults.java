@@ -33,12 +33,12 @@ import java.util.Map;
 
 
 /**
- * Creates plots for all the results in a directory from raw xml files.  Plots are saved
+ * Creates plots for all the results in a directory from raw csv files.  Plots are saved
  * int the plots directory.
  *
  * @author Peter Abeles
  */
-public class PlotRuntimeResultsXml {
+public class PlotRuntimeResults {
 
     File directory;
 
@@ -61,7 +61,7 @@ public class PlotRuntimeResultsXml {
      *
      * @param dir Directory containing the results.
      */
-    public PlotRuntimeResultsXml( String dir ) {
+    public PlotRuntimeResults( String dir ) {
         directory = new File(dir);
 
         if( !directory.exists() ) {
@@ -90,18 +90,12 @@ public class PlotRuntimeResultsXml {
                 String []files2 = level0.list();
 
                 for( String name2 : files2 ) {
-                    if( name2.contains(".xml") ) {
+                    if( name2.contains(".csv") ) {
 
                         String stripName = name2.substring(0,name2.length()-4);
                         name2 = level0.getPath()+"/"+name2;
 
-                        RuntimeResults r;
-                        try {
-                            r = UtilXmlSerialization.deserializeXml(name2);
-                        } catch( ClassCastException e ) {
-                            System.out.println("Couldn't deserialize "+name2);
-                            continue;
-                        }
+                        RuntimeResults r = RuntimeResultsCsvIO.read(new File(name2));
 
                         List l;
                         if( opMap.containsKey(stripName) ) {
@@ -349,7 +343,7 @@ public class PlotRuntimeResultsXml {
 
         System.out.println("Parsing "+inputDirectory);
 
-        PlotRuntimeResultsXml p = new PlotRuntimeResultsXml(inputDirectory);
+        PlotRuntimeResults p = new PlotRuntimeResults(inputDirectory);
 
         p.plotNativeLibraries = plotNative;
         p.displayResults = displayResults;

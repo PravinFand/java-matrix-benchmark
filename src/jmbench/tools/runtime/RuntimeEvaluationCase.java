@@ -60,8 +60,9 @@ public class RuntimeEvaluationCase implements Serializable {
     public RuntimeEvaluationCase(){}
 
 
-    public RuntimeEvaluationTest createTest( int dimenIndex , long duration , long maxRuntime ,
+    public RuntimeEvaluationTest createTest( int numTrials , int dimenIndex , long duration , long maxRuntime ,
                                              boolean sanityCheck ) {
+        theTest.setNumTrials(numTrials);
         theTest.setDimen(dimens[dimenIndex]);
         theTest.setAlg(alg);
         theTest.setFactory(factory);

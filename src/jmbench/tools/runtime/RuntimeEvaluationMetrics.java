@@ -52,23 +52,27 @@ public class RuntimeEvaluationMetrics
             throw new RuntimeException("No samples");
         rawResults = new ArrayList<RuntimeMeasurement>(vals);
 
-        Collections.sort(vals);
+        computeStatistics();
+    }
 
-        int numSamples = vals.size();
-        min = vals.get(0).getOpsPerSec();
-        max = vals.get( numSamples - 1).getOpsPerSec();
+    public void computeStatistics() {
+        Collections.sort(rawResults);
 
-        median = vals.get( numSamples/2 ).getOpsPerSec();
+        int numSamples = rawResults.size();
+        min = rawResults.get(0).getOpsPerSec();
+        max = rawResults.get( numSamples - 1).getOpsPerSec();
+
+        median = rawResults.get( numSamples/2 ).getOpsPerSec();
 
         mean = 0;
-        for( RuntimeMeasurement r : vals ) {
+        for( RuntimeMeasurement r : rawResults ) {
             mean += r.getOpsPerSec()/max;
         }
         mean = max*(mean/numSamples);
 
         stdev = 0;
 
-        for( RuntimeMeasurement r : vals ) {
+        for( RuntimeMeasurement r : rawResults ) {
             double d = r.getOpsPerSec();
             stdev += (d - mean)*(d - mean);
         }

@@ -78,9 +78,8 @@ public class RuntimeBenchmarkConfig implements Serializable {
 
     // how many performance trials should it run in a block
     public int numBlockTrials;
-    // a block is a set of trials performed in a single instance of a spawned VM
-    // This is the number of times a block is spawned to evaluate the same set of input parameters
-    public int numBlocks;
+    // it will stop processing a matrix size if this number of trials has been exceeded
+    public int maxTrials;
     // the minimum amount of time each trials should last for
     public int trialTime;
     // the maximum amount of time a trial can last for
@@ -115,7 +114,7 @@ public class RuntimeBenchmarkConfig implements Serializable {
 
         config.seed = 0xDEADBEEF;//new Random().nextLong();
         config.numBlockTrials = 5;
-        config.numBlocks = 5;
+        config.maxTrials = 25;
         config.trialTime = 3000;
         config.maxTrialTime = 600000;
         config.memoryTrial = 0;
@@ -322,12 +321,12 @@ public class RuntimeBenchmarkConfig implements Serializable {
         this.numBlockTrials = numBlockTrials;
     }
 
-    public int getNumBlocks() {
-        return numBlocks;
+    public int getMaxTrials() {
+        return maxTrials;
     }
 
-    public void setNumBlocks(int numBlocks) {
-        this.numBlocks = numBlocks;
+    public void setMaxTrials(int maxTrials) {
+        this.maxTrials = maxTrials;
     }
 
     public int getTrialTime() {

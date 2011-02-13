@@ -40,6 +40,7 @@ import java.util.Map;
  *
  * @author Peter Abeles
  */
+@Deprecated
 public class ConvertRuntimeResultsXmlToCSV {
 
     File directory;
@@ -194,7 +195,7 @@ public class ConvertRuntimeResultsXmlToCSV {
 
     public static void main( String args[] ) {
 
-        String dir = args.length == 0 ? PlotRuntimeResultsXml.findMostRecentDirectory() : args[0];
+        String dir = args.length == 0 ? PlotRuntimeResults.findMostRecentDirectory() : args[0];
 
         ConvertRuntimeResultsXmlToCSV p = new ConvertRuntimeResultsXmlToCSV(dir);
 

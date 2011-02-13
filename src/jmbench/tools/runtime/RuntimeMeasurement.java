@@ -42,6 +42,12 @@ public class RuntimeMeasurement implements TestResults , Comparable<RuntimeMeasu
         this.memoryUsed = memoryUsed;
     }
 
+    public RuntimeMeasurement(double opsPerSec, long memoryUsed, OutputError error) {
+        this.opsPerSec = opsPerSec;
+        this.memoryUsed = memoryUsed;
+        this.error = error;
+    }
+
     public RuntimeMeasurement(){}
 
     public String toString() {

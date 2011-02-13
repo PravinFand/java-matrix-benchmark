@@ -23,7 +23,6 @@ import jmbench.tools.OutputError;
 import jmbench.tools.runtime.RuntimeEvaluationMetrics;
 import jmbench.tools.runtime.RuntimeMeasurement;
 import jmbench.tools.runtime.RuntimeResults;
-import pja.util.UtilXmlSerialization;
 
 import java.io.File;
 
@@ -34,11 +33,11 @@ import java.io.File;
  *
  * @author Peter Abeles
  */
-public class CheckForErrorsInResultsXml {
+public class CheckForErrorsInResults {
 
     File directory;
 
-    public CheckForErrorsInResultsXml( String dir ) {
+    public CheckForErrorsInResults( String dir ) {
         directory = new File(dir);
 
         if( !directory.exists() ) {
@@ -63,19 +62,17 @@ public class CheckForErrorsInResultsXml {
                 System.out.println("Examining "+level0);
 
                 for( String name2 : files2 ) {
-                    if( name2.contains(".xml") ) {
+                    if( name2.contains(".csv") ) {
 
                         name2 = level0.getPath()+"/"+name2;
 
-                        RuntimeResults r = UtilXmlSerialization.deserializeXml(name2);
+                        RuntimeResults r = RuntimeResultsCsvIO.read(new File(name2));
 
                         checkForExceptions(r);
                     }
                 }
             }
-
         }
-
     }
 
     public void checkForExceptions( RuntimeResults r ) {
@@ -125,7 +122,7 @@ public class CheckForErrorsInResultsXml {
     }
 
     public static void printHelp() {
-        System.out.println("This program runs through the logs and looks for any notable exceptions that occured.");
+        System.out.println("This program runs through the logs and looks for any notable exceptions that occurred.");
         System.out.println("If any exceptions happened then a summary is printed out.");
         System.out.println();
         System.out.println("arguments: <results directory>");
@@ -134,9 +131,9 @@ public class CheckForErrorsInResultsXml {
     }
 
     public static void main( String args[] ) {
-        String dir = args.length == 0 ? PlotRuntimeResultsXml.findMostRecentDirectory() : args[0];
+        String dir = args.length == 0 ? PlotRuntimeResults.findMostRecentDirectory() : args[0];
 
-        CheckForErrorsInResultsXml p = new CheckForErrorsInResultsXml(dir);
+        CheckForErrorsInResults p = new CheckForErrorsInResults(dir);
 
         p.examine();
     }

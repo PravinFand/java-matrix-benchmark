@@ -31,6 +31,7 @@ import java.util.Map;
  *
  * @author Peter Abeles
  */
+@Deprecated
 public class PlotRuntimeResultsCsv {
 
     File directory;
@@ -161,7 +162,7 @@ public class PlotRuntimeResultsCsv {
 
     public static void main( String args[] ) throws IOException {
 
-        String inputDirectory = args.length == 0 ? PlotRuntimeResultsXml.findMostRecentDirectory() : args[0];
+        String inputDirectory = args.length == 0 ? PlotRuntimeResults.findMostRecentDirectory() : args[0];
 
         PlotRuntimeResultsCsv p = new PlotRuntimeResultsCsv(inputDirectory);
 

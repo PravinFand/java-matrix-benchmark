@@ -189,7 +189,7 @@ public class RuntimeBenchmarkMaster {
                     failed = true; break;
                 }
                 if( splits.length != 1 ) {failed = true; break;}
-                config.numBlocks = 1;
+                config.maxTrials = 2;
                 config.numBlockTrials = 2;
                 config.trialTime = 1000;
                 System.out.println("Using quick and dirty config.");

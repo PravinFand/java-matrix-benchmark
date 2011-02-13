@@ -22,9 +22,9 @@ package jmbench.tools;
 import jmbench.tools.memory.MemoryBenchmark;
 import jmbench.tools.memory.PlotMemoryResultsXml;
 import jmbench.tools.runtime.RuntimeBenchmarkMaster;
-import jmbench.tools.runtime.evaluation.CheckForErrorsInResultsXml;
-import jmbench.tools.runtime.evaluation.ComparePlatformResultsXml;
-import jmbench.tools.runtime.evaluation.PlotRuntimeResultsXml;
+import jmbench.tools.runtime.evaluation.CheckForErrorsInResults;
+import jmbench.tools.runtime.evaluation.ComparePlatformResults;
+import jmbench.tools.runtime.evaluation.PlotRuntimeResults;
 import jmbench.tools.stability.StabilityBenchmark;
 
 import java.io.IOException;
@@ -81,13 +81,13 @@ public class BenchmarkToolsMasterApp {
         } else if( tool.compareToIgnoreCase("memory") == 0 ) {
             MemoryBenchmark.main(pruned);
         } else if( tool.compareToIgnoreCase("checkRuntime") == 0) {
-            CheckForErrorsInResultsXml.main(pruned);    
+            CheckForErrorsInResults.main(pruned);
         } else if( tool.compareToIgnoreCase("plotRuntime") == 0) {
-            PlotRuntimeResultsXml.main(pruned);
+            PlotRuntimeResults.main(pruned);
         } else if( tool.compareToIgnoreCase("plotMemory") == 0 ) {
             PlotMemoryResultsXml.main(pruned);
         } else if( tool.compareToIgnoreCase("compareRuntime") == 0 ) {
-            ComparePlatformResultsXml.main(pruned);
+            ComparePlatformResults.main(pruned);
         } else if( tool.compareToIgnoreCase("displayStability") == 0) {
             System.out.println("Not supported yet "+tool);
         } else {
