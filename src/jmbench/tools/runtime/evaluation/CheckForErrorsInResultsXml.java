@@ -20,8 +20,8 @@
 package jmbench.tools.runtime.evaluation;
 
 import jmbench.tools.OutputError;
-import jmbench.tools.runtime.OperationResults;
 import jmbench.tools.runtime.RuntimeEvaluationMetrics;
+import jmbench.tools.runtime.RuntimeMeasurement;
 import jmbench.tools.runtime.RuntimeResults;
 import pja.util.UtilXmlSerialization;
 
@@ -67,7 +67,7 @@ public class CheckForErrorsInResultsXml {
 
                         name2 = level0.getPath()+"/"+name2;
 
-                        OperationResults r = UtilXmlSerialization.deserializeXml(name2);
+                        RuntimeResults r = UtilXmlSerialization.deserializeXml(name2);
 
                         checkForExceptions(r);
                     }
@@ -78,7 +78,7 @@ public class CheckForErrorsInResultsXml {
 
     }
 
-    public void checkForExceptions( OperationResults r ) {
+    public void checkForExceptions( RuntimeResults r ) {
         int numNull = 0;
         int numLargeError = 0;
         int numNaN = 0;
@@ -89,7 +89,7 @@ public class CheckForErrorsInResultsXml {
             if( metrics == null ) {
                 break;
             }
-            for( RuntimeResults rr : metrics.getRawResults() ) {
+            for( RuntimeMeasurement rr : metrics.getRawResults() ) {
                 if( rr.error == null ) {
                    numNull++;
                 } else if( rr.error == OutputError.LARGE_ERROR ) {
@@ -107,7 +107,7 @@ public class CheckForErrorsInResultsXml {
             return;
         }
 
-        System.out.print(r.getLibrary().getPlotName()+" "+r.getOpName()+" ");
+        System.out.print(r.getLibraryName()+" "+r.getOpName()+" ");
 
         if( numNull != 0 ) {
             System.out.printf("null %d",numNull);

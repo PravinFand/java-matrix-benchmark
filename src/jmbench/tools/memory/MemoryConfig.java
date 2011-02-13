@@ -108,8 +108,8 @@ public class MemoryConfig {
         ret.seed = 234234;
 
         ret.maxTestTimeMilli = 20*60*1000;
-        ret.numTrials = 5;
-        ret.memoryMinMB = 256;
+        ret.numTrials = 3;
+        ret.memoryMinMB = 50;
         ret.memoryMaxMB = 1024;
         ret.matrixSize = 2000;
         ret.memorySampleType = SampleType.PROC;

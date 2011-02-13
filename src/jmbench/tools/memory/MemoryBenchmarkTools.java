@@ -69,6 +69,8 @@ public class MemoryBenchmarkTools {
 
     // if the test failed or not
     boolean failed;
+    // did it fail because it froze?
+    boolean froze;
 
     boolean verbose = true;
 
@@ -126,6 +128,7 @@ public class MemoryBenchmarkTools {
 
         requestID++;
         failed = false;
+        froze = false;
 
         String[] params = setupSlave(test);
 
@@ -149,9 +152,9 @@ public class MemoryBenchmarkTools {
             BufferedReader error = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
 
             // print the output from the slave
-            boolean frozen = monitorSlave2(test, pr, input, error,processID);
+            froze = monitorSlave2(test, pr, input, error,processID);
 
-            cleanUp(frozen, pr, input, error);
+            cleanUp(froze, pr, input, error);
 
             return memoryUsage;
         } catch (IOException e) {
@@ -318,7 +321,7 @@ public class MemoryBenchmarkTools {
         } catch (FileNotFoundException e) {
             return -1;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return -1;
         }
 
         return size;
@@ -508,10 +511,13 @@ public class MemoryBenchmarkTools {
                     errorStream.println("Stale request ID");
                     failed = true;
                 } else if( results.failed != null ) {
-                    errorStream.println("Failed! "+results.failed);
-                    errorStream.println(results.detailedError);
-                    System.out.println("Failed! "+results.failed);
-                    System.out.println(results.detailedError);
+                    // don't log out of memory errors since they happen intentionally a lot
+                    if( results.failed != EvaluatorSlave.FailReason.OUT_OF_MEMORY ) {
+                        errorStream.println("Failed! "+results.failed);
+                        errorStream.println(results.detailedError);
+                        System.out.println("Failed! "+results.failed);
+                        System.out.println(results.detailedError);
+                    }
                     failed = true;
                 }
             }

@@ -22,8 +22,8 @@ package jmbench.tools.runtime.evaluation;
 import jmbench.impl.MatrixLibrary;
 import jmbench.plots.OperationsVersusSizePlot;
 import jmbench.plots.SummaryWhiskerPlot;
-import jmbench.tools.runtime.OperationResults;
 import jmbench.tools.runtime.RuntimeEvaluationMetrics;
+import jmbench.tools.runtime.RuntimeResults;
 
 import java.util.*;
 
@@ -168,7 +168,7 @@ public class RuntimeResultPlotter {
         }
     }
 
-    public static void variabilityPlots( List<OperationResults> data ,
+    public static void variabilityPlots( List<RuntimeResults> data ,
                                          String fileName ,
                                          boolean savePDF ,
                                          boolean showWindow )
@@ -192,7 +192,7 @@ public class RuntimeResultPlotter {
             matDimen[i] = getMatrixSize(data,i);
         }
 
-        for( OperationResults ops : data ) {
+        for( RuntimeResults ops : data ) {
             RuntimeEvaluationMetrics[]metrics = ops.metrics;
             int n = ops.getMatDimen().length;
 
@@ -209,8 +209,9 @@ public class RuntimeResultPlotter {
                 }
             }
 
-            splot.addResults(matDimen,results,ops.getLibrary().getPlotName(),numMatrixSizes,
-                    ops.getLibrary().getPlotLineType());
+            MatrixLibrary lib = MatrixLibrary.lookup(ops.getLibraryName());
+            splot.addResults(matDimen,results,lib.getPlotName(),numMatrixSizes,
+                    lib.getPlotLineType());
         }
 
         if( savePDF )
@@ -325,10 +326,10 @@ public class RuntimeResultPlotter {
         }
     }
 
-    private static int getNumMatrices( List<OperationResults> data ) {
+    private static int getNumMatrices( List<RuntimeResults> data ) {
         int max = 0;
 
-        for( OperationResults d : data ) {
+        for( RuntimeResults d : data ) {
             int sizes[] = d.getMatDimen();
 
             if( sizes.length > max )
@@ -338,9 +339,9 @@ public class RuntimeResultPlotter {
         return max;
     }
 
-    private static int getMatrixSize( List<OperationResults> data , int index)
+    private static int getMatrixSize( List<RuntimeResults> data , int index)
     {
-        for( OperationResults d : data ) {
+        for( RuntimeResults d : data ) {
             int sizes[] = d.getMatDimen();
 
             if( sizes.length > index ) {
@@ -393,20 +394,6 @@ public class RuntimeResultPlotter {
         }
 
         throw new RuntimeException("Unknown reference type");
-    }
-
-    private static OperationResults findReferenceResults(List<OperationResults> data,
-                                                         MatrixLibrary refLib) {
-        OperationResults refResults = null;
-        // find the results it is in reference to
-        for( OperationResults o : data ) {
-            if( o.getLibrary() == refLib ) {
-                refResults = o;
-                break;
-            }
-        }
-
-        return refResults;
     }
 
     public static enum Reference

@@ -381,7 +381,7 @@
       <module fileurl="file://$PROJECT_DIR$/../../libpjajava/libpja.iml" filepath="$PROJECT_DIR$/../../libpjajava/libpja.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.6 " project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="ResourceManagerContainer">
@@ -456,12 +456,12 @@
             <SvnBranchConfiguration>
               <option name="branchMap">
                 <map>
-                  <entry key="svn+ssh://10.0.0.3/opt/repos/libpjajava/branches">
+                  <entry key="svn+ssh://127.0.0.1/opt/repos/libpjajava/branches">
                     <value>
                       <list />
                     </value>
                   </entry>
-                  <entry key="svn+ssh://10.0.0.3/opt/repos/libpjajava/tags">
+                  <entry key="svn+ssh://127.0.0.1/opt/repos/libpjajava/tags">
                     <value>
                       <list />
                     </value>
@@ -470,11 +470,11 @@
               </option>
               <option name="branchUrls">
                 <list>
-                  <option value="svn+ssh://10.0.0.3/opt/repos/libpjajava/branches" />
-                  <option value="svn+ssh://10.0.0.3/opt/repos/libpjajava/tags" />
+                  <option value="svn+ssh://127.0.0.1/opt/repos/libpjajava/branches" />
+                  <option value="svn+ssh://127.0.0.1/opt/repos/libpjajava/tags" />
                 </list>
               </option>
-              <option name="trunkUrl" value="svn+ssh://10.0.0.3/opt/repos/libpjajava/trunk" />
+              <option name="trunkUrl" value="svn+ssh://127.0.0.1/opt/repos/libpjajava/trunk" />
             </SvnBranchConfiguration>
           </value>
         </entry>

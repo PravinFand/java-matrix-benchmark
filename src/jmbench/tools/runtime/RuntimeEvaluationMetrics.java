@@ -45,12 +45,12 @@ public class RuntimeEvaluationMetrics
     public double median;
 
     // unsorted raw results.  these are in the order they were generated
-    public List<RuntimeResults> rawResults;
+    public List<RuntimeMeasurement> rawResults;
 
-    public RuntimeEvaluationMetrics( List<RuntimeResults> vals ) {
+    public RuntimeEvaluationMetrics( List<RuntimeMeasurement> vals ) {
         if( vals.size() <= 0 )
             throw new RuntimeException("No samples");
-        rawResults = new ArrayList<RuntimeResults>(vals);
+        rawResults = new ArrayList<RuntimeMeasurement>(vals);
 
         Collections.sort(vals);
 
@@ -61,14 +61,14 @@ public class RuntimeEvaluationMetrics
         median = vals.get( numSamples/2 ).getOpsPerSec();
 
         mean = 0;
-        for( RuntimeResults r : vals ) {
+        for( RuntimeMeasurement r : vals ) {
             mean += r.getOpsPerSec()/max;
         }
         mean = max*(mean/numSamples);
 
         stdev = 0;
 
-        for( RuntimeResults r : vals ) {
+        for( RuntimeMeasurement r : vals ) {
             double d = r.getOpsPerSec();
             stdev += (d - mean)*(d - mean);
         }
@@ -138,11 +138,11 @@ public class RuntimeEvaluationMetrics
         this.median = median;
     }
 
-    public List<RuntimeResults> getRawResults() {
+    public List<RuntimeMeasurement> getRawResults() {
         return rawResults;
     }
 
-    public void setRawResults(List<RuntimeResults> rawResults) {
+    public void setRawResults(List<RuntimeMeasurement> rawResults) {
         this.rawResults = rawResults;
     }
 }

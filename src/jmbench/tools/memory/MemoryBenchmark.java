@@ -46,6 +46,7 @@ public class MemoryBenchmark {
     }
 
     public void performBenchmark( MemoryConfig config ) {
+        System.out.println("Setting up results directory");
         File dir = new File(directorySave);
         if( !dir.exists() ) {
             if( !dir.mkdir() ) {

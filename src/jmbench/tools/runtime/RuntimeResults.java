@@ -19,55 +19,77 @@
 
 package jmbench.tools.runtime;
 
-import jmbench.tools.OutputError;
-import jmbench.tools.TestResults;
+import java.io.Serializable;
 
 
 /**
+ * Collection of all the runtime performance results for a single operation in a library across
+ * all matrix sizes.
+ *
  * @author Peter Abeles
  */
-public class RuntimeResults implements TestResults , Comparable<RuntimeResults>{
-    public double opsPerSec;
+public class RuntimeResults implements Serializable {
+    // operation these results are from
+    public String opName;
+    // The library's name
+    public String libraryName;
+    // size of the input matrices
+    public int matDimen[];
+    // results by matrix size
+    public RuntimeEvaluationMetrics metrics[];
 
-    public long memoryUsed;
-    public OutputError error;
+    // if true it finished computing all the results for this operation
+    public boolean complete;
 
-    public RuntimeResults( double opsPerSec , long memoryUsed ) {
-        this.opsPerSec = opsPerSec;
-        this.memoryUsed = memoryUsed;
+    public RuntimeResults( String opName , String libraryName ,
+                             int matDimen[] ,  RuntimeEvaluationMetrics metrics[] )
+    {
+        this.opName = opName;
+        this.libraryName = libraryName;
+
+        this.metrics = metrics;
+        this.matDimen = matDimen;
     }
 
     public RuntimeResults(){}
 
-    public String toString() {
-        return "ops/sec = "+opsPerSec;
+    public String getOpName() {
+        return opName;
     }
 
-    public double getOpsPerSec() {
-        return opsPerSec;
+    public void setOpName(String opName) {
+        this.opName = opName;
     }
 
-    public void setOpsPerSec(double opsPerSec) {
-        this.opsPerSec = opsPerSec;
+    public int[] getMatDimen() {
+        return matDimen;
     }
 
-    public OutputError getError() {
-        return error;
+    public void setMatDimen(int[] matDimen) {
+        this.matDimen = matDimen;
     }
 
-    public void setError(OutputError error) {
-        this.error = error;
+    public String getLibraryName() {
+        return libraryName;
     }
 
-    public long getMemoryUsed() {
-        return memoryUsed;
+    public void setLibraryName(String libraryName) {
+        this.libraryName = libraryName;
     }
 
-    public int compareTo( RuntimeResults r ) {
-        if( r.opsPerSec < opsPerSec )
-            return 1;
-        else if( r.opsPerSec > opsPerSec )
-            return -1;
-        return 0;
+    public RuntimeEvaluationMetrics[] getMetrics() {
+        return metrics;
+    }
+
+    public void setMetrics(RuntimeEvaluationMetrics[] metrics) {
+        this.metrics = metrics;
+    }
+
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public void setComplete(boolean complete) {
+        this.complete = complete;
     }
 }

@@ -21,8 +21,8 @@ package jmbench.tools.runtime.evaluation;
 
 import jmbench.impl.MatrixLibrary;
 import jmbench.tools.EvaluationTarget;
-import jmbench.tools.runtime.OperationResults;
 import jmbench.tools.runtime.RuntimeEvaluationMetrics;
+import jmbench.tools.runtime.RuntimeResults;
 import pja.util.UtilXmlSerialization;
 
 import java.io.File;
@@ -95,7 +95,7 @@ public class PlotRuntimeResultsXml {
                         String stripName = name2.substring(0,name2.length()-4);
                         name2 = level0.getPath()+"/"+name2;
 
-                        OperationResults r;
+                        RuntimeResults r;
                         try {
                             r = UtilXmlSerialization.deserializeXml(name2);
                         } catch( ClassCastException e ) {
@@ -128,7 +128,7 @@ public class PlotRuntimeResultsXml {
         RuntimeResultPlotter.Reference refType = RuntimeResultPlotter.Reference.MAX;
 
         for( String key : opMap.keySet() ) {
-            List<OperationResults> l = opMap.get(key);
+            List<RuntimeResults> l = opMap.get(key);
 
             RuntimePlotData plotData = convertToPlotData(l,whichMetric);
             allResults.add( plotData );
@@ -182,8 +182,8 @@ public class PlotRuntimeResultsXml {
         }
     }
 
-    public static RuntimePlotData convertToPlotData( List<OperationResults> results , int whichMetric ) {
-        OperationResults a = results.get(0);
+    public static RuntimePlotData convertToPlotData( List<RuntimeResults> results , int whichMetric ) {
+        RuntimeResults a = results.get(0);
 
         RuntimePlotData ret = new RuntimePlotData(a.matDimen);
 
@@ -202,7 +202,8 @@ public class PlotRuntimeResultsXml {
                     r[j] = Double.NaN;
             }
 
-            ret.addLibrary(a.getLibrary().getPlotName(),r,a.getLibrary().getPlotLineType());
+            MatrixLibrary lib = MatrixLibrary.lookup(a.getLibraryName());
+            ret.addLibrary(lib.getPlotName(),r,lib.getPlotLineType());
         }
 
         return ret;

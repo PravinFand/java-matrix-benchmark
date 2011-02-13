@@ -19,8 +19,9 @@
 
 package jmbench.tools.runtime.evaluation;
 
-import jmbench.tools.runtime.OperationResults;
+import jmbench.impl.MatrixLibrary;
 import jmbench.tools.runtime.RuntimeEvaluationMetrics;
+import jmbench.tools.runtime.RuntimeResults;
 import pja.util.UtilXmlSerialization;
 
 import java.io.File;
@@ -78,7 +79,7 @@ public class ConvertRuntimeResultsXmlToCSV {
                         String stripName = name2.substring(0,name2.length()-4);
                         name2 = level0.getPath()+"/"+name2;
 
-                        OperationResults r = UtilXmlSerialization.deserializeXml(name2);
+                        RuntimeResults r = UtilXmlSerialization.deserializeXml(name2);
 
                         List l;
                         if( opMap.containsKey(stripName) ) {
@@ -94,7 +95,7 @@ public class ConvertRuntimeResultsXmlToCSV {
 
         }
         for( String key : opMap.keySet() ) {
-            List<OperationResults> l = opMap.get(key);
+            List<RuntimeResults> l = opMap.get(key);
 
             String fileName = directory.getPath()+"/"+key+".csv";
             System.out.println("Writing file: "+fileName);
@@ -121,7 +122,7 @@ public class ConvertRuntimeResultsXmlToCSV {
      * @param opName
      */
     private void printResults( PrintStream fileStream,
-                               List<OperationResults> results ,
+                               List<RuntimeResults> results ,
                                int metricType ,
                                String opName) {
 
@@ -131,15 +132,16 @@ public class ConvertRuntimeResultsXmlToCSV {
         
         // save all the names of each library
         fileStream.print("size\t");
-        for( OperationResults r : results ) {
-            fileStream.print("\t"+r.getLibrary().getPlotName());
+        for( RuntimeResults r : results ) {
+            fileStream.print("\t"+r.getLibraryName());
         }
         fileStream.println();
 
         // save the library number so that the plots use the same color line when plotting
         fileStream.print("\t");
-        for( OperationResults r : results ) {
-            fileStream.print("\t"+r.getLibrary().getPlotLineType());
+        for( RuntimeResults r : results ) {
+            MatrixLibrary lib = MatrixLibrary.lookup(r.getLibraryName());
+            fileStream.print("\t"+lib.getPlotLineType());
         }
         fileStream.println();
 
@@ -152,7 +154,7 @@ public class ConvertRuntimeResultsXmlToCSV {
             fileStream.print(s);
 
             // print results for each library at this size
-            for( OperationResults r : results ) {
+            for( RuntimeResults r : results ) {
 //                fileStream.print(r.getLibrary());
 
                 // sanity check
@@ -174,11 +176,11 @@ public class ConvertRuntimeResultsXmlToCSV {
 
     }
 
-    private int[] findMaxMatrixSize( List<OperationResults> results) {
+    private int[] findMaxMatrixSize( List<RuntimeResults> results) {
         int max = 0;
         int arrayMax[] = null;
 
-        for( OperationResults r : results ) {
+        for( RuntimeResults r : results ) {
             int d[] = r.matDimen;
 
             if( d.length > max ) {

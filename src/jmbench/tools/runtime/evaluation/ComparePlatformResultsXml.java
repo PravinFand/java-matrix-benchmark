@@ -19,8 +19,8 @@
 
 package jmbench.tools.runtime.evaluation;
 
-import jmbench.tools.runtime.OperationResults;
 import jmbench.tools.runtime.RuntimeEvaluationMetrics;
+import jmbench.tools.runtime.RuntimeResults;
 import pja.util.UtilXmlSerialization;
 
 import java.io.File;
@@ -164,7 +164,7 @@ public class ComparePlatformResultsXml {
 
             for( int index = 0; index < o.platforms.size(); index++ ) {
                 Platform p = o.platforms.get(index);
-                OperationResults r = o.results.get(index);
+                RuntimeResults r = o.results.get(index);
 
                 // If a matrix size has no data then its value will be NaN
                 double results[] = new double[ sizes.length ];
@@ -205,7 +205,7 @@ public class ComparePlatformResultsXml {
     {
         List<Integer> sizes = new ArrayList<Integer>();
 
-        for( OperationResults r : o.results ) {
+        for( RuntimeResults r : o.results ) {
             for( int size : r.matDimen ) {
                 if( !sizes.contains(size) )
                     sizes.add(size);
@@ -242,7 +242,7 @@ public class ComparePlatformResultsXml {
     private static class XMLResults
     {
         String fileName;
-        OperationResults results;
+        RuntimeResults results;
     }
 
     private static class Operation
@@ -250,7 +250,7 @@ public class ComparePlatformResultsXml {
         String fileName;
         String plotName;
         List<Platform> platforms = new ArrayList<Platform>();
-        List<OperationResults> results = new ArrayList<OperationResults>();
+        List<RuntimeResults> results = new ArrayList<RuntimeResults>();
     }
 
     private static class Platform

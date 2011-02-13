@@ -114,43 +114,32 @@ public class MemoryBenchmarkLibrary {
 
             System.out.println(libraryName+" operation "+task.results.nameOp);
 
-            boolean remove = false;
+            boolean failed = false;
 
-            long mem = findMemory(task);
-
-            // if it has a memory result, save it no matter what
-            if( mem <= 0 ) {
-                logStream.println("Bad memory "+mem+" operation "+task.results.nameOp);
-            } else {
-                mem -= memoryOverhead;
-                if( mem < 0 ) {
-                    logStream.println("Memory less than overhead!! "+mem+"  operation "+task.results.nameOp);
+            for( int i = 0; i < config.numTrials && !failed ; i++ ) {
+                if( !findMemory(task) ) {
+                    System.out.println("Failed!");
+                    logStream.println("FAILED: operation "+task.results.nameOp);
+                    failed = true;
                 }
-                task.results.results.add(mem);
-
-                if( tool.isFailed() )
-                    task.results.numFailed++;
-
-                System.out.println("  memory: "+(mem/1024/1024)+" (MB)");
-                if( task.results.results.size() >= config.numTrials ) {
-                    remove = true;
-                }
-            }
-
-            if( tool.isFailed() ) {
-                System.out.println("Failed!");
-                logStream.println("FAILED: operation "+task.results.nameOp);
-                remove = true;
             }
 
             saveResults(task.results);
 
-            if( remove ) {
-                activeTasks.remove(task);
-            }
+            activeTasks.remove(task);
         }
 
         logStream.close();
+    }
+
+    private void saveResult( Task task , long mem ) {
+        mem -= memoryOverhead;
+        if( mem < 0 ) {
+            logStream.println("Memory less than overhead!! "+mem+"  operation "+task.results.nameOp);
+        }
+        task.results.results.add(mem);
+        if( tool.isFailed() )
+            task.results.numFailed++;
     }
 
     private void setupOutputDirectory() {
@@ -194,10 +183,55 @@ public class MemoryBenchmarkLibrary {
         }
     }
 
-    public long findMemory( Task task )
+    /**
+     * Adjusts the amount of memory allocated until it converges to a solution.  This is done
+     * to take in account the garbage collector using up memory when it does not have to.
+     */
+    public boolean findMemory( Task task )
     {
+        int iteration = 0;
+
+        // measuring by giving it the maximum amount of memory
+        long found = testMemory(task,config.memoryMaxMB);
+        System.out.println(" iteration "+0+"  found "+(found/1024/1024)+" (MB)");
+
+        // it failed
+        if( found <= 0 ) {
+            return false;
+        }
+
+        while( true )  {
+            long test = testMemory(task,found/1024/1024);
+            if( !tool.failed )
+                System.out.println(" iteration "+(++iteration)+"  found "+(test/1024/1024)+" (MB)");
+            else
+                System.out.println(" iteration "+(++iteration)+" stopped");
+
+            // make sure the improvement is significant
+            long tol = (long)(found * 0.01);
+
+            if( tool.failed || test >= found-tol ) {
+                saveResult(task,found);
+                return true;
+            }
+            
+            found = test;
+
+            if( iteration > 30 ) {
+                System.out.println("Too many iterations!!");
+                logStream.println("Too many iterations!");
+                return false;
+            }
+        }
+    }
+
+    public long testMemory( Task task , long maxMemory )
+    {
+        if( maxMemory < config.memoryMinMB )
+            return -1;
+
         tool.setFrozenDefaultTime(task.timeout);
-        tool.setMemory(config.memoryMinMB,config.memoryMaxMB);
+        tool.setMemory(config.memoryMinMB,maxMemory);
 
         MemoryTest test = new MemoryTest();
         test.setup(factory,task.gen,task.op,1,task.matrixSize);

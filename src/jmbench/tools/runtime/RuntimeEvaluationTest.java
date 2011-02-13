@@ -181,9 +181,9 @@ public class RuntimeEvaluationTest extends EvaluationTest {
     /**
      * Generates the results based upon the computed opsPerSecond and the expected output.
      */
-    private RuntimeResults compileResults( double opsPerSecond )
+    private RuntimeMeasurement compileResults( double opsPerSecond )
     {
-        RuntimeResults results = new RuntimeResults(opsPerSecond,Runtime.getRuntime().totalMemory());
+        RuntimeMeasurement results = new RuntimeMeasurement(opsPerSecond,Runtime.getRuntime().totalMemory());
         if( sanityCheck )
             results.error = generator.checkResults(outputs,MAX_ERROR_THRESHOLD);
 

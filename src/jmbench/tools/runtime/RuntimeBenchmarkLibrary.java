@@ -175,7 +175,7 @@ public class RuntimeBenchmarkLibrary {
 
             if( f.exists() ) {
                 // if it exists read it in and see if it finished
-                OperationResults oldResults = UtilXmlSerialization.deserializeXml(f.getAbsolutePath());
+                RuntimeResults oldResults = UtilXmlSerialization.deserializeXml(f.getAbsolutePath());
 
                 if( !oldResults.isComplete() ) {
                     CaseState cs = new CaseState(c);
@@ -253,7 +253,7 @@ public class RuntimeBenchmarkLibrary {
 
         System.out.println("#### "+libraryType.getPlotName()+"  op "+e.getOpName()+"  Size "+matDimen[state.matrixIndex]+"  block "+state.blockIndex+"  ####");
 
-        OperationResults r = computeResults(e, state.matrixIndex , randSeed[state.blockIndex] , score , state.results);
+        RuntimeResults r = computeResults(e, state.matrixIndex , randSeed[state.blockIndex] , score , state.results);
 
         if( r == null )
             throw new RuntimeException("Shouldn't return null any more.  This is a bug.");
@@ -284,12 +284,12 @@ public class RuntimeBenchmarkLibrary {
     /**
      * Computes the current results
      */
-    private OperationResults computeResults( RuntimeEvaluationCase e , int matrixIndex ,
-                                           long randSeed ,
-                                           RuntimeEvaluationMetrics score[] , List<RuntimeResults> rawResults )
+    private RuntimeResults computeResults( RuntimeEvaluationCase e , int matrixIndex ,
+                                             long randSeed ,
+                                             RuntimeEvaluationMetrics score[] , List<RuntimeMeasurement> rawResults )
             throws FileNotFoundException {
 
-        List<RuntimeResults> opsPerSecond = evaluateCase( e , randSeed , matrixIndex );
+        List<RuntimeMeasurement> opsPerSecond = evaluateCase( e , randSeed , matrixIndex );
 
         if( caseFailed ) {
             System.out.println("      ---- ***** -----");
@@ -304,13 +304,13 @@ public class RuntimeBenchmarkLibrary {
             score[matrixIndex] = new RuntimeEvaluationMetrics(rawResults);
         }
 
-        OperationResults results = new OperationResults(e.getOpName(),
-                libraryType,e.getDimens(),score);
+        RuntimeResults results = new RuntimeResults(e.getOpName(),
+                libraryType.getPlotName(),e.getDimens(),score);
 
         return results;
     }
 
-    private List<RuntimeResults> evaluateCase( RuntimeEvaluationCase e , long seed , int indexDimen) {
+    private List<RuntimeMeasurement> evaluateCase( RuntimeEvaluationCase e , long seed , int indexDimen) {
         if( config.memoryTrial == 0 ) {
             return evaluateCaseDynamic(e,seed,indexDimen);
         } else {
@@ -325,7 +325,7 @@ public class RuntimeBenchmarkLibrary {
      * @return The operations per second for this case.
      */
     @SuppressWarnings({"RedundantCast", "unchecked"})
-    private List<RuntimeResults> evaluateCaseDynamic( RuntimeEvaluationCase e , long seed , int indexDimen) {
+    private List<RuntimeMeasurement> evaluateCaseDynamic( RuntimeEvaluationCase e , long seed , int indexDimen) {
         EvaluationTest test = e.createTest(indexDimen,config.trialTime,config.maxTrialTime,config.sanityCheck);
         test.setRandomSeed(seed);
 
@@ -361,7 +361,7 @@ public class RuntimeBenchmarkLibrary {
                 if( memory > maxMemoryAllocated ) {
                     maxMemoryAllocated = memory;
                 }
-                return (List<RuntimeResults>)((List)r.results);
+                return (List<RuntimeMeasurement>)((List)r.results);
             }
 
         }
@@ -379,7 +379,7 @@ public class RuntimeBenchmarkLibrary {
      * @return The operations per second for this case.
      */
     @SuppressWarnings({"RedundantCast", "unchecked"})
-    private List<RuntimeResults> evaluateCaseFixedMemory( RuntimeEvaluationCase e , 
+    private List<RuntimeMeasurement> evaluateCaseFixedMemory( RuntimeEvaluationCase e ,
                                                           long seed , int indexDimen) {
         EvaluationTest test = e.createTest(indexDimen,config.trialTime,config.maxTrialTime,config.sanityCheck);
         test.setRandomSeed(seed);
@@ -394,7 +394,7 @@ public class RuntimeBenchmarkLibrary {
             return null;
         }
 
-        return (List<RuntimeResults>)((List)r.results);
+        return (List<RuntimeMeasurement>)((List)r.results);
     }
 
     private EvaluatorSlave.Results callRunTest(RuntimeEvaluationCase e, EvaluationTest test, int matrixSize) {
@@ -442,7 +442,7 @@ public class RuntimeBenchmarkLibrary {
 
         for (TestResults aL : l) {
 
-            double val = ((RuntimeResults) aL).getOpsPerSec();
+            double val = ((RuntimeMeasurement) aL).getOpsPerSec();
 
             ret.add(val);
         }
@@ -454,7 +454,7 @@ public class RuntimeBenchmarkLibrary {
     {
         RuntimeEvaluationCase evalCase;
 
-        List<RuntimeResults> results = new ArrayList<RuntimeResults>();
+        List<RuntimeMeasurement> results = new ArrayList<RuntimeMeasurement>();
 
         RuntimeEvaluationMetrics score[];
 
