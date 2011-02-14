@@ -28,6 +28,7 @@ import org.ojalgo.matrix.decomposition.*;
 import org.ojalgo.matrix.store.MatrixStore;
 import org.ojalgo.matrix.store.PhysicalStore;
 import org.ojalgo.matrix.store.PrimitiveDenseStore;
+import org.ojalgo.matrix.store.TransposedStore;
 
 
 /**
@@ -65,6 +66,24 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
 
             for( int i = 0; i < numTrials; i++ )
                 C.fillByMultiplying(A, B);
+        }
+    }
+
+    @Override
+    public MemoryProcessorInterface multTransB() {
+        return new MultTransB();
+    }
+
+    public static class MultTransB implements MemoryProcessorInterface
+    {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            final PhysicalStore A = inputs[0].getOriginal();
+            final MatrixStore BT = new TransposedStore<Number>((MatrixStore<Number>)inputs[1].getOriginal());
+            final PhysicalStore C = PrimitiveDenseStore.FACTORY.makeZero(A.getRowDim(),BT.getColDim());
+
+            for( int i = 0; i < numTrials; i++ )
+                C.fillByMultiplying(A, BT);
         }
     }
 

@@ -127,6 +127,7 @@ public class RuntimeBenchmarkLibrary {
         this.randSeedTrials = rand.nextLong();
 
         tools = new BenchmarkTools(config.numBlockTrials,config.memorySlaveBase,config.memorySlaveScale,jarNames);
+        tools.setVerbose(false);
 
         this.libraryType = libraryType;
     }

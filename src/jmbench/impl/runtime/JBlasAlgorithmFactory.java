@@ -191,7 +191,7 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                result = Solve.solveSymmetric(matA,I);
+                result = Solve.solvePositive(matA,I);
             }
 
             long elapsed = System.nanoTime()-prev;

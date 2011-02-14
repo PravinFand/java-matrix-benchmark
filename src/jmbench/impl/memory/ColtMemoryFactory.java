@@ -73,6 +73,28 @@ public class ColtMemoryFactory implements MemoryFactory {
     }
 
     @Override
+    public MemoryProcessorInterface multTransB() {
+        return new MultTransB();
+    }
+
+    public static class MultTransB implements MemoryProcessorInterface
+    {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            DenseDoubleMatrix2D A = inputs[0].getOriginal();
+            DenseDoubleMatrix2D B = inputs[1].getOriginal();
+
+            Algebra alg = new Algebra();
+
+            DoubleMatrix2D result = new DenseDoubleMatrix2D(A.columns(),B.columns());
+
+            for( int i = 0; i < numTrials; i++ ) {
+                result = A.zMult(B, result, 1, 0, false, true);
+            }
+        }
+    }
+
+    @Override
     public MemoryProcessorInterface add() {
         return new Add();
     }

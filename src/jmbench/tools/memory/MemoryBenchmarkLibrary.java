@@ -75,22 +75,25 @@ public class MemoryBenchmarkLibrary {
         tool.sampleType = config.memorySampleType;
 
         if( config.add )
-            addOperation(config, new AddGenerator(), factory.add(), "add", libraryName, 0 , config.matrixSize);
+            addOperation(config, new AddGenerator(), factory.add(), "C=A+B", libraryName, 0 , config.matrixSize);
 
         if( config.mult )
-            addOperation(config, new MultGenerator(), factory.mult(), "mult", libraryName, 0 , config.matrixSize);
+            addOperation(config, new MultGenerator(), factory.mult(), "C=A*B", libraryName, 0 , config.matrixSize);
+
+        if( config.multTransB )
+            addOperation(config, new MultTranBGenerator(), factory.multTransB(), "C=A*B^T", libraryName, 0 , config.matrixSize);
 
         if( config.solveLinear )
-            addOperation(config, new SolveEqGenerator(), factory.solveEq(), "solveLinear", libraryName, 0 , config.matrixSize);
+            addOperation(config, new SolveEqGenerator(), factory.solveEq(), "solve m=n", libraryName, 0 , config.matrixSize);
 
         if( config.solveLS )
-            addOperation(config, new SolveOverGenerator(), factory.solveLS(), "solveLS", libraryName,0 , config.matrixSize);
+            addOperation(config, new SolveOverGenerator(), factory.solveLS(), "solve m>n", libraryName,0 , config.matrixSize);
 
         if( config.svd )
-            addOperation(config, new SvdGenerator(), factory.svd(), "svd", libraryName,0 , config.matrixSize/2 );
+            addOperation(config, new SvdGenerator(), factory.svd(), "SVD", libraryName,0 , config.matrixSize/2 );
 
         if( config.eig )
-            addOperation(config, new EigSymmGenerator(), factory.eig(), "eig", libraryName,0 , config.matrixSize);
+            addOperation(config, new EigSymmGenerator(), factory.eig(), "Eigen", libraryName,0 , config.matrixSize);
 
         if( directorySave != null ) {
             setupOutputDirectory();
@@ -112,7 +115,7 @@ public class MemoryBenchmarkLibrary {
         while( !activeTasks.isEmpty() ) {
             Task task = activeTasks.get( rand.nextInt(activeTasks.size()));
 
-            System.out.println(libraryName+" operation "+task.results.nameOp);
+            System.out.println(libraryName+" operation "+task.results.nameOp+"  remaining tasks "+activeTasks.size());
 
             boolean failed = false;
 
@@ -132,14 +135,14 @@ public class MemoryBenchmarkLibrary {
         logStream.close();
     }
 
-    private void saveResult( Task task , long mem ) {
-        mem -= memoryOverhead;
-        if( mem < 0 ) {
-            logStream.println("Memory less than overhead!! "+mem+"  operation "+task.results.nameOp);
+    private void logMeasurement( Task task , long mem ) {
+        if( mem > 0 ) {
+            mem -= memoryOverhead;
+            if( mem < 0 ) {
+                logStream.println("Memory less than overhead!! "+mem+"  operation "+task.results.nameOp);
+            }
+            task.results.results.add(mem);
         }
-        task.results.results.add(mem);
-        if( tool.isFailed() )
-            task.results.numFailed++;
     }
 
     private void setupOutputDirectory() {
@@ -196,7 +199,8 @@ public class MemoryBenchmarkLibrary {
         System.out.println(" iteration "+0+"  found "+(found/1024/1024)+" (MB)");
 
         // it failed
-        if( found <= 0 ) {
+        if( tool.isFailed() || found <= 0 ) {
+            task.results.numFailed++;
             return false;
         }
 
@@ -210,8 +214,8 @@ public class MemoryBenchmarkLibrary {
             // make sure the improvement is significant
             long tol = (long)(found * 0.01);
 
-            if( tool.failed || test >= found-tol ) {
-                saveResult(task,found);
+            if( test <= 0 || tool.failed || test >= found-tol ) {
+                logMeasurement(task,found);
                 return true;
             }
             

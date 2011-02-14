@@ -99,7 +99,7 @@ public class StabilityBenchmarkConfig implements Serializable {
         config.randomSeed = 0xdeadbeef;//new Random().nextLong();
         config.maxProcessingTime = 15*60*1000;
 
-        config.baseMemory = 20;
+        config.baseMemory = 200;
         config.scaleMemory = 2;
 
         // some what arbitrary.  selected so that it will work on small and large

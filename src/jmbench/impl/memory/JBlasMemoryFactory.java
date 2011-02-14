@@ -66,6 +66,23 @@ public class JBlasMemoryFactory implements MemoryFactory {
     }
 
     @Override
+    public MemoryProcessorInterface multTransB() {
+        return new MultTransB();
+    }
+
+    public static class MultTransB implements MemoryProcessorInterface
+    {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            DoubleMatrix A = inputs[0].getOriginal();
+            DoubleMatrix B = inputs[1].getOriginal();
+
+            for( int i = 0; i < numTrials; i++ )
+                A.mmul(B.transpose());
+        }
+    }
+
+    @Override
     public MemoryProcessorInterface add() {
         return new Add();
     }

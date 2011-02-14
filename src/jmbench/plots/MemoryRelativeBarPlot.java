@@ -28,6 +28,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import java.awt.*;
@@ -55,6 +56,7 @@ public class MemoryRelativeBarPlot {
                 true,                     // tooltips?
                 false                     // URLs?
         );
+        chart.addSubtitle(new TextTitle("(Smaller is Better)",new Font("SansSerif", Font.ITALIC, 12)));
     }
 
     public void addResult( String operation , String library , double relativeMemory ) {

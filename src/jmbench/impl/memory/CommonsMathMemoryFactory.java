@@ -66,6 +66,24 @@ public class CommonsMathMemoryFactory implements MemoryFactory {
     }
 
     @Override
+    public MemoryProcessorInterface multTransB() {
+        return new MultTransB();
+    }
+
+    public static class MultTransB implements MemoryProcessorInterface
+    {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            RealMatrix A = inputs[0].getOriginal();
+            RealMatrix B = inputs[1].getOriginal();
+
+            for( int i = 0; i < numTrials; i++ ) {
+                A.multiply(B.transpose());
+            }
+        }
+    }
+
+    @Override
     public MemoryProcessorInterface add() {
         return new Add();
     }

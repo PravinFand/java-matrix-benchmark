@@ -68,6 +68,25 @@ public class MtjMemoryFactory implements MemoryFactory {
     }
 
     @Override
+    public MemoryProcessorInterface multTransB() {
+        return new MultTransB();
+    }
+
+    public static class MultTransB implements MemoryProcessorInterface
+    {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            DenseMatrix A = inputs[0].getOriginal();
+            DenseMatrix B = inputs[1].getOriginal();
+            DenseMatrix C = new DenseMatrix(A.numRows(),B.numRows());
+
+            for( int i = 0; i < numTrials; i++ ){
+                A.transBmult(B,C);
+            }
+        }
+    }
+
+    @Override
     public MemoryProcessorInterface add() {
         return new Add();
     }

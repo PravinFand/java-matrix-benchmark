@@ -98,7 +98,7 @@ public class JBlasStabilityFactory implements StabilityFactory {
             DoubleMatrix matA = convertToJBlas(inputs[0]);
 
             DoubleMatrix I = DoubleMatrix.eye(matA.getRows());
-            DoubleMatrix result = Solve.solveSymmetric(matA,I);
+            DoubleMatrix result = Solve.solvePositive(matA,I);
             DenseMatrix64F ejmlInv = jblasToEjml(result);
 
             return new DenseMatrix64F[]{ejmlInv};

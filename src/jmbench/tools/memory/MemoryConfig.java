@@ -65,6 +65,7 @@ public class MemoryConfig {
 
     // ops that it tests
     public boolean mult;
+    public boolean multTransB;
     public boolean add;
     public boolean solveLinear;
     public boolean solveLS;
@@ -115,6 +116,7 @@ public class MemoryConfig {
         ret.memorySampleType = SampleType.PROC;
 
         ret.mult = true;
+        ret.multTransB = true;
         ret.add = true;
         ret.solveLinear = true;
         ret.solveLS = true;
@@ -179,6 +181,14 @@ public class MemoryConfig {
 
     public void setMult(boolean mult) {
         this.mult = mult;
+    }
+
+    public boolean isMultTransB() {
+        return multTransB;
+    }
+
+    public void setMultTransB(boolean multTransB) {
+        this.multTransB = multTransB;
     }
 
     public boolean isAdd() {

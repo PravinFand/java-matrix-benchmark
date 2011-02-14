@@ -73,6 +73,8 @@ public class StabilityBenchmarkLibrary {
 
         this.directorySave = outputDir;
 
+        StabilityFactory factory = target.loadAlgorithmFactory();
+
         tools = new BenchmarkTools(1,config.baseMemory,config.scaleMemory,target.getJarFiles());
         tools.setFrozenDefaultTime(config.maxProcessingTime);
 
@@ -90,7 +92,7 @@ public class StabilityBenchmarkLibrary {
         this.numSolve = numSolve;
         this.numSvd = numSvd;
 
-        createOperationsList((StabilityFactory)target.loadAlgorithmFactory());
+        createOperationsList(factory);
     }
 
     private void setupOutputDirectory() {

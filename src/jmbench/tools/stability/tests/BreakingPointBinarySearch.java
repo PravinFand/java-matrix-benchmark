@@ -43,6 +43,7 @@ public class BreakingPointBinarySearch {
                 upper = testPoint;
             }
 
+//            System.out.println("testPoint "+testPoint);
             if( upper == -1 ) {
                 testPoint = (lower+1)*2;
             } else if( lower == -1 ) {

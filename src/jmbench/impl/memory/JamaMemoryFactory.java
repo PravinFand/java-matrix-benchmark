@@ -59,10 +59,27 @@ public class JamaMemoryFactory implements MemoryFactory {
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             Matrix A = inputs[0].getOriginal();
             Matrix B = inputs[1].getOriginal();
-            Matrix C;
 
             for( int i = 0; i < numTrials; i++ ){
-                C = A.times(B);
+                A.times(B);
+            }
+        }
+    }
+
+    @Override
+    public MemoryProcessorInterface multTransB() {
+        return new MultTransB();
+    }
+
+    public static class MultTransB implements MemoryProcessorInterface
+    {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            Matrix A = inputs[0].getOriginal();
+            Matrix B = inputs[1].getOriginal();
+
+            for( int i = 0; i < numTrials; i++ ){
+                A.times(B.transpose());
             }
         }
     }

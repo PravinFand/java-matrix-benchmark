@@ -33,6 +33,8 @@ public interface MemoryFactory extends LibraryFactory, MatrixFactory, Serializab
 
     public MemoryProcessorInterface mult();
 
+    public MemoryProcessorInterface multTransB();
+
     public MemoryProcessorInterface add();
 
     public MemoryProcessorInterface solveEq();

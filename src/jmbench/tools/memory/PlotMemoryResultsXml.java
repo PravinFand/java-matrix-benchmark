@@ -24,10 +24,7 @@ import jmbench.tools.runtime.evaluation.PlotRuntimeResults;
 import pja.util.UtilXmlSerialization;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -36,13 +33,14 @@ import java.util.Map;
 public class PlotMemoryResultsXml {
 
     File directory;
-    boolean displayResults = true;
-    boolean plotFailed = false;
+    private static final boolean displayResults = true;
+    private static final boolean plotFailed = false;
 
     // specifies which metric is used to compare libraries.  1.0 = max 0.0 = min
     double scoreFrac = 0.0;
 
     public PlotMemoryResultsXml( String dir ) {
+        System.out.println("Reading "+dir);
         directory = new File(dir);
 
         if( !directory.exists() ) {
@@ -55,15 +53,15 @@ public class PlotMemoryResultsXml {
     }
 
     public void plot() {
-        Map<String, List> opMap = parseResults();
+        Map<String, List<MemoryResults>> opMap = parseResults();
 
         plotResults(opMap);
     }
 
-    private Map<String, List> parseResults() {
+    private Map<String, List<MemoryResults>> parseResults() {
         String[] files = directory.list();
 
-        Map<String, List> opMap = new HashMap<String,List>();
+        Map<String, List<MemoryResults>> opMap = new HashMap<String,List<MemoryResults>>();
 
         for( String nameLevel0 : files ) {
             File level0 = new File(directory.getPath()+"/"+nameLevel0);
@@ -89,11 +87,11 @@ public class PlotMemoryResultsXml {
                         System.out.printf("%10.10s  %12s ",nameLevel0,r.getNameOp());
                         r.printStatistics();
 
-                        List l;
+                        List<MemoryResults> l;
                         if( opMap.containsKey(stripName) ) {
                             l = opMap.get(stripName);
                         } else {
-                            l = new ArrayList();
+                            l = new ArrayList<MemoryResults>();
                             opMap.put(stripName,l);
                         }
                         l.add(r);
@@ -105,11 +103,14 @@ public class PlotMemoryResultsXml {
         return opMap;
     }
 
-    private void plotResults( Map<String, List> opMap ) {
+    private void plotResults( Map<String, List<MemoryResults>> opMap ) {
         MemoryRelativeBarPlot plot = new MemoryRelativeBarPlot("Library Memory Usage");
 
         for( String key : opMap.keySet() ) {
             List<MemoryResults> l = opMap.get(key);
+
+            // put into alphabetical order
+            Collections.sort(l,new CompareByLibName());
 
             MemoryPlotData plotData = convertToPlotData(l);
 
@@ -122,6 +123,15 @@ public class PlotMemoryResultsXml {
 
         plot.displayWindow(900,300);
         plot.savePDF(directory.getPath()+"/plot_memory.pdf",900,300);
+    }
+
+    private static class CompareByLibName implements Comparator<MemoryResults>
+    {
+
+        @Override
+        public int compare(MemoryResults o1, MemoryResults o2) {
+            return o1.getNameLibrary().compareTo(o2.getNameLibrary());
+        }
     }
 
     private MemoryPlotData convertToPlotData( List<MemoryResults> l ) {
@@ -141,6 +151,7 @@ public class PlotMemoryResultsXml {
             MemoryResults m = l.get(i);
 
             if( !m.results.isEmpty() && (plotFailed || m.numFailed == 0) ) {
+
                 long val = m.getScore(scoreFrac);
 
                 if( val == Long.MAX_VALUE || val == 0)
