@@ -207,6 +207,8 @@ public class RuntimeBenchmarkLibrary {
                             throw new RuntimeException("Old result isn't flag as being done, but it really is?");
                         }
                         rawResults = cs.score[cs.matrixIndex].getRawResults();
+                        if( rawResults == null )
+                            cs.score[cs.matrixIndex].setRawResults(new ArrayList<RuntimeMeasurement>());
                         cs.results.addAll(rawResults);
                     }
                     states.add( cs );
