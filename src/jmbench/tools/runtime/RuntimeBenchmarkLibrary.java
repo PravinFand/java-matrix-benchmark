@@ -206,9 +206,12 @@ public class RuntimeBenchmarkLibrary {
                         if( cs.matrixIndex >= cs.score.length ) {
                             throw new RuntimeException("Old result isn't flag as being done, but it really is?");
                         }
-                        rawResults = cs.score[cs.matrixIndex].getRawResults();
-                        if( rawResults == null )
+
+                        if( cs.score[cs.matrixIndex] == null ) {
+                            cs.score[cs.matrixIndex] = new RuntimeEvaluationMetrics();
                             cs.score[cs.matrixIndex].setRawResults(new ArrayList<RuntimeMeasurement>());
+                        }
+                        rawResults = cs.score[cs.matrixIndex].getRawResults();
                         cs.results.addAll(rawResults);
                     }
                     states.add( cs );
