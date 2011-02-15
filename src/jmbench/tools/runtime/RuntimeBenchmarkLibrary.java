@@ -178,18 +178,14 @@ public class RuntimeBenchmarkLibrary {
                 if( !oldResults.isComplete() ) {
                     CaseState cs = new CaseState(c);
                     cs.score = oldResults.metrics;
-                    boolean foundNull = false;
                     for( cs.matrixIndex = 0; cs.matrixIndex < cs.score.length; cs.matrixIndex++ ) {
                         if( cs.score[cs.matrixIndex] == null ) {
-                            foundNull = true;
                             break;
                         }
                     }
                     // see if the last matrix size is finished or not
                     if( cs.matrixIndex > 0 ) {
-                        if( foundNull ) {
-                            cs.matrixIndex--;
-                        }
+                        cs.matrixIndex--;
                         List<RuntimeMeasurement> rawResults = cs.score[cs.matrixIndex].getRawResults();
 
                         // see if it has enough trials to move on to the next matrix size
@@ -210,6 +206,7 @@ public class RuntimeBenchmarkLibrary {
                         if( cs.matrixIndex >= cs.score.length ) {
                             throw new RuntimeException("Old result isn't flag as being done, but it really is?");
                         }
+                        rawResults = cs.score[cs.matrixIndex].getRawResults();
                         cs.results.addAll(rawResults);
                     }
                     states.add( cs );
