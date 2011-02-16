@@ -267,7 +267,7 @@ public class StabilityBenchmarkLibrary {
             // if a fatal error occurred create some results so that this is marked
             if( fatalError != null ) {
                 results = new StabilityTrialResults();
-                logStream.println("Had fatal error: "+op.getTestName());
+                logStream.println("Had fatal error: "+op.getTestName()+" error = "+fatalError);
                 results.fatalError = fatalError;
             }
             // add environmental information for debugging later on

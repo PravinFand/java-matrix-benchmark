@@ -173,9 +173,6 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
 
-            no.uib.cipr.matrix.EVD eig = new no.uib.cipr.matrix.EVD(matA.numRows());
-            DenseMatrix tmp = new DenseMatrix(matA);
-
             DenseMatrix V = null;
             double []D = null;
 
@@ -184,10 +181,9 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             for( long i = 0; i < numTrials; i++ ) {
                 try {
                     // the input matrix is over written
-                    tmp.set(matA);
-                    EVD e = eig.factor(tmp);
-                    V = e.getRightEigenvectors();
-                    D = e.getRealEigenvalues();
+                    SymmDenseEVD e = SymmDenseEVD.factorize(matA);
+                    V = e.getEigenvectors();
+                    D = e.getEigenvalues();
                 } catch (NotConvergedException e) {
                     throw new RuntimeException(e);
                 }

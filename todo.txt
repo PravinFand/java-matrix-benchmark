@@ -1,3 +1,7 @@
+- use shutdown hooks in slave to detect control-c and avoid messing up resume
+
+- applet for displaying results
+
 - Randomly draw operation and matrix size
  * first do a run through until an exception occurs
  * once max matrix size is known randomly draw

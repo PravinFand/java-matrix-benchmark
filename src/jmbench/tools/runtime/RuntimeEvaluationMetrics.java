@@ -56,6 +56,10 @@ public class RuntimeEvaluationMetrics
     }
 
     public void computeStatistics() {
+        // sort in a local variable so that the original order is maintained
+        List<RuntimeMeasurement> rawResults = new ArrayList<RuntimeMeasurement>();
+        rawResults.addAll(this.rawResults);
+
         Collections.sort(rawResults);
 
         int numSamples = rawResults.size();

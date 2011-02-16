@@ -105,15 +105,15 @@ public class MtjStabilityFactory implements StabilityFactory {
         public DenseMatrix64F[] process(DenseMatrix64F[] inputs) {
             DenseMatrix matA = convertToMtj(inputs[0]);
 
-            EVD eig = new EVD(matA.numRows());
+            SymmDenseEVD eig;
             try {
-                eig.factor(matA);
+                eig = SymmDenseEVD.factorize(matA);
             } catch (NotConvergedException e) {
                 return null;
             }
 
-            DenseMatrix64F ejmlD = CommonOps.diag(eig.getRealEigenvalues());
-            DenseMatrix64F ejmlV = mtjToEjml(eig.getLeftEigenvectors());
+            DenseMatrix64F ejmlD = CommonOps.diag(eig.getEigenvalues());
+            DenseMatrix64F ejmlV = mtjToEjml(eig.getEigenvectors());
 
             return new DenseMatrix64F[]{ejmlD,ejmlV};
         }

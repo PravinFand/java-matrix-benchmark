@@ -11,6 +11,7 @@
 - Improved runtime benchmark resume so that more of the old results are reused.
 - Added summary box and whisker plot.
 - Runtime now uses a CSV format for results.  More human readable and refactoring won't screw things up constantly now.
+- MTJ benchmark was accidentally using non-symmetric EVD
 
 ----- Version 0.7
 

@@ -188,6 +188,7 @@ public class RuntimeBenchmarkLibrary {
                         cs.matrixIndex--;
                         List<RuntimeMeasurement> rawResults = cs.score[cs.matrixIndex].getRawResults();
 
+                        // TODO have a single function evaluate if its done processing matrix size
                         // see if it has enough trials to move on to the next matrix size
                         if( rawResults.size() >= config.maxTrials ) {
                             cs.matrixIndex++;

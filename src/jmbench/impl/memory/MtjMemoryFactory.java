@@ -24,8 +24,8 @@ import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
 import jmbench.interfaces.MemoryProcessorInterface;
 import no.uib.cipr.matrix.DenseMatrix;
-import no.uib.cipr.matrix.EVD;
 import no.uib.cipr.matrix.NotConvergedException;
+import no.uib.cipr.matrix.SymmDenseEVD;
 
 
 /**
@@ -186,18 +186,13 @@ public class MtjMemoryFactory implements MemoryFactory {
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix A = inputs[0].getOriginal();
 
-            no.uib.cipr.matrix.EVD eig = new no.uib.cipr.matrix.EVD(A.numRows());
-            DenseMatrix tmp = new DenseMatrix(A);
-
             DenseMatrix v1=null;
             double v2[]= null;
             for( int i = 0; i < numTrials; i++ ) {
                 try {
-                    // the input matrix is over written
-                    tmp.set(A);
-                    EVD e = eig.factor(tmp);
-                    v1=e.getRightEigenvectors();
-                    v2=e.getRealEigenvalues();
+                    SymmDenseEVD e = SymmDenseEVD.factorize(A);
+                    v1=e.getEigenvectors();
+                    v2=e.getEigenvalues();
                 } catch (NotConvergedException e) {
                     throw new RuntimeException(e);
                 }
