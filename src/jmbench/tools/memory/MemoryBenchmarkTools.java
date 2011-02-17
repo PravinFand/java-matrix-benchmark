@@ -511,8 +511,14 @@ public class MemoryBenchmarkTools {
                     errorStream.println("Stale request ID");
                     failed = true;
                 } else if( results.failed != null ) {
-                    // don't log out of memory errors since they happen intentionally a lot
-                    if( results.failed != EvaluatorSlave.FailReason.OUT_OF_MEMORY ) {
+                    if( results.failed == EvaluatorSlave.FailReason.USER_REQUESTED ) {
+                        errorStream.println("    Slave was killed by the user/OS.  Stopping the benchmark.");
+                        errorStream.println("    error message: "+results.detailedError);
+                        System.out.println("  Slave was killed by the user/OS.  Stopping the benchmark.");
+                        System.out.println("    error message: "+results.detailedError);
+                        System.exit(0);
+                    } else if( results.failed != EvaluatorSlave.FailReason.OUT_OF_MEMORY ) {
+                        // don't log out of memory errors since they happen intentionally a lot
                         errorStream.println("Failed! "+results.failed);
                         errorStream.println(results.detailedError);
                         System.out.println("Failed! "+results.failed);

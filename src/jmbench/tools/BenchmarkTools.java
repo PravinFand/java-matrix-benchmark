@@ -301,7 +301,12 @@ public class BenchmarkTools {
 
             if( exitVal != 0 ) {
                 errorStream.println("None 0 exit value returned by the slave. val = "+exitVal);
-                ret = null;
+
+                // see if the user terminated the slave
+                ret = UtilXmlSerialization.deserializeXml("slave_results.xml");
+                if( ret == null || ret.getRequestID() != requestID ) {
+                    ret = null;
+                }
             } else {
                 // read in the results from the slave
                 ret = UtilXmlSerialization.deserializeXml("slave_results.xml");

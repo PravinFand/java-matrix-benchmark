@@ -1,5 +1,3 @@
-- use shutdown hooks in slave to detect control-c and avoid messing up resume
-
 - applet for displaying results
 
 - Randomly draw operation and matrix size

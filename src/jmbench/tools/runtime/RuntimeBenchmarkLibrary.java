@@ -438,7 +438,13 @@ public class RuntimeBenchmarkLibrary {
 
             caseFailed = true;
         } else if( r.failed != null ) {
-            if( r.failed == EvaluatorSlave.FailReason.TOO_SLOW ) {
+            if( r.failed == EvaluatorSlave.FailReason.USER_REQUESTED ) {
+                logStream.println("    Slave was killed by the user/OS.  Stopping the benchmark.  op = "+e.getOpName()+" matrix size = "+matrixSize);
+                logStream.println("    error message: "+r.detailedError);
+                System.out.println("  Slave was killed by the user/OS.  Stopping the benchmark.");
+                System.out.println("    error message: "+r.detailedError);
+                System.exit(0);
+            } else if( r.failed == EvaluatorSlave.FailReason.TOO_SLOW ) {
                 logStream.println("    Case was too slow: op = "+e.getOpName()+" matrix size = "+matrixSize+" memory = "+tools.getAllocatedMemory()+" mb");
                 tooSlow = true;
             } else {

@@ -12,6 +12,8 @@
 - Added summary box and whisker plot.
 - Runtime now uses a CSV format for results.  More human readable and refactoring won't screw things up constantly now.
 - MTJ benchmark was accidentally using non-symmetric EVD
+- Catches the slave being kill intentionally by the user/os and gracefully shuts down the runtime benchmark.
+  * Before it some times took multiple control-c to kill and each time it recorded a fault in the test
 
 ----- Version 0.7
 
