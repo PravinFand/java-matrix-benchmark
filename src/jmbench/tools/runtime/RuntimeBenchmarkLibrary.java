@@ -82,6 +82,7 @@ public class RuntimeBenchmarkLibrary {
     private String directorySave;
 
     // used to write errors to
+    private File logFile;
     private PrintStream logStream;
 
     // true if an evaluation case failed
@@ -142,22 +143,30 @@ public class RuntimeBenchmarkLibrary {
 
         List<CaseState> states = createCaseList(cases);
 
-        long startTime = System.currentTimeMillis();
-
-        while(!states.isEmpty()) {
-            // if random is true then select the next operation block that is to be benchmarked randomly
-            int index = config.randizeOrder ? rand.nextInt( states.size() ) : 0;
-
-            CaseState s = states.get(index);
-
-            if( evaluateOneBlock(s)) {
-                states.remove(index);
+        if( states.isEmpty() ) {
+            System.out.println("Benchmark already finished.  Deleting the new log and moving on.");
+            logStream.close();
+            if( !logFile.delete() ) {
+                System.out.println("Can't delete pointless log");
             }
+        } else {
+            long startTime = System.currentTimeMillis();
+
+            while(!states.isEmpty()) {
+                // if random is true then select the next operation block that is to be benchmarked randomly
+                int index = config.randizeOrder ? rand.nextInt( states.size() ) : 0;
+
+                CaseState s = states.get(index);
+
+                if( evaluateOneBlock(s)) {
+                    states.remove(index);
+                }
+            }
+
+            System.out.println("Total processing time = "+(System.currentTimeMillis()-startTime)/1000.0);
+
+            logStream.close();
         }
-
-        System.out.println("Total processing time = "+(System.currentTimeMillis()-startTime)/1000.0);
-
-        logStream.close();
     }
 
     /**
@@ -217,16 +226,17 @@ public class RuntimeBenchmarkLibrary {
                     }
                     states.add( cs );
                     int matrixSize = oldResults.getMatDimen()[cs.matrixIndex];
-                    System.out.println("RESUMING OLD RESULTS: Found previously incomplete results for "+c.getOpName()+" at size "+matrixSize);
-                    logStream.println("RESUMING OLD RESULTS: Found previously incomplete results for "+c.getOpName()+" at size "+matrixSize);
+                    System.out.println("RESUMING OLD RESULTS: Operation "+c.getOpName()+" size "+matrixSize+" numTrials "+cs.results.size());
+                    logStream.println("RESUMING OLD RESULTS: Operation "+c.getOpName()+" size "+matrixSize+" numTrials "+cs.results.size());
                 } else {
                     System.out.println("SKIPPING: Found previously completed results for "+c.getOpName());
-                    logStream.println("SKIPPING: Found previously completed results for "+c.getOpName()+" skipping");
+                    logStream.println("SKIPPING: Found previously completed results for "+c.getOpName());
                 }
             } else {
                 states.add( new CaseState(c));
             }
         }
+
         return states;
     }
 
@@ -237,10 +247,10 @@ public class RuntimeBenchmarkLibrary {
         try {
             for( int i = 0; i < 1000; i++ ) {
                 String fileName = String.format("%s/log%d.txt",directorySave,i);
-                File f = new File(fileName);
-                if( f.exists() )
+                logFile = new File(fileName);
+                if( logFile.exists() )
                     continue;
-                FileOutputStream out = new FileOutputStream(f,true);
+                FileOutputStream out = new FileOutputStream(logFile,true);
                 logStream = new PrintStream(out);
                 break;
             }

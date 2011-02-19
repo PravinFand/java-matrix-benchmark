@@ -38,6 +38,7 @@ public class PlotMemoryResultsXml {
 
     // specifies which metric is used to compare libraries.  1.0 = max 0.0 = min
     double scoreFrac = 0.0;
+    MemoryConfig config;
 
     public PlotMemoryResultsXml( String dir ) {
         System.out.println("Reading "+dir);
@@ -53,6 +54,10 @@ public class PlotMemoryResultsXml {
     }
 
     public void plot() {
+        config = UtilXmlSerialization.deserializeXml(directory.getAbsolutePath()+"/config.xml");
+        if( config == null )
+            throw new RuntimeException("Couldn't load saved benchmark config file");
+
         Map<String, List<MemoryResults>> opMap = parseResults();
 
         plotResults(opMap);
@@ -104,7 +109,7 @@ public class PlotMemoryResultsXml {
     }
 
     private void plotResults( Map<String, List<MemoryResults>> opMap ) {
-        MemoryRelativeBarPlot plot = new MemoryRelativeBarPlot("Library Memory Usage");
+        MemoryRelativeBarPlot plot = new MemoryRelativeBarPlot("Library Memory Usage: Size "+config.matrixSize);
 
         for( String key : opMap.keySet() ) {
             List<MemoryResults> l = opMap.get(key);
