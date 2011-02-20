@@ -360,7 +360,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                result = matA.zMult(matB, result, 1, 0, false, true);
+                matA.zMult(matB, result, 1, 0, false, true);
             }
 
             long elapsed = System.nanoTime()-prev;

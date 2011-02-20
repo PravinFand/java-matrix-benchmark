@@ -52,6 +52,28 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
     }
 
     @Override
+    public MemoryProcessorInterface invertSymmPosDef() {
+        return new OpCholInvertSymmPosDef();
+    }
+
+    public static class OpCholInvertSymmPosDef implements MemoryProcessorInterface
+    {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            PhysicalStore A = inputs[0].getOriginal();
+
+            final Cholesky<Double> chol = CholeskyDecomposition.makePrimitive();
+
+            for( int i = 0; i < numTrials; i++ ){
+                if (!chol.compute(A)) {
+                    throw new RuntimeException("Decomposition failed");
+                }
+                chol.getInverse();
+            }
+        }
+    }
+
+    @Override
     public MemoryProcessorInterface mult() {
         return new Mult();
     }

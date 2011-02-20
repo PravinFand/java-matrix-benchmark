@@ -89,6 +89,9 @@ public class MemoryBenchmarkLibrary {
         if( config.solveLS )
             addOperation(config, new SolveOverGenerator(), factory.solveLS(), "solve m>n", libraryName,0 , config.matrixSize);
 
+        if( config.invSymmPosDef )
+            addOperation(config, new InvertSymmPosDefGenerator(), factory.invertSymmPosDef(), "inv |A| > 1", libraryName,0 , config.matrixSize);
+
         if( config.svd )
             addOperation(config, new SvdGenerator(), factory.svd(), "SVD", libraryName,0 , config.matrixSize/2 );
 

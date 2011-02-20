@@ -69,6 +69,7 @@ public class MemoryConfig {
     public boolean add;
     public boolean solveLinear;
     public boolean solveLS;
+    public boolean invSymmPosDef;
     public boolean svd;
     public boolean eig;
 
@@ -101,17 +102,17 @@ public class MemoryConfig {
         ret.libraries.add( jblas );
         ret.libraries.add( mtj );
         ret.libraries.add( ojalgo );
-        ret.libraries.add( sejml);
+//        ret.libraries.add( sejml);
         ret.libraries.add( pcolt );
         ret.libraries.add( ujmp );
         ret.libraries.add( ujmp_j );
 
         ret.seed = 234234;
 
-        ret.maxTestTimeMilli = 20*60*1000;
+        ret.maxTestTimeMilli = 30*60*1000;
         ret.numTrials = 3;
         ret.memoryMinMB = 50;
-        ret.memoryMaxMB = 1024;
+        ret.memoryMaxMB = 1024*2;
         ret.matrixSize = 2000;
         ret.memorySampleType = SampleType.PROC;
 
@@ -120,6 +121,7 @@ public class MemoryConfig {
         ret.add = true;
         ret.solveLinear = true;
         ret.solveLS = true;
+        ret.invSymmPosDef = true;
         ret.svd = true;
         ret.eig = true;
 

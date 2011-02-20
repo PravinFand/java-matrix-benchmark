@@ -24,6 +24,7 @@ import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
 import jmbench.interfaces.MemoryProcessorInterface;
 import org.ujmp.core.Matrix;
+import org.ujmp.core.MatrixFactory;
 import org.ujmp.core.doublematrix.DenseDoubleMatrix2D;
 import org.ujmp.core.util.UJMPSettings;
 
@@ -56,6 +57,24 @@ public class UjmpMemoryFactory implements MemoryFactory {
     @Override
     public BenchmarkMatrix wrap(Object matrix) {
         return new UjmpBenchmarkMatrix((Matrix)matrix);
+    }
+
+    @Override
+    public MemoryProcessorInterface invertSymmPosDef() {
+        return new InvSymmPosDef();
+    }
+
+    public static class InvSymmPosDef implements MemoryProcessorInterface
+    {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            DenseDoubleMatrix2D A = inputs[0].getOriginal();
+
+            Matrix eye = MatrixFactory.eye(A.getSize());
+
+            for( int i = 0; i < numTrials; i++ )
+                DenseDoubleMatrix2D.chol.solve(A, eye);
+        }
     }
 
     @Override

@@ -23,9 +23,7 @@ import jmbench.impl.wrapper.MtjBenchmarkMatrix;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
 import jmbench.interfaces.MemoryProcessorInterface;
-import no.uib.cipr.matrix.DenseMatrix;
-import no.uib.cipr.matrix.NotConvergedException;
-import no.uib.cipr.matrix.SymmDenseEVD;
+import no.uib.cipr.matrix.*;
 
 
 /**
@@ -46,6 +44,31 @@ public class MtjMemoryFactory implements MemoryFactory {
     @Override
     public BenchmarkMatrix wrap(Object matrix) {
         return new MtjBenchmarkMatrix((DenseMatrix)matrix);
+    }
+
+    @Override
+    public MemoryProcessorInterface invertSymmPosDef() {
+        return new InvSymmPosDef();
+    }
+
+    public static class InvSymmPosDef implements MemoryProcessorInterface
+    {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            DenseMatrix A = inputs[0].getOriginal();
+
+            DenseCholesky cholesky = new DenseCholesky(A.numRows(),false);
+            LowerSPDDenseMatrix uspd = new LowerSPDDenseMatrix(A);
+
+            for( int i = 0; i < numTrials; i++ ){
+                uspd.set(A);
+                if( !cholesky.factor(uspd).isSPD() ) {
+                    throw new RuntimeException("Is not SPD");
+                }
+
+                cholesky.solve(Matrices.identity(A.numColumns()));
+            }
+        }
     }
 
     @Override

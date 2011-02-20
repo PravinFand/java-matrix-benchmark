@@ -23,11 +23,13 @@ import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
 import jmbench.interfaces.MemoryProcessorInterface;
+import org.ejml.alg.dense.decomposition.CholeskyDecomposition;
 import org.ejml.alg.dense.decomposition.DecompositionFactory;
 import org.ejml.alg.dense.decomposition.EigenDecomposition;
 import org.ejml.alg.dense.decomposition.SingularValueDecomposition;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
+import org.ejml.ops.CovarianceOps;
 
 
 /**
@@ -49,6 +51,25 @@ public class EjmlMemoryFactory implements MemoryFactory {
     public BenchmarkMatrix create(int numRows, int numCols) {
         DenseMatrix64F A = new DenseMatrix64F(numRows,numCols);
         return wrap(A);
+    }
+
+    @Override
+    public MemoryProcessorInterface invertSymmPosDef() {
+        return new InvSymmPosDef();
+    }
+
+    public static class InvSymmPosDef implements MemoryProcessorInterface
+    {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            DenseMatrix64F A = inputs[0].getOriginal();
+
+            DenseMatrix64F result = new DenseMatrix64F(A.numRows,A.numCols);
+
+            for( int i = 0; i < numTrials; i++ )
+                if( !CovarianceOps.invert(A,result) )
+                    throw new RuntimeException("Inversion failed");
+        }
     }
 
     @Override

@@ -1,6 +1,6 @@
 ----- Version 0.8
 
-20XX/XX/XX
+2011/02/19
 
 - Can now truncate runtime data when creating plots.
 - Added a tool for comparing results from a library across different results directories.

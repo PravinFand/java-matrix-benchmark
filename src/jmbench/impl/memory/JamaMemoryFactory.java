@@ -49,6 +49,25 @@ public class JamaMemoryFactory implements MemoryFactory {
     }
 
     @Override
+    public MemoryProcessorInterface invertSymmPosDef() {
+        return new InvSymmPosDef();
+    }
+
+    public static class InvSymmPosDef implements MemoryProcessorInterface
+    {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            Matrix A = inputs[0].getOriginal();
+
+            int N = A.getColumnDimension();
+
+            for( int i = 0; i < numTrials; i++ ){
+                A.chol().solve(Matrix.identity(N,N));
+            }
+        }
+    }
+
+    @Override
     public MemoryProcessorInterface mult() {
         return new Mult();
     }

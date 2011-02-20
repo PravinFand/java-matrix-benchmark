@@ -47,6 +47,11 @@ public class SejmlMemoryFactory implements MemoryFactory {
     }
 
     @Override
+    public MemoryProcessorInterface invertSymmPosDef() {
+        return null;
+    }
+
+    @Override
     public MemoryProcessorInterface mult() {
         return new Mult();
     }

@@ -32,6 +32,9 @@ import java.util.*;
  */
 public class PlotMemoryResultsXml {
 
+    int plotWidth = 1100;
+    int plotHeight = 300;
+
     File directory;
     private static final boolean displayResults = true;
     private static final boolean plotFailed = false;
@@ -126,8 +129,8 @@ public class PlotMemoryResultsXml {
             }
         }
 
-        plot.displayWindow(900,300);
-        plot.savePDF(directory.getPath()+"/plot_memory.pdf",900,300);
+        plot.displayWindow(plotWidth,plotHeight);
+        plot.savePDF(directory.getPath()+"/plot_memory.pdf",plotWidth,plotHeight);
     }
 
     private static class CompareByLibName implements Comparator<MemoryResults>

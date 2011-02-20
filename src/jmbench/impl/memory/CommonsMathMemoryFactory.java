@@ -48,6 +48,31 @@ public class CommonsMathMemoryFactory implements MemoryFactory {
     }
 
     @Override
+    public MemoryProcessorInterface invertSymmPosDef() {
+        return new InvSymmPosDef();
+    }
+
+    public static class InvSymmPosDef implements MemoryProcessorInterface
+    {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            RealMatrix A = inputs[0].getOriginal();
+
+            for( int i = 0; i < numTrials; i++ ) {
+                CholeskyDecompositionImpl chol = null;
+                try {
+                    chol = new CholeskyDecompositionImpl(A);
+                } catch (NotSymmetricMatrixException e) {
+                    throw new RuntimeException(e);
+                } catch (NotPositiveDefiniteMatrixException e) {
+                    throw new RuntimeException(e);
+                }
+                chol.getSolver().getInverse();
+            }
+        }
+    }
+
+    @Override
     public MemoryProcessorInterface mult() {
         return new Mult();
     }

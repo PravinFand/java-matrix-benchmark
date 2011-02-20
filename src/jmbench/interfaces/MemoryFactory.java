@@ -41,6 +41,8 @@ public interface MemoryFactory extends LibraryFactory, MatrixFactory, Serializab
     
     public MemoryProcessorInterface solveLS();
 
+    public MemoryProcessorInterface invertSymmPosDef();
+
     public MemoryProcessorInterface svd();
 
     public MemoryProcessorInterface eig();

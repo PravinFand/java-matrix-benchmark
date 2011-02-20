@@ -19,12 +19,15 @@
 
 package jmbench.impl.memory;
 
+import cern.colt.matrix.DoubleFactory2D;
 import cern.colt.matrix.DoubleMatrix2D;
 import cern.colt.matrix.impl.DenseDoubleMatrix2D;
 import cern.colt.matrix.linalg.Algebra;
+import cern.colt.matrix.linalg.CholeskyDecomposition;
 import cern.colt.matrix.linalg.EigenvalueDecomposition;
 import cern.colt.matrix.linalg.SingularValueDecomposition;
 import jmbench.impl.wrapper.ColtBenchmarkMatrix;
+import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
 import jmbench.interfaces.MemoryProcessorInterface;
@@ -50,6 +53,25 @@ public class ColtMemoryFactory implements MemoryFactory {
     @Override
     public BenchmarkMatrix wrap(Object matrix) {
         return new ColtBenchmarkMatrix((DenseDoubleMatrix2D)matrix);
+    }
+
+    @Override
+    public MemoryProcessorInterface invertSymmPosDef() {
+        return new InvSymmPosDef();
+    }
+
+    public static class InvSymmPosDef implements MemoryProcessorInterface {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+
+            DenseDoubleMatrix2D A = inputs[0].getOriginal();
+
+            for( int i = 0; i < numTrials; i++ ) {
+                CholeskyDecomposition chol = new CholeskyDecomposition(A);
+
+                chol.solve(DoubleFactory2D.dense.identity(A.rows()));
+            }
+        }
     }
 
     @Override

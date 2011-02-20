@@ -249,17 +249,17 @@ public class GenerateHtmlTables extends TablesCommon {
 
     public static void main( String args[] ) {
 
-        String base = "/home/pja/projects/jmatbench/trunk/results/stability_2010_08";
+        String base = "/home/pja/projects/jmatbench/trunk/results/stability_2011_02";
 
         System.out.println("= Small Matrices =");
         System.out.println();
         GenerateHtmlTables p = new GenerateHtmlTables(base+"/small");
         p.plot();
-        System.out.println();
-        System.out.println("= Medium Matrices =");
-        System.out.println();
-        p = new GenerateHtmlTables(base+"/medium");
-        p.plot();
+//        System.out.println();
+//        System.out.println("= Medium Matrices =");
+//        System.out.println();
+//        p = new GenerateHtmlTables(base+"/medium");
+//        p.plot();
         System.out.println();
         System.out.println("= Large Matrices =");
         System.out.println();

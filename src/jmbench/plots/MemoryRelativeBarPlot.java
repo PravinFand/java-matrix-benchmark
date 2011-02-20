@@ -57,30 +57,42 @@ public class MemoryRelativeBarPlot {
                 false                     // URLs?
         );
         chart.addSubtitle(new TextTitle("(Smaller is Better)",new Font("SansSerif", Font.ITALIC, 12)));
+
+        plot();
     }
 
     public void addResult( String operation , String library , double relativeMemory ) {
         dataset.addValue(relativeMemory, library, operation);
     }
 
-    public void plot() {
-        CategoryPlot plot = (CategoryPlot) chart.getPlot();
-        plot.setDomainGridlinesVisible(true);
-        plot.setRangeCrosshairVisible(true);
-        plot.setRangeCrosshairPaint(Color.blue);
+    private void plot() {
+        CategoryPlot plot = chart.getCategoryPlot();
+//        plot.setDomainGridlinesVisible(true);
+//        plot.setRangeCrosshairVisible(true);
+//        plot.setRangeCrosshairPaint(Color.blue);
+
+        plot.setRangeGridlinePaint(Color.BLACK);
 
         // set the range axis to display integers only...
-        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+//        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+//        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
+//        CategoryAxis domainAxis = (CategoryAxis) plot.getDomainAxis();
+//        domainAxis.setTickMarkPaint(Color.BLACK);
+
+        plot.setBackgroundPaint(new Color(230,230,230));
 
         // disable bar outlines...
         BarRenderer renderer = (BarRenderer) plot.getRenderer();
-        renderer.setDrawBarOutline(false);
+        renderer.setDrawBarOutline(true);
+        renderer.setShadowVisible(false);
+        renderer.setBaseOutlinePaint(Color.BLACK);
+//        renderer.setBaseOutlineStroke(new BasicStroke(2));
 
-        CategoryAxis domainAxis = plot.getDomainAxis();
-        domainAxis.setCategoryLabelPositions(
-                CategoryLabelPositions.createUpRotationLabelPositions(
-                        Math.PI / 6.0));
+//        CategoryAxis domainAxis = plot.getDomainAxis();
+//        domainAxis.setCategoryLabelPositions(
+//                CategoryLabelPositions.createUpRotationLabelPositions(
+//                        Math.PI / 6.0));
     }
 
     public void displayWindow(int width, int height) {

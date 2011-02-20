@@ -49,6 +49,24 @@ public class JBlasMemoryFactory implements MemoryFactory {
     }
 
     @Override
+    public MemoryProcessorInterface invertSymmPosDef() {
+        return new InvSymmPosDef();
+    }
+
+    public static class InvSymmPosDef implements MemoryProcessorInterface
+    {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            DoubleMatrix A = inputs[0].getOriginal();
+
+            DoubleMatrix I = DoubleMatrix.eye(A.getRows());
+
+            for( int i = 0; i < numTrials; i++ )
+                Solve.solvePositive(A,I);
+        }
+    }
+
+    @Override
     public MemoryProcessorInterface mult() {
         return new Mult();
     }

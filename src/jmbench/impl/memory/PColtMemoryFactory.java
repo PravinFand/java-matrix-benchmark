@@ -19,8 +19,10 @@
 
 package jmbench.impl.memory;
 
+import cern.colt.matrix.tdouble.DoubleFactory2D;
 import cern.colt.matrix.tdouble.DoubleMatrix2D;
 import cern.colt.matrix.tdouble.algo.DenseDoubleAlgebra;
+import cern.colt.matrix.tdouble.algo.decomposition.DenseDoubleCholeskyDecomposition;
 import cern.colt.matrix.tdouble.algo.decomposition.DenseDoubleEigenvalueDecomposition;
 import cern.colt.matrix.tdouble.algo.decomposition.DenseDoubleSingularValueDecomposition;
 import cern.colt.matrix.tdouble.impl.DenseDoubleMatrix2D;
@@ -49,6 +51,29 @@ public class PColtMemoryFactory implements MemoryFactory {
     @Override
     public BenchmarkMatrix wrap(Object matrix) {
         return new PColtBenchmarkMatrix((DoubleMatrix2D)matrix);
+    }
+
+    @Override
+    public MemoryProcessorInterface invertSymmPosDef() {
+        return new InvSymmPosDef();
+    }
+
+    public static class InvSymmPosDef implements MemoryProcessorInterface
+    {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            DoubleMatrix2D A = inputs[0].getOriginal();
+
+            DenseDoubleAlgebra alg = new DenseDoubleAlgebra();
+
+            for( int i = 0; i < numTrials; i++ ) {
+                // can't decompose a matrix with the same decomposition algorithm
+                DenseDoubleCholeskyDecomposition chol = alg.chol(A);
+
+                DoubleMatrix2D result = DoubleFactory2D.dense.identity(A.rows());
+                chol.solve(result);
+            }
+        }
     }
 
     @Override
