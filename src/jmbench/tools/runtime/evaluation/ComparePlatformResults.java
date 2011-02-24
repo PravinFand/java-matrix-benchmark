@@ -100,13 +100,13 @@ public class ComparePlatformResults {
             for( File f : files ) {
                 String fileName = f.getName();
 
-                if( fileName.contains(".xml")) {
+                if( fileName.contains(".csv")) {
                     // extract the operation name
                     String stripName = fileName.substring(0,fileName.length()-4);
 
                     XMLResults r = new XMLResults();
                     r.fileName = stripName;
-                    r.results = UtilXmlSerialization.deserializeXml(f.getAbsolutePath());
+                    r.results = RuntimeResultsCsvIO.read(new File(f.getAbsolutePath()));
 
                     opResults.add(r);
                 }

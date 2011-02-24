@@ -66,7 +66,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
             final PhysicalStore matA = inputs[0].getOriginal();
             final PhysicalStore matB = inputs[1].getOriginal();
 
-            final PhysicalStore<Double> result = FACTORY.makeEmpty(matA.getRowDim(), matA.getColDim());
+            final PhysicalStore<Double> result = FACTORY.makeZero(matA.getRowDim(), matA.getColDim());
 
             final long prev = System.nanoTime();
 
@@ -246,7 +246,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
             final PhysicalStore matA = inputs[0].getOriginal();
             final PhysicalStore matB = inputs[1].getOriginal();
 
-            final PhysicalStore result = PrimitiveDenseStore.FACTORY.makeEmpty(matA.getRowDim(), matB.getColDim());
+            final PhysicalStore result = PrimitiveDenseStore.FACTORY.makeZero(matA.getRowDim(), matB.getColDim());
 
             final long prev = System.nanoTime();
 
@@ -267,7 +267,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
             final PhysicalStore matA = inputs[0].getOriginal();
             final MatrixStore matBT = new TransposedStore<Number>((MatrixStore<Number>)inputs[1].getOriginal());
 
-            final PhysicalStore result = PrimitiveDenseStore.FACTORY.makeEmpty(matA.getRowDim(), matBT.getColDim());
+            final PhysicalStore result = PrimitiveDenseStore.FACTORY.makeZero(matA.getRowDim(), matBT.getColDim());
 
             final long prev = System.nanoTime();
 
@@ -316,7 +316,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             final PhysicalStore matA = inputs[0].getOriginal();
 
-            final PhysicalStore<Double> result = FACTORY.makeEmpty(matA.getRowDim(), matA.getColDim());
+            final PhysicalStore<Double> result = FACTORY.makeZero(matA.getRowDim(), matA.getColDim());
 
             final Double tmpArg = ScaleGenerator.SCALE;
 
@@ -417,7 +417,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             final PhysicalStore matA = inputs[0].getOriginal();
 
-            final PhysicalStore<Double> result = PrimitiveDenseStore.FACTORY.makeEmpty(matA.getColDim(), matA.getRowDim());
+            final PhysicalStore<Double> result = PrimitiveDenseStore.FACTORY.makeZero(matA.getColDim(), matA.getRowDim());
 
             final long prev = System.nanoTime();
 
