@@ -20,8 +20,6 @@
 package jmbench.tools;
 
 import pja.util.UtilXmlSerialization;
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
 
 import java.io.FileNotFoundException;
 import java.io.Serializable;
@@ -59,8 +57,8 @@ public class EvaluatorSlave {
 
     public static void main( String args[] ) throws FileNotFoundException {
         // catch control-c
-        install("INT");
-        install("TERM");
+//        install("INT");
+//        install("TERM");
 
         // parse the input arguments
         if( args.length != 3 ) {
@@ -110,46 +108,46 @@ public class EvaluatorSlave {
         System.exit(0);
     }
 
-    public static MySignalHandler install(String signalName) {
-        Signal diagSignal = new Signal(signalName);
-        MySignalHandler diagHandler = new MySignalHandler();
-        diagHandler.oldHandler = Signal.handle(diagSignal,diagHandler);
-        return diagHandler;
-    }
-
-    /**
-     * Catches control-c signals and let's the master know what happened. If this is not done
-     * then some times when the used hits control-c the benchmark will think the slave failed and stop
-     * the benchmark there.
-     */
-    public static class MySignalHandler implements SignalHandler {
-
-        public SignalHandler oldHandler;
-
-        @Override
-        public void handle(Signal signal) {
-            System.out.println("Diagnostic Signal handler called for signal "+signal);
-            try {
-                // Output information for each thread
-                Thread[] threadArray = new Thread[Thread.activeCount()];
-                int numThreads = Thread.enumerate(threadArray);
-                System.out.println("Current threads:");
-                for (int i=0; i < numThreads; i++) {
-                    System.out.println("    "+threadArray[i]);
-                }
-                writeOutFailure(requestID,FailReason.USER_REQUESTED,"Caught signal: "+signal.getName());
-
-                // Chain back to previous handler, if one exists
-                if ( oldHandler != SIG_DFL && oldHandler != SIG_IGN ) {
-                    oldHandler.handle(signal);
-                }
-
-
-            } catch (Exception e) {
-                System.out.println("Signal handler failed, reason "+e);
-            }
-        }
-    }
+//    public static MySignalHandler install(String signalName) {
+//        Signal diagSignal = new Signal(signalName);
+//        MySignalHandler diagHandler = new MySignalHandler();
+//        diagHandler.oldHandler = Signal.handle(diagSignal,diagHandler);
+//        return diagHandler;
+//    }
+//
+//    /**
+//     * Catches control-c signals and let's the master know what happened. If this is not done
+//     * then some times when the used hits control-c the benchmark will think the slave failed and stop
+//     * the benchmark there.
+//     */
+//    public static class MySignalHandler implements SignalHandler {
+//
+//        public SignalHandler oldHandler;
+//
+//        @Override
+//        public void handle(Signal signal) {
+//            System.out.println("Diagnostic Signal handler called for signal "+signal);
+//            try {
+//                // Output information for each thread
+//                Thread[] threadArray = new Thread[Thread.activeCount()];
+//                int numThreads = Thread.enumerate(threadArray);
+//                System.out.println("Current threads:");
+//                for (int i=0; i < numThreads; i++) {
+//                    System.out.println("    "+threadArray[i]);
+//                }
+//                writeOutFailure(requestID,FailReason.USER_REQUESTED,"Caught signal: "+signal.getName());
+//
+//                // Chain back to previous handler, if one exists
+//                if ( oldHandler != SIG_DFL && oldHandler != SIG_IGN ) {
+//                    oldHandler.handle(signal);
+//                }
+//
+//
+//            } catch (Exception e) {
+//                System.out.println("Signal handler failed, reason "+e);
+//            }
+//        }
+//    }
 
     private static void writeOutFailure( long requestID , FailReason reason , String message ) throws FileNotFoundException {
         Results r = new Results();

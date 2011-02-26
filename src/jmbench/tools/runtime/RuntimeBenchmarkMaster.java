@@ -231,6 +231,8 @@ public class RuntimeBenchmarkMaster {
             }
         }
         System.out.println("\n** Done parsing command line **\n");
+        System.out.println(" To safely quit the benchmark process 'q' and enter.");
+        System.out.println();
 
         if( failed ) {
             printHelp();

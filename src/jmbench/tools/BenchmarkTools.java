@@ -136,6 +136,10 @@ public class BenchmarkTools {
             Runtime rt = Runtime.getRuntime();
             Process pr = rt.exec(params);
 
+            if( System.in == pr.getInputStream() ) {
+                System.out.println("Egads");
+            }
+
             BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
             BufferedReader error = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
 
@@ -221,6 +225,9 @@ public class BenchmarkTools {
                                  BufferedReader input, BufferedReader error)
             throws IOException, InterruptedException {
 
+        // flush the input buffer
+        System.in.skip(System.in.available());
+
         // If the total amount of time allocated to the slave exceeds the maximum number of trials multiplied
         // by the maximum runtime plus some fudge factor the slave is declared as frozen
         long mustBeFrozenTime = test.getMaximumRuntime() > 0 ?
@@ -231,6 +238,12 @@ public class BenchmarkTools {
         long startTime = System.currentTimeMillis();
         long lastAliveMessage = startTime;
         for(;;) {
+            while( System.in.available() > 0 ) {
+                if( System.in.read() == 'q' ) {
+                    System.out.println("User requested for the application to quit by pressing 'q'");
+                    System.exit(0);
+                }
+            }
 
             printError(error);
 
@@ -253,7 +266,7 @@ public class BenchmarkTools {
 
                 // let everyone know its still alive
                 if( System.currentTimeMillis() - lastAliveMessage > 60000 ) {
-                    System.out.println("\nMaster is still alive: "+new Date());
+                    System.out.println("\nMaster is still alive: "+new Date()+"  Press 'q' and enter to quit.");
                     lastAliveMessage = System.currentTimeMillis();
                 }
             }

@@ -66,7 +66,22 @@ public class JBlasStabilityFactory implements StabilityFactory {
     @Override
     public StabilityOperationInterface createSvd() {
         return null;
+//        return new MySvd();
     }
+
+//    public static class MySvd implements StabilityOperationInterface {
+//        @Override
+//        public DenseMatrix64F[] process(DenseMatrix64F[] inputs) {
+//            DoubleMatrix matA = convertToJBlas(inputs[0]);
+//
+//            DoubleMatrix[] evd = Singular.fullSVD(matA);
+//
+////            DenseMatrix64F ejmlD = jblasToEjml(evd[1]);
+////            DenseMatrix64F ejmlV = jblasToEjml(evd[0]);
+//
+//            return new DenseMatrix64F[]{ejmlD,ejmlV};
+//        }
+//    }
 
     @Override
     public StabilityOperationInterface createSymmEigen() {

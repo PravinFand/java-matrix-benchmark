@@ -163,7 +163,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
 
-            EigenDecomposition<DenseMatrix64F> eig = EigenOps.decompositionSymmetric(matA.numCols,true);
+            EigenDecomposition<DenseMatrix64F> eig = DecompositionFactory.eigSymm(matA.numCols,true);
 
             long prev = System.nanoTime();
 
