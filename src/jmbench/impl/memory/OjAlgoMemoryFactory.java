@@ -30,41 +30,85 @@ import org.ojalgo.matrix.store.PhysicalStore;
 import org.ojalgo.matrix.store.PrimitiveDenseStore;
 import org.ojalgo.matrix.store.TransposedStore;
 
-
 /**
  * @author Peter Abeles
+ * @author Anders Peterson (apete)
  */
 public class OjAlgoMemoryFactory implements MemoryFactory {
-    
-    @Override
-    public void configure() {
-        
-    }
 
-    @Override
-    public BenchmarkMatrix create(int numRows, int numCols) {
-        return wrap(PrimitiveDenseStore.FACTORY.makeZero(numRows,numCols));
-    }
+    public static class Add implements MemoryProcessorInterface {
 
-    @Override
-    public BenchmarkMatrix wrap(Object matrix) {
-        return new OjAlgoBenchmarkMatrix((PhysicalStore)matrix);
-    }
-
-    @Override
-    public MemoryProcessorInterface invertSymmPosDef() {
-        return new OpCholInvertSymmPosDef();
-    }
-
-    public static class OpCholInvertSymmPosDef implements MemoryProcessorInterface
-    {
         @Override
-        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            PhysicalStore A = inputs[0].getOriginal();
+        public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
+            final PhysicalStore A = inputs[0].getOriginal();
+            final PhysicalStore B = inputs[1].getOriginal();
+            final PhysicalStore C = PrimitiveDenseStore.FACTORY.makeZero(A.getRowDim(), A.getColDim());
 
-            final Cholesky<Double> chol = CholeskyDecomposition.makePrimitive();
+            for (int i = 0; i < numTrials; i++) {
+                C.fillMatching(A, PrimitiveFunction.ADD, B);
+            }
+        }
+    }
 
-            for( int i = 0; i < numTrials; i++ ){
+    public static class Eig implements MemoryProcessorInterface {
+
+        @Override
+        public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
+            final PhysicalStore A = inputs[0].getOriginal();
+
+            final Eigenvalue<Double> eig = EigenvalueDecomposition.make(A);
+
+            MatrixStore<Double> D = null, V = null;
+            for (int i = 0; i < numTrials; i++) {
+                if (!eig.compute(A)) {
+                    throw new RuntimeException("Decomposition failed");
+                }
+                D = eig.getD();
+                V = eig.getV();
+            }
+            if ((D == null) || (V == null)) {
+                throw new RuntimeException("There is a null");
+            }
+        }
+    }
+
+    public static class Mult implements MemoryProcessorInterface {
+
+        @Override
+        public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
+            final PhysicalStore A = inputs[0].getOriginal();
+            final PhysicalStore B = inputs[1].getOriginal();
+            final PhysicalStore C = PrimitiveDenseStore.FACTORY.makeZero(A.getRowDim(), B.getColDim());
+
+            for (int i = 0; i < numTrials; i++) {
+                C.fillByMultiplying(A, B);
+            }
+        }
+    }
+
+    public static class MultTransB implements MemoryProcessorInterface {
+
+        @Override
+        public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
+            final PhysicalStore A = inputs[0].getOriginal();
+            final MatrixStore BT = new TransposedStore<Number>((MatrixStore<Number>) inputs[1].getOriginal());
+            final PhysicalStore C = PrimitiveDenseStore.FACTORY.makeZero(A.getRowDim(), BT.getColDim());
+
+            for (int i = 0; i < numTrials; i++) {
+                C.fillByMultiplying(A, BT);
+            }
+        }
+    }
+
+    public static class OpCholInvertSymmPosDef implements MemoryProcessorInterface {
+
+        @Override
+        public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
+            final PhysicalStore A = inputs[0].getOriginal();
+
+            final Cholesky<Double> chol = CholeskyDecomposition.make(A);
+
+            for (int i = 0; i < numTrials; i++) {
                 if (!chol.compute(A)) {
                     throw new RuntimeException("Decomposition failed");
                 }
@@ -73,39 +117,58 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
         }
     }
 
-    @Override
-    public MemoryProcessorInterface mult() {
-        return new Mult();
-    }
+    public static class SolveLinear implements MemoryProcessorInterface {
 
-    public static class Mult implements MemoryProcessorInterface
-    {
         @Override
-        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            PhysicalStore A = inputs[0].getOriginal();
-            PhysicalStore B = inputs[1].getOriginal();
-            PhysicalStore C = PrimitiveDenseStore.FACTORY.makeZero(A.getRowDim(),B.getColDim());
+        public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
+            final PhysicalStore A = inputs[0].getOriginal();
+            final PhysicalStore y = inputs[1].getOriginal();
 
-            for( int i = 0; i < numTrials; i++ )
-                C.fillByMultiplying(A, B);
+            final LU<Double> lu = LUDecomposition.make(A);
+
+            for (int i = 0; i < numTrials; i++) {
+                lu.compute(A);
+                lu.solve(y);
+            }
         }
     }
 
-    @Override
-    public MemoryProcessorInterface multTransB() {
-        return new MultTransB();
+    public static class SolveLS implements MemoryProcessorInterface {
+
+        @Override
+        public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
+            final PhysicalStore A = inputs[0].getOriginal();
+            final PhysicalStore y = inputs[1].getOriginal();
+
+            final QR<Double> qr = QRDecomposition.make(A);
+
+            for (int i = 0; i < numTrials; i++) {
+                qr.compute(A);
+                qr.solve(y);
+            }
+        }
     }
 
-    public static class MultTransB implements MemoryProcessorInterface
-    {
-        @Override
-        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            final PhysicalStore A = inputs[0].getOriginal();
-            final MatrixStore BT = new TransposedStore<Number>((MatrixStore<Number>)inputs[1].getOriginal());
-            final PhysicalStore C = PrimitiveDenseStore.FACTORY.makeZero(A.getRowDim(),BT.getColDim());
+    public static class SVD implements MemoryProcessorInterface {
 
-            for( int i = 0; i < numTrials; i++ )
-                C.fillByMultiplying(A, BT);
+        @Override
+        public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
+            final PhysicalStore A = inputs[0].getOriginal();
+
+            final SingularValue<Double> svd = SingularValueDecomposition.make(A);
+
+            MatrixStore<Double> U = null, S = null, V = null;
+            for (int i = 0; i < numTrials; i++) {
+                if (!svd.compute(A)) {
+                    throw new RuntimeException("Decomposition failed");
+                }
+                U = svd.getQ1();
+                S = svd.getD();
+                V = svd.getQ2();
+            }
+            if ((U == null) || (S == null) || (V == null)) {
+                throw new RuntimeException("There is a null");
+            }
         }
     }
 
@@ -114,86 +177,14 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
         return new Add();
     }
 
-    public static class Add implements MemoryProcessorInterface
-    {
-        @Override
-        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            PhysicalStore A = inputs[0].getOriginal();
-            PhysicalStore B = inputs[1].getOriginal();
-            PhysicalStore C = PrimitiveDenseStore.FACTORY.makeZero(A.getRowDim(),A.getColDim());
+    @Override
+    public void configure() {
 
-            for( int i = 0; i < numTrials; i++ )
-                C.fillMatching(A, PrimitiveFunction.ADD, B);
-        }
     }
 
     @Override
-    public MemoryProcessorInterface solveEq() {
-        return new SolveLinear();
-    }
-
-    public static class SolveLinear implements MemoryProcessorInterface
-    {
-        @Override
-        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            PhysicalStore A = inputs[0].getOriginal();
-            PhysicalStore y = inputs[1].getOriginal();
-
-            final LU<Double> lu = LUDecomposition.makePrimitive();
-
-            for( int i = 0; i < numTrials; i++ ){
-                lu.compute(A);
-                lu.solve(y);
-            }
-        }
-    }
-
-    @Override
-    public MemoryProcessorInterface solveLS() {
-        return new SolveLS();
-    }
-
-    public static class SolveLS implements MemoryProcessorInterface
-    {
-        @Override
-        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            PhysicalStore A = inputs[0].getOriginal();
-            PhysicalStore y = inputs[1].getOriginal();
-
-            final QR<Double> qr = QRDecomposition.makePrimitive();
-
-            for( int i = 0; i < numTrials; i++ ){
-                qr.compute(A);
-                qr.solve(y);
-            }
-        }
-    }
-
-    @Override
-    public MemoryProcessorInterface svd() {
-        return new SVD();
-    }
-
-    public static class SVD implements MemoryProcessorInterface
-    {
-        @Override
-        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            PhysicalStore A = inputs[0].getOriginal();
-
-            final SingularValue<Double> svd = SingularValueDecomposition.makePrimitive();
-
-            MatrixStore<Double> U=null,S=null,V=null;
-            for( int i = 0; i < numTrials; i++ ) {
-                if (!svd.compute(A)) {
-                    throw new RuntimeException("Decomposition failed");
-                }
-                U=svd.getQ1();
-                S=svd.getD();
-                V=svd.getQ2();
-            }
-            if( U == null || S == null || V == null )
-                throw new RuntimeException("There is a null");
-        }
+    public BenchmarkMatrix create(final int numRows, final int numCols) {
+        return this.wrap(PrimitiveDenseStore.FACTORY.makeZero(numRows, numCols));
     }
 
     @Override
@@ -201,24 +192,38 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
         return new Eig();
     }
 
-    public static class Eig implements MemoryProcessorInterface
-    {
-        @Override
-        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            PhysicalStore A = inputs[0].getOriginal();
+    @Override
+    public MemoryProcessorInterface invertSymmPosDef() {
+        return new OpCholInvertSymmPosDef();
+    }
 
-            final Eigenvalue<Double> eig = EigenvalueDecomposition.makePrimitive();
+    @Override
+    public MemoryProcessorInterface mult() {
+        return new Mult();
+    }
 
-            MatrixStore<Double> D=null,V=null;
-            for( int i = 0; i < numTrials; i++ ) {
-                if (!eig.computeSymmetric(A)) {
-                    throw new RuntimeException("Decomposition failed");
-                }
-                D=eig.getD();
-                V=eig.getV();
-            }
-            if( D == null || V == null)
-                throw new RuntimeException("There is a null") ;
-        }
+    @Override
+    public MemoryProcessorInterface multTransB() {
+        return new MultTransB();
+    }
+
+    @Override
+    public MemoryProcessorInterface solveEq() {
+        return new SolveLinear();
+    }
+
+    @Override
+    public MemoryProcessorInterface solveLS() {
+        return new SolveLS();
+    }
+
+    @Override
+    public MemoryProcessorInterface svd() {
+        return new SVD();
+    }
+
+    @Override
+    public BenchmarkMatrix wrap(final Object matrix) {
+        return new OjAlgoBenchmarkMatrix((PhysicalStore) matrix);
     }
 }

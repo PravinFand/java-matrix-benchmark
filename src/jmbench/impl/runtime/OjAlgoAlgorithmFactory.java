@@ -42,22 +42,8 @@ import org.ojalgo.matrix.store.TransposedStore;
  * @author Peter Abeles
  * @author Anders Peterson (apete)
  */
-@SuppressWarnings( { "unchecked" })
+@SuppressWarnings({ "unchecked" })
 public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
-
-    @Override
-    public void configure() {
-    }
-
-    @Override
-    public BenchmarkMatrix create(int numRows, int numCols) {
-        return wrap(PrimitiveDenseStore.FACTORY.makeZero(numRows,numCols));
-    }
-
-    @Override
-    public BenchmarkMatrix wrap(Object matrix) {
-        return new OjAlgoBenchmarkMatrix((PhysicalStore)matrix);
-    }
 
     public static class OpAdd implements AlgorithmInterface {
 
@@ -87,7 +73,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
             final PhysicalStore matA = inputs[0].getOriginal();
 
             MatrixStore<Double> L = null;
-            final Cholesky<Double> chol = CholeskyDecomposition.makePrimitive();
+            final Cholesky<Double> chol = CholeskyDecomposition.make(matA);
 
             final long prev = System.nanoTime();
 
@@ -113,7 +99,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
             final PhysicalStore matA = inputs[0].getOriginal();
 
             MatrixStore<Double> inverse = null;
-            final Cholesky<Double> chol = CholeskyDecomposition.makePrimitive();
+            final Cholesky<Double> chol = CholeskyDecomposition.make(matA);
 
             final long prev = System.nanoTime();
 
@@ -136,7 +122,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             final PhysicalStore matA = inputs[0].getOriginal();
 
-            final LU<Double> lu = LUDecomposition.makePrimitive();
+            final LU<Double> lu = LUDecomposition.make(matA);
 
             final long prev = System.nanoTime();
 
@@ -157,7 +143,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             final PhysicalStore matA = inputs[0].getOriginal();
 
-            final Eigenvalue<Double> eig = EigenvalueDecomposition.makePrimitive();
+            final Eigenvalue<Double> eig = EigenvalueDecomposition.make(matA);
 
             MatrixStore<Double> D = null;
             MatrixStore<Double> V = null;
@@ -165,7 +151,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
             final long prev = System.nanoTime();
 
             for (long i = 0; i < numTrials; i++) {
-                if (!eig.computeSymmetric(matA)) {
+                if (!eig.compute(matA)) {
                     throw new RuntimeException("Decomposition failed");
                 }
                 D = eig.getD();
@@ -185,7 +171,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             final PhysicalStore matA = inputs[0].getOriginal();
 
-            final LU<Double> lu = LUDecomposition.makePrimitive();
+            final LU<Double> lu = LUDecomposition.make(matA);
 
             MatrixStore result = null;
 
@@ -211,7 +197,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             final PhysicalStore matA = inputs[0].getOriginal();
 
-            final LU<Double> lu = LUDecomposition.makePrimitive();
+            final LU<Double> lu = LUDecomposition.make(matA);
 
             MatrixStore<Double> L = null;
             MatrixStore<Double> U = null;
@@ -265,7 +251,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
             final PhysicalStore matA = inputs[0].getOriginal();
-            final MatrixStore matBT = new TransposedStore<Number>((MatrixStore<Number>)inputs[1].getOriginal());
+            final MatrixStore matBT = new TransposedStore<Number>((MatrixStore<Number>) inputs[1].getOriginal());
 
             final PhysicalStore result = PrimitiveDenseStore.FACTORY.makeZero(matA.getRowDim(), matBT.getColDim());
 
@@ -287,7 +273,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             final PhysicalStore matA = inputs[0].getOriginal();
 
-            final QR<Double> qr = QRDecomposition.makePrimitive();
+            final QR<Double> qr = QRDecomposition.make(matA);
 
             MatrixStore<Double> Q = null;
             MatrixStore<Double> R = null;
@@ -339,7 +325,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
             final PhysicalStore matA = inputs[0].getOriginal();
             final PhysicalStore matB = inputs[1].getOriginal();
 
-            final LU<Double> lu = LUDecomposition.makePrimitive();
+            final LU<Double> lu = LUDecomposition.make(matA);
 
             MatrixStore result = null;
 
@@ -363,7 +349,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
             final PhysicalStore matA = inputs[0].getOriginal();
             final PhysicalStore matB = inputs[1].getOriginal();
 
-            final QR<Double> qr = QRDecomposition.makePrimitive();
+            final QR<Double> qr = QRDecomposition.make(matA);
 
             MatrixStore result = null;
 
@@ -386,7 +372,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             final PhysicalStore matA = inputs[0].getOriginal();
 
-            final SingularValue<Double> svd = SingularValueDecomposition.makePrimitive();
+            final SingularValue<Double> svd = SingularValueDecomposition.make(matA);
 
             MatrixStore<Double> U = null;
             MatrixStore<Double> S = null;
@@ -467,6 +453,15 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
     }
 
     @Override
+    public void configure() {
+    }
+
+    @Override
+    public BenchmarkMatrix create(final int numRows, final int numCols) {
+        return this.wrap(PrimitiveDenseStore.FACTORY.makeZero(numRows, numCols));
+    }
+
+    @Override
     public AlgorithmInterface det() {
         return new OpDet();
     }
@@ -529,5 +524,10 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
     @Override
     public AlgorithmInterface transpose() {
         return new OpTranspose();
+    }
+
+    @Override
+    public BenchmarkMatrix wrap(final Object matrix) {
+        return new OjAlgoBenchmarkMatrix((PhysicalStore) matrix);
     }
 }
