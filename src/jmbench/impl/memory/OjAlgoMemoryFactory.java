@@ -224,6 +224,6 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
 
     @Override
     public BenchmarkMatrix wrap(final Object matrix) {
-        return new OjAlgoBenchmarkMatrix((PhysicalStore) matrix);
+        return new OjAlgoBenchmarkMatrix((PrimitiveDenseStore) matrix);
     }
 }

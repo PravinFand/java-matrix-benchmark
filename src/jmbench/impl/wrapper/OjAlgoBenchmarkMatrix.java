@@ -20,33 +20,32 @@
 package jmbench.impl.wrapper;
 
 import jmbench.interfaces.BenchmarkMatrix;
+import org.ojalgo.matrix.store.MatrixStore;
 import org.ojalgo.matrix.store.PhysicalStore;
-
 
 /**
  * @author Peter Abeles
  */
 public class OjAlgoBenchmarkMatrix implements BenchmarkMatrix {
 
-    PhysicalStore mat;
+    MatrixStore<?> mat;
 
-    public OjAlgoBenchmarkMatrix(PhysicalStore mat) {
+    public OjAlgoBenchmarkMatrix(final MatrixStore<?> mat) {
+
+        super();
+
         this.mat = mat;
     }
 
     @Override
-    public double get(int row, int col) {
-        return mat.doubleValue(row,col);
+    public double get(final int row, final int col) {
+        return mat.doubleValue(row, col);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void set(int row, int col, double value) {
-        mat.set(row,col,value);
-    }
-
-    @Override
-    public int numRows() {
-        return mat.getRowDim();
+    public <T> T getOriginal() {
+        return (T) mat;
     }
 
     @Override
@@ -55,7 +54,12 @@ public class OjAlgoBenchmarkMatrix implements BenchmarkMatrix {
     }
 
     @Override
-    public <T> T getOriginal() {
-        return (T)mat;
+    public int numRows() {
+        return mat.getRowDim();
+    }
+
+    @Override
+    public void set(final int row, final int col, final double value) {
+        ((PhysicalStore<Double>) mat).set(row, col, value);
     }
 }

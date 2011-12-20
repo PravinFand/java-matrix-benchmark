@@ -9,15 +9,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/lib/junit-4.7.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="libpja" />
     <orderEntry type="module-library">
       <library>
@@ -151,15 +142,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/jblas/jblas-1.2.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/mtj/mtj-0.9.13.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -171,12 +153,12 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/ojalgo/ojalgo-29.59.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/ojalgo/ojalgo-31.7.jar!/" />
         </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/ojalgo/ojalgo-29.59-src.zip!/" />
-        </SOURCES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/lib/ojalgo/ojalgo-31.7-doc.zip!/" />
+        </JAVADOC>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
@@ -191,7 +173,7 @@
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/lib/junit-4.8.jar!/" />
+          <root url="jar://$APPLICATION_HOME_DIR$/lib/junit-4.10.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

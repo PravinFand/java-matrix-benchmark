@@ -359,6 +359,16 @@
       </item>
     </group>
   </component>
+  <component name="ProjectCodeStyleSettingsManager">
+    <option name="PER_PROJECT_SETTINGS">
+      <value>
+        <XML>
+          <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
+        </XML>
+      </value>
+    </option>
+    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
+  </component>
   <component name="ProjectDetails">
     <option name="projectName" value="jmatbench" />
   </component>
@@ -413,30 +423,6 @@
         <entry key="$PROJECT_DIR$/../../ejml/trunk">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="https://efficient-java-matrix-library.googlecode.com/svn/branches">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="https://efficient-java-matrix-library.googlecode.com/svn/javadoc">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="https://efficient-java-matrix-library.googlecode.com/svn/tags">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="https://efficient-java-matrix-library.googlecode.com/svn/wiki">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://efficient-java-matrix-library.googlecode.com/svn/branches" />
@@ -459,20 +445,6 @@
         <entry key="$PROJECT_DIR$/../../libpjajava">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="svn+ssh://10.0.0.3/opt/repos/libpjajava/branches">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="svn+ssh://10.0.0.3/opt/repos/libpjajava/tags">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="svn+ssh://10.0.0.3/opt/repos/libpjajava/branches" />
