@@ -24,6 +24,7 @@ import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.impl.wrapper.OjAlgoBenchmarkMatrix;
 import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
+import jmbench.interfaces.DetectedException;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
 import org.ejml.data.DenseMatrix64F;
@@ -78,7 +79,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             for (long i = 0; i < numTrials; i++) {
                 if (!chol.compute(matA)) {
-                    throw new RuntimeException("Decomposition failed");
+                    throw new DetectedException("Decomposition failed");
                 }
                 L = chol.getL();
             }
@@ -103,7 +104,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             for (long i = 0; i < numTrials; i++) {
                 if (!lu.compute(matA)) {
-                    throw new RuntimeException("Decomposition failed");
+                    throw new DetectedException("Decomposition failed");
                 }
                 lu.getDeterminant();
             }
@@ -126,7 +127,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             for (long i = 0; i < numTrials; i++) {
                 if (!eig.compute(matA)) {
-                    throw new RuntimeException("Decomposition failed");
+                    throw new DetectedException("Decomposition failed");
                 }
                 D = eig.getD();
                 V = eig.getV();
@@ -153,7 +154,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             for (long i = 0; i < numTrials; i++) {
                 if (!lu.compute(matA)) {
-                    throw new RuntimeException("Decomposition failed");
+                    throw new DetectedException("Decomposition failed");
                 }
                 result = lu.getInverse(tmpAlloc);
             }
@@ -178,7 +179,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             for (long i = 0; i < numTrials; i++) {
                 if (!chol.compute(matA)) {
-                    throw new RuntimeException("Decomposition failed");
+                    throw new DetectedException("Decomposition failed");
                 }
                 inverse = chol.getInverse(tmpAlloc);
             }
@@ -205,7 +206,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             for (long i = 0; i < numTrials; i++) {
                 if (!lu.compute(matA)) {
-                    throw new RuntimeException("Decomposition failed");
+                    throw new DetectedException("Decomposition failed");
                 }
 
                 L = lu.getL();
@@ -279,7 +280,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             for (long i = 0; i < numTrials; i++) {
                 if (!qr.compute(matA)) {
-                    throw new RuntimeException("Decomposition failed");
+                    throw new DetectedException("Decomposition failed");
                 }
                 Q = qr.getQ();
                 R = qr.getR();
@@ -379,7 +380,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             for (long i = 0; i < numTrials; i++) {
                 if (!svd.compute(matA)) {
-                    throw new RuntimeException("Decomposition failed");
+                    throw new DetectedException("Decomposition failed");
                 }
                 U = svd.getQ1();
                 S = svd.getD();
@@ -415,6 +416,17 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
     }
 
     static final PhysicalStore.Factory<Double, PrimitiveDenseStore> FACTORY = PrimitiveDenseStore.FACTORY;
+
+    @Override
+    public BenchmarkMatrix convertToLib(DenseMatrix64F input) {
+        return new OjAlgoBenchmarkMatrix(convertToOjAlgo(input));
+    }
+
+    @Override
+    public DenseMatrix64F convertToEjml(BenchmarkMatrix input) {
+        MatrixStore mat = input.getOriginal();
+        return ojAlgoToEjml(mat);
+    }
 
     public static PhysicalStore convertToOjAlgo(final DenseMatrix64F orig) {
 

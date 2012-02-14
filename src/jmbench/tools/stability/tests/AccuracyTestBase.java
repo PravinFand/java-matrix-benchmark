@@ -19,8 +19,10 @@
 
 package jmbench.tools.stability.tests;
 
-import jmbench.interfaces.StabilityFactory;
-import jmbench.interfaces.StabilityOperationInterface;
+import jmbench.interfaces.BenchmarkMatrix;
+import jmbench.interfaces.DetectedException;
+import jmbench.interfaces.MatrixProcessorInterface;
+import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityTestBase;
 import org.ejml.data.DenseMatrix64F;
@@ -37,8 +39,8 @@ public abstract class AccuracyTestBase extends StabilityTestBase {
     protected int minLength;
     protected int maxLength;
 
-    public AccuracyTestBase(long randomSeed, StabilityFactory factory,
-                            StabilityOperationInterface operation,
+    public AccuracyTestBase(long randomSeed, RuntimePerformanceFactory factory,
+                            MatrixProcessorInterface operation,
                             int totalTrials,
                             int minLength, int maxLength)
     {
@@ -68,20 +70,28 @@ public abstract class AccuracyTestBase extends StabilityTestBase {
         foundResult = Double.NaN;
 
         DenseMatrix64F inputs[] = createInputs();
-        DenseMatrix64F results[];
+  
+        BenchmarkMatrix[] inputsB = new BenchmarkMatrix[inputs.length];
+        BenchmarkMatrix[] outputB = new BenchmarkMatrix[getNumOutputs()];
+
+        for( int i = 0; i < inputs.length; i++ ) {
+            inputsB[i] = factory.convertToLib(inputs[i]);
+        }
+        
         try {
-            results = operation.process(inputs);
+            operation.process(inputsB,outputB,1);
+        } catch( DetectedException e ) {
+            reason = OutputError.DETECTED_FAILURE;
+            return;    
         } catch( Exception e ) {
             addUnexpectedException(e);
-//                e.printStackTrace();
             reason = OutputError.UNEXPECTED_EXCEPTION;
             return;
         }
 
-        if( results == null ) {
-            reason = OutputError.DETECTED_FAILURE;
-            return;
-        }
+        DenseMatrix64F results[] = new DenseMatrix64F[outputB.length];
+        for( int i = 0; i < results.length; i++ )
+            results[i] = factory.convertToEjml(outputB[i]);
 
         processResults( inputs , results );
     }
@@ -89,6 +99,8 @@ public abstract class AccuracyTestBase extends StabilityTestBase {
     protected abstract void createMatrix( int m , int n );
 
     protected abstract DenseMatrix64F[] createInputs();
+    
+    protected abstract int getNumOutputs();
 
     protected abstract void processResults(DenseMatrix64F[] inputs, DenseMatrix64F[] results);
 

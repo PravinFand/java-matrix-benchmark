@@ -19,8 +19,10 @@
 
 package jmbench.tools.stability.tests;
 
-import jmbench.interfaces.StabilityFactory;
-import jmbench.interfaces.StabilityOperationInterface;
+import jmbench.interfaces.BenchmarkMatrix;
+import jmbench.interfaces.DetectedException;
+import jmbench.interfaces.MatrixProcessorInterface;
+import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityBenchmark;
 import org.ejml.data.DenseMatrix64F;
@@ -32,7 +34,7 @@ import org.ejml.ops.MatrixFeatures;
  */
 public class SolverAccuracy extends SolverCommon {
 
-    public SolverAccuracy(long randomSeed, StabilityFactory factory, StabilityOperationInterface operation,
+    public SolverAccuracy(long randomSeed, RuntimePerformanceFactory factory, MatrixProcessorInterface operation,
                           int totalTrials, double breakingPoint,
                           int minLength, int maxLength, boolean linearSolver)
     {
@@ -70,21 +72,26 @@ public class SolverAccuracy extends SolverCommon {
         reason = OutputError.NO_ERROR;
         foundResult = Double.NaN;
 
-        DenseMatrix64F inputs[] = new DenseMatrix64F[]{A,b};
-        DenseMatrix64F results[];
+        BenchmarkMatrix[] inputsB = new BenchmarkMatrix[2];
+        BenchmarkMatrix[] outputB = new BenchmarkMatrix[1];
+
+        inputsB[0] = factory.convertToLib(A);
+        inputsB[1] = factory.convertToLib(b);
+
         try {
-            results = operation.process(inputs);
+            operation.process(inputsB,outputB,1);
+        } catch( DetectedException e ) {
+            reason = OutputError.DETECTED_FAILURE;
+            return;
         } catch( Exception e ) {
             addUnexpectedException(e);
-//                e.printStackTrace();
             reason = OutputError.UNEXPECTED_EXCEPTION;
             return;
         }
 
-        if( results == null ) {
-            reason = OutputError.DETECTED_FAILURE;
-            return;
-        }
+        DenseMatrix64F results[] = new DenseMatrix64F[outputB.length];
+        for( int i = 0; i < results.length; i++ )
+            results[i] = factory.convertToEjml(outputB[i]);
 
         DenseMatrix64F x = results[0];
 

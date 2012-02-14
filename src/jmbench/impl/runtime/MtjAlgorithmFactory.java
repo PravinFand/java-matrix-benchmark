@@ -23,6 +23,7 @@ import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.impl.wrapper.MtjBenchmarkMatrix;
 import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
+import jmbench.interfaces.DetectedException;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
 import no.uib.cipr.matrix.*;
@@ -70,7 +71,7 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
                 // the input matrix is over written
                 uspd.set(matA);
                 if( !cholesky.factor(uspd).isSPD() ) {
-                    throw new RuntimeException("Is not SPD");
+                    throw new DetectedException("Is not SPD");
                 }
 
                 L = cholesky.getL();
@@ -156,8 +157,11 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
+            int m = matA.numRows();
+            int n = matA.numColumns();
+
             outputs[0] = new MtjBenchmarkMatrix(U);
-            outputs[1] = new EjmlBenchmarkMatrix(CommonOps.diag(S));
+            outputs[1] = new EjmlBenchmarkMatrix(CommonOps.diagR(m,n,svd.getS()));
             outputs[2] = new MtjBenchmarkMatrix(Vt.transpose());
             return elapsedTime;
         }
@@ -448,7 +452,22 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             return elapsedTime;
         }
     }
-    
+
+    @Override
+    public BenchmarkMatrix convertToLib(DenseMatrix64F input) {
+        return new MtjBenchmarkMatrix(convertToMtj(input));
+    }
+
+    @Override
+    public DenseMatrix64F convertToEjml(BenchmarkMatrix input) {
+        if( input.getOriginal() instanceof DenseMatrix64F ) {
+            return (DenseMatrix64F)input.getOriginal();
+        } else {
+            DenseMatrix orig = input.getOriginal();
+            return mtjToEjml(orig);
+        }
+    }
+
     /**
      * Converts a BenchmarkMatrix in EML into a DenseMatrix in MTJ
      *

@@ -17,20 +17,45 @@
  * along with JMatrixBenchmark.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jmbench.interfaces;
+package jmbench.impl.wrapper;
+
+import Jama.Matrix;
+import jmbench.interfaces.BenchmarkMatrix;
+
 
 /**
  * @author Peter Abeles
  */
-public interface StabilityFactory extends LibraryFactory {
+public class JamaBenchmarkMatrix implements BenchmarkMatrix  {
 
-    public StabilityOperationInterface createLinearSolver();
+    Matrix mat;
 
-    public StabilityOperationInterface createLSSolver();
+    public JamaBenchmarkMatrix(Matrix mat) {
+        this.mat = mat;
+    }
 
-    public StabilityOperationInterface createSvd();
+    @Override
+    public double get(int row, int col) {
+        return mat.get(row,col);
+    }
 
-    public StabilityOperationInterface createSymmEigen();
+    @Override
+    public void set(int row, int col, double value) {
+        mat.set(row,col,value);
+    }
 
-    public StabilityOperationInterface createSymmInverse();
+    @Override
+    public int numRows() {
+        return mat.getRowDimension();
+    }
+
+    @Override
+    public int numCols() {
+        return mat.getColumnDimension();
+    }
+
+    @Override
+    public <T> T getOriginal() {
+        return (T)mat;
+    }
 }

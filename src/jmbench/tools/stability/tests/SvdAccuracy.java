@@ -19,8 +19,8 @@
 
 package jmbench.tools.stability.tests;
 
-import jmbench.interfaces.StabilityFactory;
-import jmbench.interfaces.StabilityOperationInterface;
+import jmbench.interfaces.MatrixProcessorInterface;
+import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityBenchmark;
 import org.ejml.data.DenseMatrix64F;
@@ -41,7 +41,7 @@ public class SvdAccuracy extends AccuracyTestBase {
     private volatile DenseMatrix64F A;
     private volatile double sv[];
 
-    public SvdAccuracy(long randomSeed, StabilityFactory factory, StabilityOperationInterface operation,
+    public SvdAccuracy(long randomSeed, RuntimePerformanceFactory factory, MatrixProcessorInterface operation,
                        int totalTrials, int minLength, int maxLength) {
         super(randomSeed, factory, operation, totalTrials, minLength, maxLength);
     }
@@ -72,6 +72,11 @@ public class SvdAccuracy extends AccuracyTestBase {
             sv[i] = -sv[i];
 
         A = SolverCommon.createMatrix(U,V,sv);
+    }
+
+    @Override
+    protected int getNumOutputs() {
+        return 3;
     }
 
     @Override

@@ -19,8 +19,8 @@
 
 package jmbench.tools.stability.tests;
 
-import jmbench.interfaces.StabilityFactory;
-import jmbench.interfaces.StabilityOperationInterface;
+import jmbench.interfaces.MatrixProcessorInterface;
+import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityBenchmark;
 import org.ejml.data.DenseMatrix64F;
@@ -38,7 +38,7 @@ public class EigSymmAccuracy extends AccuracyTestBase {
     protected volatile DenseMatrix64F L;
     protected volatile DenseMatrix64F R;
 
-    public EigSymmAccuracy(long randomSeed, StabilityFactory factory, StabilityOperationInterface operation,
+    public EigSymmAccuracy(long randomSeed, RuntimePerformanceFactory factory, MatrixProcessorInterface operation,
                            int totalTrials, int minLength, int maxLength) {
         super(randomSeed, factory , operation, totalTrials, minLength, maxLength);
     }
@@ -56,6 +56,11 @@ public class EigSymmAccuracy extends AccuracyTestBase {
     @Override
     protected DenseMatrix64F[] createInputs() {
         return new DenseMatrix64F[]{A};
+    }
+
+    @Override
+    protected int getNumOutputs() {
+        return 2;
     }
 
     @Override

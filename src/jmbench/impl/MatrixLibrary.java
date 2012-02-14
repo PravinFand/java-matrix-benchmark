@@ -50,6 +50,7 @@ public class MatrixLibrary implements Serializable {
     public static final MatrixLibrary UJMP = new MatrixLibrary("UJMP","ujmp","ujmp",AllLibraryVersion.UJMP.class,true, true, 9);
     public static final MatrixLibrary JBLAS = new MatrixLibrary("JBLAS","jblas","jblas",AllLibraryVersion.JBLAS.class,true, true, 10);
     public static final MatrixLibrary UJMP_JAVA = new MatrixLibrary("UJMP-J","ujmp","ujmp-java",AllLibraryVersion.UJMP.class,true,false, 11);
+    public static final MatrixLibrary LA4J = new MatrixLibrary("la4j","la4j","la4j",AllLibraryVersion.LA4J.class,true,false,12);
 
     public String plotName;
     // directory that it loads its libraries from

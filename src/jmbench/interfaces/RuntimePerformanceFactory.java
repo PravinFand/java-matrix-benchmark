@@ -19,6 +19,8 @@
 
 package jmbench.interfaces;
 
+import org.ejml.data.DenseMatrix64F;
+
 import java.io.Serializable;
 
 
@@ -137,4 +139,8 @@ public interface RuntimePerformanceFactory extends LibraryFactory , MatrixFactor
      * Matrix transpose
      */
     AlgorithmInterface transpose();
+
+    BenchmarkMatrix convertToLib( DenseMatrix64F input );
+
+    DenseMatrix64F convertToEjml( BenchmarkMatrix input );
 }

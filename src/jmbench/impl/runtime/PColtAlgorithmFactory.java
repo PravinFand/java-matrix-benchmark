@@ -29,6 +29,7 @@ import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.impl.wrapper.PColtBenchmarkMatrix;
 import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
+import jmbench.interfaces.DetectedException;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
 import org.ejml.data.DenseMatrix64F;
@@ -110,7 +111,7 @@ public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
                 tmp.assign(matA);
                 decomp.decompose(tmp);
                 if( !decomp.isNonsingular() )
-                    throw new RuntimeException("LU decomposition failed");
+                    throw new DetectedException("LU decomposition failed");
 
                 L = decomp.getL();
                 U = decomp.getU();
@@ -443,6 +444,17 @@ public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
     public static DenseDoubleMatrix2D createMatrix( int numRows , int numCols ) {
         // this matrix type is used at the suggestion of Piotr Wendykier
         return new DenseDoubleMatrix2D( numRows , numCols );
+    }
+
+    @Override
+    public BenchmarkMatrix convertToLib(DenseMatrix64F input) {
+        return new PColtBenchmarkMatrix(convertToParallelColt(input));
+    }
+
+    @Override
+    public DenseMatrix64F convertToEjml(BenchmarkMatrix input) {
+        cern.colt.matrix.tdouble.DoubleMatrix2D orig = input.getOriginal();
+        return parallelColtToEjml(orig);
     }
 
     public static cern.colt.matrix.tdouble.DoubleMatrix2D convertToParallelColt( DenseMatrix64F orig )

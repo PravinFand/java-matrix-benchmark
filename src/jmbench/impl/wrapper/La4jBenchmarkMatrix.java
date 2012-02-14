@@ -19,43 +19,63 @@
 
 package jmbench.impl.wrapper;
 
-import Jama.Matrix;
 import jmbench.interfaces.BenchmarkMatrix;
-
+import la4j.factory.DenseFactory;
+import la4j.matrix.Matrix;
+import la4j.vector.Vector;
 
 /**
  * @author Peter Abeles
  */
-public class JavaBenchmarkMatrix implements BenchmarkMatrix  {
+public class La4jBenchmarkMatrix implements BenchmarkMatrix  {
+    Matrix matrix;
 
-    Matrix mat;
+    public static Vector toVector( Matrix m ) {
+        Vector v = new DenseFactory().createVector(m.rows());
+        
+        for( int i = 0; i < v.length(); i++ ) {
+            v.set(i,m.get(i,0));
+        }
 
-    public JavaBenchmarkMatrix(Matrix mat) {
-        this.mat = mat;
+        return v;
+    }
+
+    public static Matrix toMatrix( Vector v ) {
+        Matrix m = new DenseFactory().createMatrix(v.length(),1);
+
+        for( int i = 0; i < v.length(); i++ ) {
+            m.set(i,0,v.get(i));
+        }
+
+        return m;
+    }
+    
+    public La4jBenchmarkMatrix(Matrix matrix) {
+        this.matrix = matrix;
     }
 
     @Override
     public double get(int row, int col) {
-        return mat.get(row,col);
+        return matrix.get(row,col);
     }
 
     @Override
     public void set(int row, int col, double value) {
-        mat.set(row,col,value);
+        matrix.set(row,col,value);
     }
 
     @Override
     public int numRows() {
-        return mat.getRowDimension();
+        return matrix.rows();
     }
 
     @Override
     public int numCols() {
-        return mat.getColumnDimension();
+        return matrix.columns();
     }
 
     @Override
     public <T> T getOriginal() {
-        return (T)mat;
+        return(T)matrix;
     }
 }

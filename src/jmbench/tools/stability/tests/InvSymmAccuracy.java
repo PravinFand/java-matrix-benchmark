@@ -19,8 +19,8 @@
 
 package jmbench.tools.stability.tests;
 
-import jmbench.interfaces.StabilityFactory;
-import jmbench.interfaces.StabilityOperationInterface;
+import jmbench.interfaces.MatrixProcessorInterface;
+import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityBenchmark;
 import org.ejml.data.DenseMatrix64F;
@@ -40,7 +40,7 @@ public class InvSymmAccuracy extends AccuracyTestBase {
     protected volatile DenseMatrix64F I_found;
     protected volatile DenseMatrix64F I;
 
-    public InvSymmAccuracy(long randomSeed, StabilityFactory factory, StabilityOperationInterface operation,
+    public InvSymmAccuracy(long randomSeed, RuntimePerformanceFactory factory, MatrixProcessorInterface operation,
                            int totalTrials, int minLength, int maxLength) {
         super(randomSeed, factory, operation, totalTrials, minLength, maxLength);
     }
@@ -55,10 +55,17 @@ public class InvSymmAccuracy extends AccuracyTestBase {
         I = CommonOps.identity(m);
     }
 
+    @Override
     protected DenseMatrix64F[] createInputs() {
         return  new DenseMatrix64F[]{A};
     }
 
+    @Override
+    protected int getNumOutputs() {
+        return 1;
+    }
+
+    @Override
     protected void processResults(DenseMatrix64F[] inputs, DenseMatrix64F[] results) {
         DenseMatrix64F A_inv = results[0];
 

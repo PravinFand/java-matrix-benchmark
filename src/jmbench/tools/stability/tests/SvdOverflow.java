@@ -19,8 +19,8 @@
 
 package jmbench.tools.stability.tests;
 
-import jmbench.interfaces.StabilityFactory;
-import jmbench.interfaces.StabilityOperationInterface;
+import jmbench.interfaces.MatrixProcessorInterface;
+import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.BenchmarkToolsMasterApp;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityBenchmark;
@@ -36,7 +36,7 @@ public class SvdOverflow extends OverflowTestBase {
 
     private static final double svMag = 1;
 
-    public SvdOverflow(long randomSeed, StabilityFactory factory, StabilityOperationInterface operation, int totalTrials,
+    public SvdOverflow(long randomSeed, RuntimePerformanceFactory factory, MatrixProcessorInterface operation, int totalTrials,
                        double breakingPoint, int minLength, int maxLength, boolean overflow) {
         super(randomSeed, factory, operation, totalTrials, breakingPoint, minLength, maxLength, overflow);
     }
@@ -60,6 +60,11 @@ public class SvdOverflow extends OverflowTestBase {
 
         A = SolverCommon.createMatrix(U,V, sv);
         Ascaled = new DenseMatrix64F(m,n);
+    }
+
+    @Override
+    protected int getNumOutputs() {
+        return 3;
     }
 
     @Override

@@ -19,8 +19,8 @@
 
 package jmbench.tools.stability.tests;
 
-import jmbench.interfaces.StabilityFactory;
-import jmbench.interfaces.StabilityOperationInterface;
+import jmbench.interfaces.MatrixProcessorInterface;
+import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.stability.StabilityTestBase;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
@@ -40,8 +40,8 @@ public abstract class SolverCommon extends StabilityTestBase {
     protected transient DenseMatrix64F A,b;
 
     public SolverCommon(long randomSeed,
-                        StabilityFactory factory ,
-                        StabilityOperationInterface operation,
+                        RuntimePerformanceFactory factory ,
+                        MatrixProcessorInterface operation,
                         int totalTrials,
                         double breakingPoint ,
                         int minLength, int maxLength,

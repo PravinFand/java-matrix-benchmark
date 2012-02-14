@@ -353,6 +353,17 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
+    @Override
+    public BenchmarkMatrix convertToLib(DenseMatrix64F input) {
+        return new JBlasBenchmarkMatrix(convertToJBlas(input));
+    }
+
+    @Override
+    public DenseMatrix64F convertToEjml(BenchmarkMatrix input) {
+        DoubleMatrix orig = input.getOriginal();
+        return jblasToEjml(orig);
+    }
+
     public static DoubleMatrix convertToJBlas( DenseMatrix64F orig )
     {
         DoubleMatrix ret = new DoubleMatrix(orig.getNumRows(),orig.getNumCols());

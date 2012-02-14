@@ -20,7 +20,7 @@
 package jmbench.tools.stability;
 
 import jmbench.impl.MatrixLibrary;
-import jmbench.impl.stability.*;
+import jmbench.impl.runtime.*;
 import jmbench.tools.EvaluationTarget;
 
 import java.io.Serializable;
@@ -33,16 +33,16 @@ import java.util.List;
  */
 public class StabilityBenchmarkConfig implements Serializable {
 
-    public static EvaluationTarget ejml = new EvaluationTarget( MatrixLibrary.EJML, EjmlStabilityFactory.class.getName());
-    public static EvaluationTarget jama = new EvaluationTarget( MatrixLibrary.JAMA, JamaStabilityFactory.class.getName());
-    public static EvaluationTarget ojalgo = new EvaluationTarget( MatrixLibrary.OJALGO, OjAlgoStabilityFactory.class.getName());
-    public static EvaluationTarget commons = new EvaluationTarget( MatrixLibrary.CM, CommonsMathStabilityFactory.class.getName());
-    public static EvaluationTarget colt = new EvaluationTarget( MatrixLibrary.COLT, ColtStabilityFactory.class.getName());
-    public static EvaluationTarget mtj = new EvaluationTarget( MatrixLibrary.MTJ, MtjStabilityFactory.class.getName());
-    public static EvaluationTarget pcolt = new EvaluationTarget( MatrixLibrary.PCOLT, ParallelColtStabilityFactory.class.getName());
-    public static EvaluationTarget ujmp = new EvaluationTarget( MatrixLibrary.UJMP, UjmpStabilityFactory.class.getName());
-    public static EvaluationTarget jblas = new EvaluationTarget( MatrixLibrary.JBLAS, JBlasStabilityFactory.class.getName());
-
+    public static EvaluationTarget ejml = new EvaluationTarget( MatrixLibrary.EJML, EjmlAlgorithmFactory.class.getName());
+    public static EvaluationTarget jama = new EvaluationTarget( MatrixLibrary.JAMA, JamaAlgorithmFactory.class.getName());
+    public static EvaluationTarget ojalgo = new EvaluationTarget( MatrixLibrary.OJALGO, OjAlgoAlgorithmFactory.class.getName());
+    public static EvaluationTarget commons = new EvaluationTarget( MatrixLibrary.CM, CommonsMathAlgorithmFactory.class.getName());
+    public static EvaluationTarget colt = new EvaluationTarget( MatrixLibrary.COLT, ColtAlgorithmFactory.class.getName());
+    public static EvaluationTarget mtj = new EvaluationTarget( MatrixLibrary.MTJ, MtjAlgorithmFactory.class.getName());
+    public static EvaluationTarget pcolt = new EvaluationTarget( MatrixLibrary.PCOLT, PColtAlgorithmFactory.class.getName());
+    public static EvaluationTarget ujmp = new EvaluationTarget( MatrixLibrary.UJMP, UjmpAlgorithmFactory.class.getName());
+    public static EvaluationTarget jblas = new EvaluationTarget( MatrixLibrary.JBLAS, JBlasAlgorithmFactory.class.getName());
+    public static EvaluationTarget la4j = new EvaluationTarget( MatrixLibrary.LA4J, La4jAlgorithmFactory.class.getName());
 
     public long randomSeed;
     public long maxProcessingTime;
@@ -135,6 +135,7 @@ public class StabilityBenchmarkConfig implements Serializable {
         config.targets.add(pcolt);
         config.targets.add(ujmp);
         config.targets.add(jblas);
+        config.targets.add(la4j);
 
         config.checkAccuracy = true;
         config.checkOverflow = true;

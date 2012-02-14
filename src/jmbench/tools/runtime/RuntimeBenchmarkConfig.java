@@ -47,6 +47,7 @@ public class RuntimeBenchmarkConfig implements Serializable {
     public static final EvaluationTarget ujmp = new EvaluationTarget( MatrixLibrary.UJMP, UjmpAlgorithmFactory.class.getName());
     public static final EvaluationTarget ujmp_j = new EvaluationTarget( MatrixLibrary.UJMP_JAVA , UjmpJavaAlgorithmFactory.class.getName());
     public static final EvaluationTarget jblas = new EvaluationTarget( MatrixLibrary.JBLAS, JBlasAlgorithmFactory.class.getName());
+    public static final EvaluationTarget la4j = new EvaluationTarget( MatrixLibrary.LA4J, La4jAlgorithmFactory.class.getName());
 
     // random seed used to create matrices used as inputs
     public long seed;
@@ -147,7 +148,7 @@ public class RuntimeBenchmarkConfig implements Serializable {
         config.targets = new ArrayList<EvaluationTarget>();
 
         config.targets.add(ejml);
-//        config.targets.add(sejml);
+        config.targets.add(sejml);
         config.targets.add(jama);
         config.targets.add(ojalgo);
         config.targets.add(commons);
@@ -157,6 +158,7 @@ public class RuntimeBenchmarkConfig implements Serializable {
         config.targets.add(ujmp_j);
         config.targets.add(ujmp);
         config.targets.add(jblas);
+        config.targets.add(la4j);
 
         return config;
     }

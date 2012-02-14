@@ -440,7 +440,18 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 		}
 	}
 
-	public static DenseDoubleMatrix2D convertToUjmp(DenseMatrix64F orig) {
+    @Override
+    public BenchmarkMatrix convertToLib(DenseMatrix64F input) {
+        return new UjmpBenchmarkMatrix(convertToUjmp(input));
+    }
+
+    @Override
+    public DenseMatrix64F convertToEjml(BenchmarkMatrix input) {
+        DenseDoubleMatrix2D orig = input.getOriginal();
+        return ujmpToEjml(orig);
+    }
+
+    public static DenseDoubleMatrix2D convertToUjmp(DenseMatrix64F orig) {
 		DenseDoubleMatrix2D ret = DenseDoubleMatrix2D.factory.zeros(orig
 				.getNumRows(), orig.getNumCols());
 

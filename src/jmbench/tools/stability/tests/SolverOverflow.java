@@ -19,8 +19,10 @@
 
 package jmbench.tools.stability.tests;
 
-import jmbench.interfaces.StabilityFactory;
-import jmbench.interfaces.StabilityOperationInterface;
+import jmbench.interfaces.BenchmarkMatrix;
+import jmbench.interfaces.DetectedException;
+import jmbench.interfaces.MatrixProcessorInterface;
+import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityBenchmark;
 import org.ejml.data.DenseMatrix64F;
@@ -45,8 +47,8 @@ public class SolverOverflow extends SolverCommon
     private volatile double scaling;
 
     public SolverOverflow(long randomSeed,
-                          StabilityFactory factory,
-                          StabilityOperationInterface operation,
+                          RuntimePerformanceFactory factory,
+                          MatrixProcessorInterface operation,
                           int totalTrials,
                           double breakingPoint ,
                           int minLength, int maxLength,
@@ -154,21 +156,27 @@ public class SolverOverflow extends SolverCommon
         CommonOps.scale(scale,A,A_scale);
         CommonOps.scale(scale,b,b_scale);
 
-        DenseMatrix64F results[];
+        BenchmarkMatrix[] inputsB = new BenchmarkMatrix[2];
+        BenchmarkMatrix[] outputB = new BenchmarkMatrix[1];
+
+        inputsB[0] = factory.convertToLib(A_scale);
+        inputsB[1] = factory.convertToLib(b_scale);
+
         try {
-            DenseMatrix64F []inputs = new DenseMatrix64F[]{A_scale,b_scale};
-            results = operation.process(inputs);
+            operation.process(inputsB,outputB,1);
+        } catch( DetectedException e ) {
+            reason = OutputError.DETECTED_FAILURE;
+            return false;
         } catch( Exception e ) {
             addUnexpectedException(e);
-//                e.printStackTrace();
             reason = OutputError.UNEXPECTED_EXCEPTION;
             return false;
         }
 
-        if( results == null ) {
-            reason = OutputError.DETECTED_FAILURE;
-            return false;
-        }
+        DenseMatrix64F results[] = new DenseMatrix64F[outputB.length];
+        for( int i = 0; i < results.length; i++ )
+            results[i] = factory.convertToEjml(outputB[i]);
+
         DenseMatrix64F x = results[0];
 
         if( MatrixFeatures.hasUncountable(x)) {

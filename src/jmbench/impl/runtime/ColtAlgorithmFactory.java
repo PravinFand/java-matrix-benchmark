@@ -27,6 +27,7 @@ import jmbench.impl.wrapper.ColtBenchmarkMatrix;
 import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
+import jmbench.interfaces.DetectedException;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
 import org.ejml.data.DenseMatrix64F;
@@ -71,7 +72,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
                 CholeskyDecomposition chol = new CholeskyDecomposition(matA);
 
                 if( !chol.isSymmetricPositiveDefinite() ) {
-                    throw new RuntimeException("Is not SPD");
+                    throw new DetectedException("Is not SPD");
                 }
 
                 L = chol.getL();
@@ -111,7 +112,7 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
                 pivot = lu.getPivot();
 
                 if( !lu.isNonsingular() )
-                    throw new RuntimeException("Singular matrix");
+                    throw new DetectedException("Singular matrix");
             }
 
             long elapsed = System.nanoTime()-prev;
@@ -435,7 +436,18 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
         // yep this is one of "those" libraries that just flags the matrix as being transposed
         return null;
     }
-    
+
+    @Override
+    public BenchmarkMatrix convertToLib(DenseMatrix64F input) {
+        return new ColtBenchmarkMatrix(convertToColt(input));
+    }
+
+    @Override
+    public DenseMatrix64F convertToEjml(BenchmarkMatrix input) {
+        DenseDoubleMatrix2D mat = input.getOriginal();
+        return coltToEjml(mat);
+    }
+
     public static DenseDoubleMatrix2D convertToColt( DenseMatrix64F orig )
     {
         DenseDoubleMatrix2D mat = new DenseDoubleMatrix2D(orig.numRows,orig.numCols);

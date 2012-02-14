@@ -148,4 +148,17 @@ public class AllLibraryVersion {
         }
     }
 
+    public static class LA4J implements LibraryVersion {
+
+        @Override
+        public String getVersionString() {
+            return "0.2.0";
+        }
+
+        @Override
+        public String getReleaseDate() {
+            return "2011-11-01";
+        }
+    }
+
 }

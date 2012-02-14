@@ -19,15 +19,22 @@
 
 package jmbench.interfaces;
 
-import org.ejml.data.DenseMatrix64F;
-
+import org.apache.commons.math.linear.NotPositiveDefiniteMatrixException;
 
 /**
- * Interface for an operation which is being tested for stability.
+ * Thrown if the library detected an exception
  *
  * @author Peter Abeles
  */
-public interface StabilityOperationInterface {
+public class DetectedException extends RuntimeException {
+    public DetectedException(String s) {
+        super(s);
+    }
 
-    public DenseMatrix64F[] process( DenseMatrix64F[] inputs );
+    public DetectedException() {
+    }
+
+    public DetectedException(Exception e) {
+        super(e);
+    }
 }

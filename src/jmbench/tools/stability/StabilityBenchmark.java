@@ -96,8 +96,6 @@ public class StabilityBenchmark {
                                     int sizeMin , int sizeMax ,
                                     int numTrialsSolve , int numTrialsSvd) {
         for( EvaluationTarget desc : libs ) {
-//            if( desc.getLib() != MatrixLibrary.JAMA )
-//                continue;
             MatrixLibrary lib = MatrixLibrary.lookup(desc.getLibName());
             String libOutputDir = directorySave+"/"+dirSize+"/"+lib.getSaveDirName();
 

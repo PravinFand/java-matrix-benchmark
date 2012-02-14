@@ -19,8 +19,8 @@
 
 package jmbench.tools.stability;
 
-import jmbench.interfaces.StabilityFactory;
-import jmbench.interfaces.StabilityOperationInterface;
+import jmbench.interfaces.MatrixProcessorInterface;
+import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.EvaluationTest;
 import jmbench.tools.OutputError;
 import jmbench.tools.TestResults;
@@ -33,8 +33,8 @@ import java.util.Random;
  */
 public abstract class StabilityTestBase extends EvaluationTest {
 
-    protected StabilityFactory factory;
-    protected StabilityOperationInterface operation;
+    protected RuntimePerformanceFactory factory;
+    protected MatrixProcessorInterface operation;
 
     protected int totalTrials;
     protected double breakingPoint;
@@ -46,8 +46,8 @@ public abstract class StabilityTestBase extends EvaluationTest {
     protected transient int numResults;
 
     protected StabilityTestBase(long randomSeed,
-                                StabilityFactory factory,
-                                StabilityOperationInterface operation,
+                                RuntimePerformanceFactory factory,
+                                MatrixProcessorInterface operation,
                                 int totalTrials,
                                 double breakingPoint ) {
         super(randomSeed);
@@ -158,19 +158,19 @@ public abstract class StabilityTestBase extends EvaluationTest {
         System.gc();
     }
 
-    public StabilityFactory getFactory() {
+    public RuntimePerformanceFactory getFactory() {
         return factory;
     }
 
-    public void setFactory(StabilityFactory factory) {
+    public void setFactory(RuntimePerformanceFactory factory) {
         this.factory = factory;
     }
 
-    public StabilityOperationInterface getOperation() {
+    public MatrixProcessorInterface getOperation() {
         return operation;
     }
 
-    public void setOperation(StabilityOperationInterface operation) {
+    public void setOperation(MatrixProcessorInterface operation) {
         this.operation = operation;
     }
 

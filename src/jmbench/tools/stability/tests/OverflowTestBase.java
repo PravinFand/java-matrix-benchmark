@@ -19,8 +19,10 @@
 
 package jmbench.tools.stability.tests;
 
-import jmbench.interfaces.StabilityFactory;
-import jmbench.interfaces.StabilityOperationInterface;
+import jmbench.interfaces.BenchmarkMatrix;
+import jmbench.interfaces.DetectedException;
+import jmbench.interfaces.MatrixProcessorInterface;
+import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityTestBase;
 import org.ejml.data.DenseMatrix64F;
@@ -44,7 +46,7 @@ public abstract class OverflowTestBase extends StabilityTestBase
 
     private volatile BreakingPointBinarySearch search;
 
-    public OverflowTestBase(long randomSeed, StabilityFactory factory , StabilityOperationInterface operation,
+    public OverflowTestBase(long randomSeed, RuntimePerformanceFactory factory , MatrixProcessorInterface operation,
                        int totalTrials, double breakingPoint, int minLength, int maxLength,
                        boolean overflow)
     {
@@ -94,20 +96,27 @@ public abstract class OverflowTestBase extends StabilityTestBase
         CommonOps.scale(scale,Ascaled);
 
         DenseMatrix64F inputs[] = new DenseMatrix64F[]{Ascaled};
-        DenseMatrix64F results[];
+        BenchmarkMatrix[] inputsB = new BenchmarkMatrix[inputs.length];
+        BenchmarkMatrix[] outputB = new BenchmarkMatrix[getNumOutputs()];
+
+        for( int i = 0; i < inputs.length; i++ ) {
+            inputsB[i] = factory.convertToLib(inputs[i]);
+        }
+
         try {
-            results = operation.process(inputs);
+            operation.process(inputsB,outputB,1);
+        } catch( DetectedException e ) {
+            reason = OutputError.DETECTED_FAILURE;
+            return false;
         } catch( Exception e ) {
             addUnexpectedException(e);
-//                e.printStackTrace();
             reason = OutputError.UNEXPECTED_EXCEPTION;
             return false;
         }
 
-        if( results == null ) {
-            reason = OutputError.DETECTED_FAILURE;
-            return false;
-        }
+        DenseMatrix64F results[] = new DenseMatrix64F[outputB.length];
+        for( int i = 0; i < results.length; i++ )
+            results[i] = factory.convertToEjml(outputB[i]);
 
         for( DenseMatrix64F R : results ) {
             if( MatrixFeatures.hasUncountable(R)){
@@ -120,6 +129,8 @@ public abstract class OverflowTestBase extends StabilityTestBase
     }
 
     protected abstract boolean checkResults(DenseMatrix64F results[]);
+
+    protected abstract int getNumOutputs();
 
 
     public int getMinLength() {

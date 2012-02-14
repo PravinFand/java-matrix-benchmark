@@ -22,6 +22,7 @@ package jmbench.impl.runtime;
 import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
+import jmbench.interfaces.DetectedException;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
 import org.ejml.alg.dense.decomposition.*;
@@ -73,7 +74,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
 
             for( long i = 0; i < numTrials; i++ ) {
                 if( !DecompositionFactory.decomposeSafe(chol,matA) ) {
-                    throw new RuntimeException("Decomposition failed");
+                    throw new DetectedException("Decomposition failed");
                 }
                 chol.getT(L);
             }
@@ -104,7 +105,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
 
             for( long i = 0; i < numTrials; i++ ) {
                 if( !DecompositionFactory.decomposeSafe(lu,matA) )
-                    throw new RuntimeException("Decomposition failed");
+                    throw new DetectedException("Decomposition failed");
 
                 lu.getLower(L);
                 lu.getUpper(U);
@@ -139,7 +140,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
 
             for( long i = 0; i < numTrials; i++ ) {
                 if( !DecompositionFactory.decomposeSafe(svd,matA) )
-                    throw new RuntimeException("Decomposition failed");
+                    throw new DetectedException("Decomposition failed");
                 U = svd.getU(false);
                 S = svd.getW(S);
                 V = svd.getV(false);
@@ -169,7 +170,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
 
             for( long i = 0; i < numTrials; i++ ) {
                 if( !DecompositionFactory.decomposeSafe(eig,matA) )
-                    throw new RuntimeException("Decomposition failed");
+                    throw new DetectedException("Decomposition failed");
                 // this isn't necessary since eigenvalues and eigenvectors are always computed
                 eig.getEigenvalue(0);
                 eig.getEigenVector(0);
@@ -200,7 +201,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
 
             for( long i = 0; i < numTrials; i++ ) {
                 if( !DecompositionFactory.decomposeSafe(qr,matA) )
-                    throw new RuntimeException("Decomposition failed");
+                    throw new DetectedException("Decomposition failed");
 
                 Q = qr.getQ(null,true);
                 R = qr.getR(null,true);
@@ -249,7 +250,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
 
             for( long i = 0; i < numTrials; i++ ) {
                 if( !CommonOps.invert(matA,result) )
-                    throw new RuntimeException("Inversion failed");
+                    throw new DetectedException("Inversion failed");
             }
 
             long elapsedTime = System.nanoTime() - prev;
@@ -402,7 +403,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
 
             for( long i = 0; i < numTrials; i++ ) {
                 if( !solver.setA(matA) )
-                    throw new IllegalArgumentException("Bad A");
+                    throw new DetectedException("Bad A");
 
                 solver.solve(matB,result);
             }
@@ -435,7 +436,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
 
             for( long i = 0; i < numTrials; i++ ) {
                 if( !solver.setA(matA) )
-                    throw new IllegalArgumentException("Bad A");
+                    throw new DetectedException("Bad A");
 
                 solver.solve(matB,result);
             }
@@ -468,5 +469,15 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
             outputs[0] = new EjmlBenchmarkMatrix(result);
             return elapsedTime;
         }
+    }
+
+    @Override
+    public BenchmarkMatrix convertToLib(DenseMatrix64F input) {
+        return new EjmlBenchmarkMatrix(input);
+    }
+
+    @Override
+    public DenseMatrix64F convertToEjml(BenchmarkMatrix input) {
+        return (DenseMatrix64F)input.getOriginal();
     }
 }

@@ -19,8 +19,8 @@
 
 package jmbench.tools.stability.tests;
 
-import jmbench.interfaces.StabilityFactory;
-import jmbench.interfaces.StabilityOperationInterface;
+import jmbench.interfaces.MatrixProcessorInterface;
+import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityBenchmark;
 import org.ejml.data.DenseMatrix64F;
@@ -36,7 +36,7 @@ public class EigSymmOverflow extends OverflowTestBase
     protected volatile DenseMatrix64F L;
     protected volatile DenseMatrix64F R;
 
-    public EigSymmOverflow(long randomSeed, StabilityFactory factory, StabilityOperationInterface operation, int totalTrials,
+    public EigSymmOverflow(long randomSeed, RuntimePerformanceFactory factory, MatrixProcessorInterface operation, int totalTrials,
                            double breakingPoint, int minLength, int maxLength, boolean overflow) {
         super(randomSeed, factory, operation, totalTrials, breakingPoint, minLength, maxLength, overflow);
     }
@@ -52,6 +52,10 @@ public class EigSymmOverflow extends OverflowTestBase
         R = new DenseMatrix64F(m,m);
     }
 
+    @Override
+    protected int getNumOutputs() {
+        return 2;
+    }
 
     @Override
     protected boolean checkResults(DenseMatrix64F[] results) {

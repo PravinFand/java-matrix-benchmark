@@ -22,6 +22,7 @@ package jmbench.impl.runtime;
 import jmbench.impl.wrapper.CommonsMathBenchmarkMatrix;
 import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
+import jmbench.interfaces.DetectedException;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
 import org.apache.commons.math.linear.*;
@@ -67,9 +68,9 @@ public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
                     CholeskyDecompositionImpl chol = new CholeskyDecompositionImpl(matA);
                     L = chol.getL();
                 } catch (NotSymmetricMatrixException e) {
-                    throw new RuntimeException(e);
+                    throw new DetectedException(e);
                 } catch (NotPositiveDefiniteMatrixException e) {
-                    throw new RuntimeException(e);
+                    throw new DetectedException(e);
                 }
             }
 
@@ -96,11 +97,14 @@ public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                LUDecompositionImpl LU = new LUDecompositionImpl(matA);
-
-                L = LU.getL();
-                U = LU.getU();
-                P = LU.getP();
+                try {
+                    LUDecompositionImpl LU = new LUDecompositionImpl(matA);
+                    L = LU.getL();
+                    U = LU.getU();
+                    P = LU.getP();
+                } catch( InvalidMatrixException e ) {
+                    throw new DetectedException(e);
+                }
             }
 
             long elapsedTime = System.nanoTime()-prev;
@@ -159,10 +163,14 @@ public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                EigenDecompositionImpl eig = new EigenDecompositionImpl(matA, MathUtils.SAFE_MIN);
-                // need to do this so that it computes the complete eigen vector
-                V = eig.getV();
-                D = eig.getD();
+                try {
+                    EigenDecompositionImpl eig = new EigenDecompositionImpl(matA, MathUtils.SAFE_MIN);
+                    // need to do this so that it computes the complete eigen vector
+                    V = eig.getV();
+                    D = eig.getD();
+                } catch( InvalidMatrixException e ) {
+                    throw new DetectedException(e);
+                }
             }
 
             long elapsedTime = System.nanoTime()-prev;
@@ -271,9 +279,9 @@ public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
                 try {
                     chol = new CholeskyDecompositionImpl(matA);
                 } catch (NotSymmetricMatrixException e) {
-                    throw new RuntimeException(e);
+                    throw new DetectedException(e);
                 } catch (NotPositiveDefiniteMatrixException e) {
-                    throw new RuntimeException(e);
+                    throw new DetectedException(e);
                 }
                 result = chol.getSolver().getInverse();
             }
@@ -450,7 +458,18 @@ public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
             return elapsedTime;
         }
     }
-    
+
+    @Override
+    public BenchmarkMatrix convertToLib(DenseMatrix64F input) {
+        return new CommonsMathBenchmarkMatrix(convertToBlockReal(input));
+    }
+
+    @Override
+    public DenseMatrix64F convertToEjml(BenchmarkMatrix input) {
+        RealMatrix mat = input.getOriginal();
+        return realToEjml(mat);
+    }
+
     /**
      * Converts BenchmarkMatrix used in EML into a RealMatrix found in commons-math.
      *

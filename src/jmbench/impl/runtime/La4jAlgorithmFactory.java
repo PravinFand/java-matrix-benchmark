@@ -19,37 +19,31 @@
 
 package jmbench.impl.runtime;
 
-import Jama.*;
 import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
-import jmbench.impl.wrapper.JamaBenchmarkMatrix;
+import jmbench.impl.wrapper.La4jBenchmarkMatrix;
 import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.DetectedException;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
+import la4j.decomposition.*;
+import la4j.err.LinearSystemException;
+import la4j.err.MatrixDecompositionException;
+import la4j.err.MatrixException;
+import la4j.err.MatrixInversionException;
+import la4j.factory.DenseFactory;
+import la4j.inversion.GaussianInvertor;
+import la4j.linear.GaussianSolver;
+import la4j.linear.LinearSystem;
+import la4j.matrix.Matrix;
+import la4j.vector.Vector;
 import org.ejml.data.DenseMatrix64F;
-import org.ejml.ops.SpecializedOps;
-
+import org.ejml.ops.CommonOps;
 
 /**
- * @author Peter Abeles
+ * Wrapper around la4j
  */
-public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
-
-    @Override
-    public void configure() {
-    }
-
-    @Override
-    public BenchmarkMatrix create(int numRows, int numCols) {
-        return wrap(new Matrix(numRows,numCols));
-    }
-
-    @Override
-    public BenchmarkMatrix wrap(Object matrix) {
-        return new JamaBenchmarkMatrix((Matrix)matrix);
-    }
-
+public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     @Override
     public AlgorithmInterface chol() {
         return new Chol();
@@ -60,20 +54,22 @@ public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             Matrix matA = inputs[0].getOriginal();
 
-            Matrix L = null;
+            Matrix U = null;
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                CholeskyDecomposition chol = matA.chol();
-                if( !chol.isSPD() ) {
-                    throw new DetectedException("Is not SPD");
+                try {
+                    Matrix[] c = matA.decompose(new CholeskyDecompositor());
+                    U = c[0];
+                } catch (MatrixDecompositionException e) {
+                    throw new DetectedException(e);
                 }
-                L = chol.getL();
             }
 
+            Matrix L = U.transpose();
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JamaBenchmarkMatrix(L);
+            outputs[0] = new La4jBenchmarkMatrix(L);
             return elapsed;
         }
     }
@@ -90,21 +86,25 @@ public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
 
             Matrix L = null;
             Matrix U = null;
-            int pivot[] = null;
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                LUDecomposition lu = matA.lu();
-                L = lu.getL();
-                U = lu.getU();
-                pivot = lu.getPivot();
+                try {
+                    Matrix[] d = matA.decompose(new LUDecompositor());
+                    L = d[0];
+                    U = d[1];
+
+                } catch (MatrixDecompositionException e) {
+                    throw new DetectedException(e);
+                }
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JamaBenchmarkMatrix(L);
-            outputs[1] = new JamaBenchmarkMatrix(U);
-            outputs[2] = new EjmlBenchmarkMatrix(SpecializedOps.pivotMatrix(null, pivot, pivot.length,false));
+            outputs[0] = new La4jBenchmarkMatrix(L);
+            outputs[1] = new La4jBenchmarkMatrix(U);
+            // no pivot matrix provided
+            outputs[2] = new EjmlBenchmarkMatrix(CommonOps.identity(L.columns()));
             return elapsed;
         }
     }
@@ -126,55 +126,20 @@ public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                // Jama does not support SVD for wide matrices and in that situations
-                // the input matrix is transposed.
-                if( matA.getColumnDimension() > matA.getRowDimension() ) {
-                    SingularValueDecomposition s = matA.transpose().svd();
-
-                    U = s.getV();
-                    S = s.getS();
-                    V = s.getU();
-                } else {
-                    SingularValueDecomposition s = matA.svd();
-
-                    U = s.getU();
-                    S = s.getS();
-                    V = s.getV();
+                try {
+                    Matrix[] d = matA.decompose(new SingularValueDecompositor());
+                    U = d[0];
+                    S = d[1];
+                    V = d[2];
+                } catch (MatrixDecompositionException e) {
+                    throw new DetectedException(e);
                 }
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JamaBenchmarkMatrix(U);
-            outputs[1] = new JamaBenchmarkMatrix(S);
-            outputs[2] = new JamaBenchmarkMatrix(V);
-            return elapsed;
-        }
-    }
-
-    @Override
-    public AlgorithmInterface eigSymm() {
-        return new Eig();
-    }
-
-    public static class Eig implements AlgorithmInterface {
-        @Override
-        public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
-
-            Matrix D = null;
-            Matrix V = null;
-
-            long prev = System.nanoTime();
-
-            for( long i = 0; i < numTrials; i++ ) {
-                EigenvalueDecomposition e = matA.eig();
-                D = e.getD();
-                V = e.getV();
-            }
-
-            long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JamaBenchmarkMatrix(D);
-            outputs[1] = new JamaBenchmarkMatrix(V);
+            outputs[0] = new La4jBenchmarkMatrix(U);
+            outputs[1] = new La4jBenchmarkMatrix(S);
+            outputs[2] = new La4jBenchmarkMatrix(V);
             return elapsed;
         }
     }
@@ -195,15 +160,50 @@ public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                QRDecomposition decomp = matA.qr();
-
-                Q = decomp.getQ();
-                R = decomp.getR();
+                try {
+                    Matrix[] d = matA.decompose(new QRDecompositor());
+                    Q = d[0];
+                    R = d[1];
+                } catch (MatrixDecompositionException e) {
+                    throw new DetectedException(e);
+                }
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JamaBenchmarkMatrix(Q);
-            outputs[1] = new JamaBenchmarkMatrix(R);
+            outputs[0] = new La4jBenchmarkMatrix(Q);
+            outputs[1] = new La4jBenchmarkMatrix(R);
+            return elapsed;
+        }
+    }
+
+    @Override
+    public AlgorithmInterface eigSymm() {
+        return new Eig();
+    }
+
+    public static class Eig implements AlgorithmInterface {
+        @Override
+        public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            Matrix matA = inputs[0].getOriginal();
+
+            Matrix D = null;
+            Matrix V = null;
+
+            long prev = System.nanoTime();
+
+            for( long i = 0; i < numTrials; i++ ) {
+                try {
+                    Matrix[] d = matA.decompose(new EigenDecompositor());
+                    V = d[0];
+                    D = d[1];
+                } catch (MatrixDecompositionException e) {
+                    throw new DetectedException("bad decomposition");
+                }
+            }
+
+            long elapsed = System.nanoTime()-prev;
+            outputs[0] = new La4jBenchmarkMatrix(D);
+            outputs[1] = new La4jBenchmarkMatrix(V);
             return elapsed;
         }
     }
@@ -221,13 +221,12 @@ public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                matA.det();
+                matA.determinant();
             }
 
             return System.nanoTime()-prev;
         }
     }
-
     @Override
     public AlgorithmInterface invert() {
         return new Inv();
@@ -243,11 +242,15 @@ public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                result = matA.inverse();
+                try {
+                    result = matA.inverse(new GaussianInvertor());
+                } catch (MatrixInversionException e) {
+                    throw new DetectedException(e);
+                }
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JamaBenchmarkMatrix(result);
+            outputs[0] = new La4jBenchmarkMatrix(result);
             return elapsed;
         }
     }
@@ -264,16 +267,18 @@ public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
 
             Matrix result = null;
 
-            int N = matA.getColumnDimension();
-
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                result = matA.chol().solve(Matrix.identity(N,N));
+                try {
+                    result = matA.inverse(new GaussianInvertor());
+                } catch (MatrixInversionException e) {
+                    throw new DetectedException(e);
+                }
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JamaBenchmarkMatrix(result);
+            outputs[0] = new La4jBenchmarkMatrix(result);
             return elapsed;
         }
     }
@@ -294,11 +299,15 @@ public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                result = matA.plus(matB);
+                try {
+                    result = matA.add(matB);
+                } catch (MatrixException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JamaBenchmarkMatrix(result);
+            outputs[0] = new La4jBenchmarkMatrix(result);
             return elapsed;
         }
     }
@@ -319,11 +328,15 @@ public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
             Matrix result = null;
 
             for( long i = 0; i < numTrials; i++ ) {
-                result = matA.times(matB);
+                try {
+                    result = matA.multiply(matB);
+                } catch (MatrixException e) {
+                    throw new DetectedException(e);
+                }
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JamaBenchmarkMatrix(result);
+            outputs[0] = new La4jBenchmarkMatrix(result);
             return elapsed;
         }
     }
@@ -344,11 +357,15 @@ public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                result = matA.times(matB.transpose());
+                try {
+                    result = matA.multiply(matB.transpose());
+                } catch (MatrixException e) {
+                    throw new DetectedException(e);
+                }
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JamaBenchmarkMatrix(result);
+            outputs[0] = new La4jBenchmarkMatrix(result);
             return elapsed;
         }
     }
@@ -368,11 +385,11 @@ public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                result = matA.times(ScaleGenerator.SCALE);
+                result = matA.multiply(ScaleGenerator.SCALE);
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JamaBenchmarkMatrix(result);
+            outputs[0] = new La4jBenchmarkMatrix(result);
             return elapsed;
         }
     }
@@ -384,7 +401,7 @@ public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
 
     @Override
     public AlgorithmInterface solveOver() {
-        return new Solve();
+        return null;//new Solve();
     }
 
     public static class Solve implements AlgorithmInterface {
@@ -393,16 +410,24 @@ public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
             Matrix matA = inputs[0].getOriginal();
             Matrix matB = inputs[1].getOriginal();
 
-            Matrix result = null;
+            Vector vecB = La4jBenchmarkMatrix.toVector(matB);
+            
+            Vector result = null;
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                result = matA.solve(matB);
+                LinearSystem system = new LinearSystem(matA, vecB);
+
+                try {
+                    result = system.solve();
+                } catch (LinearSystemException e) {
+                    throw new DetectedException(e);
+                }
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JamaBenchmarkMatrix(result);
+            outputs[0] = new La4jBenchmarkMatrix(La4jBenchmarkMatrix.toMatrix(result));
             return elapsed;
         }
     }
@@ -426,48 +451,57 @@ public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JamaBenchmarkMatrix(result);
+            outputs[0] = new La4jBenchmarkMatrix(result);
             return elapsed;
         }
     }
 
     @Override
+    public void configure() {
+    }
+
+    @Override
+    public BenchmarkMatrix create(int numRows, int numCols) {
+        return new La4jBenchmarkMatrix(new DenseFactory().createMatrix(numRows, numCols));
+    }
+
+    @Override
+    public BenchmarkMatrix wrap(Object matrix) {
+        return new La4jBenchmarkMatrix((Matrix)matrix);
+    }
+
+    @Override
     public BenchmarkMatrix convertToLib(DenseMatrix64F input) {
-        return new JamaBenchmarkMatrix(convertToJama(input));
+        return new La4jBenchmarkMatrix(ejmlToLa4j(input));
     }
 
     @Override
     public DenseMatrix64F convertToEjml(BenchmarkMatrix input) {
         Matrix orig = input.getOriginal();
-        return jamaToEjml(orig);
+        return la4jToEjml(orig);
     }
-
-    public static Matrix convertToJama( DenseMatrix64F orig )
-    {
-        Matrix ret = new Matrix(orig.getNumRows(),orig.getNumCols());
-
+    
+    public static Matrix ejmlToLa4j( DenseMatrix64F orig ) {
+        Matrix m = new DenseFactory().createMatrix(orig.numRows,orig.numCols);
+        
         for( int i = 0; i < orig.numRows; i++ ) {
             for( int j = 0; j < orig.numCols; j++ ) {
-                ret.set(i,j,orig.get(i,j));
+                m.set(i,j,orig.get(i,j));
             }
         }
-
-        return ret;
+        
+        return m;
     }
 
-    public static DenseMatrix64F jamaToEjml( Matrix orig )
-    {
-        if( orig == null )
-            return null;
+    public static DenseMatrix64F la4jToEjml( Matrix orig ) {
+        DenseMatrix64F m = new DenseMatrix64F(orig.rows(),orig.columns());
 
-        DenseMatrix64F ret = new DenseMatrix64F(orig.getRowDimension(),orig.getColumnDimension());
-
-        for( int i = 0; i < ret.numRows; i++ ) {
-            for( int j = 0; j < ret.numCols; j++ ) {
-                ret.set(i,j,orig.get(i,j));
+        for( int i = 0; i < m.numRows; i++ ) {
+            for( int j = 0; j < m.numCols; j++ ) {
+                m.set(i,j,orig.get(i,j));
             }
         }
 
-        return ret;
+        return m;
     }
 }

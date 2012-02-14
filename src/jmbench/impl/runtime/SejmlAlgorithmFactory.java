@@ -25,6 +25,7 @@ import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
+import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.EigenOps;
 import org.ejml.simple.SimpleEVD;
 import org.ejml.simple.SimpleMatrix;
@@ -81,9 +82,9 @@ public class SejmlAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime() - prev;
-            outputs[0] = new EjmlBenchmarkMatrix(U);
-            outputs[1] = new EjmlBenchmarkMatrix(W);
-            outputs[2] = new EjmlBenchmarkMatrix(V);
+            outputs[0] = new SejmlBenchmarkMatrix(U);
+            outputs[1] = new SejmlBenchmarkMatrix(W);
+            outputs[2] = new SejmlBenchmarkMatrix(V);
             return elapsedTime;
         }
     }
@@ -159,7 +160,7 @@ public class SejmlAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new EjmlBenchmarkMatrix(result);
+            outputs[0] = new SejmlBenchmarkMatrix(result);
             return elapsedTime;
         }
     }
@@ -188,7 +189,7 @@ public class SejmlAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new EjmlBenchmarkMatrix(result);
+            outputs[0] = new SejmlBenchmarkMatrix(result);
             return elapsedTime;
         }
     }
@@ -212,7 +213,7 @@ public class SejmlAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new EjmlBenchmarkMatrix(result);
+            outputs[0] = new SejmlBenchmarkMatrix(result);
             return elapsedTime;
         }
     }
@@ -236,7 +237,7 @@ public class SejmlAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new EjmlBenchmarkMatrix(result);
+            outputs[0] = new SejmlBenchmarkMatrix(result);
             return elapsedTime;
         }
     }
@@ -259,7 +260,7 @@ public class SejmlAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new EjmlBenchmarkMatrix(result);
+            outputs[0] = new SejmlBenchmarkMatrix(result);
             return elapsedTime;
         }
     }
@@ -289,7 +290,7 @@ public class SejmlAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new EjmlBenchmarkMatrix(result);
+            outputs[0] = new SejmlBenchmarkMatrix(result);
             return elapsedTime;
         }
     }
@@ -312,8 +313,19 @@ public class SejmlAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new EjmlBenchmarkMatrix(result);
+            outputs[0] = new SejmlBenchmarkMatrix(result);
             return elapsedTime;
         }
+    }
+
+    @Override
+    public BenchmarkMatrix convertToLib(DenseMatrix64F input) {
+        return new SejmlBenchmarkMatrix(SimpleMatrix.wrap(input));
+    }
+
+    @Override
+    public DenseMatrix64F convertToEjml(BenchmarkMatrix input) {
+        SimpleMatrix orig = input.getOriginal();
+        return orig.getMatrix();
     }
 }
