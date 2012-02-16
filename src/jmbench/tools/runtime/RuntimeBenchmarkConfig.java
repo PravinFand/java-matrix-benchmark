@@ -148,7 +148,7 @@ public class RuntimeBenchmarkConfig implements Serializable {
         config.targets = new ArrayList<EvaluationTarget>();
 
         config.targets.add(ejml);
-        config.targets.add(sejml);
+//        config.targets.add(sejml);
         config.targets.add(jama);
         config.targets.add(ojalgo);
         config.targets.add(commons);
@@ -156,7 +156,7 @@ public class RuntimeBenchmarkConfig implements Serializable {
         config.targets.add(pcolt);
         config.targets.add(mtj);
         config.targets.add(ujmp_j);
-        config.targets.add(ujmp);
+//        config.targets.add(ujmp);
         config.targets.add(jblas);
         config.targets.add(la4j);
 

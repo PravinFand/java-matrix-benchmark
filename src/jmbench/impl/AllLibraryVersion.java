@@ -47,12 +47,12 @@ public class AllLibraryVersion {
 
         @Override
         public String getVersionString() {
-            return "2.1";
+            return "2.2";
         }
 
         @Override
         public String getReleaseDate() {
-            return "2010-04-05";
+            return "2011-02-26";
         }
     }
 
@@ -104,7 +104,7 @@ public class AllLibraryVersion {
 
         @Override
         public String getReleaseDate() {
-            return "2010-10-19";
+            return "2011-12-04";
         }
     }
 
@@ -112,12 +112,12 @@ public class AllLibraryVersion {
 
         @Override
         public String getVersionString() {
-            return "0.9.13";
+            return "0.9.14";
         }
 
         @Override
         public String getReleaseDate() {
-            return "2010-11-12";
+            return "2011-04";
         }
     }
 
@@ -131,7 +131,7 @@ public class AllLibraryVersion {
 
         @Override
         public String getReleaseDate() {
-            return "2011-02-01";
+            return OjAlgoUtils.getDate();
         }
     }
 

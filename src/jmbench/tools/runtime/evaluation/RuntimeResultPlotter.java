@@ -349,7 +349,7 @@ public class RuntimeResultPlotter {
             }
         }
 
-        throw new RuntimeException("Couldnt find a match");
+        throw new RuntimeException("Couldn't find a match");
     }
 
     private static double getReferenceValue( RuntimePlotData data ,
