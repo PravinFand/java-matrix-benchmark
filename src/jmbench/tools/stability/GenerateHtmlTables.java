@@ -249,7 +249,7 @@ public class GenerateHtmlTables extends TablesCommon {
 
     public static void main( String args[] ) {
 
-        String base = "/home/pja/projects/jmatbench/trunk/results/stability_2011_02";
+        String base = "/home/pja/projects/jmatbench/trunk/results/stability_2012_02";
 
         System.out.println("= Small Matrices =");
         System.out.println();

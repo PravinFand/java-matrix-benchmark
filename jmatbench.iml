@@ -130,15 +130,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/ojalgo/ojalgo-31.9.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/commons-math/commons-math-2.2.jar!/" />
         </CLASSES>
         <JAVADOC>
@@ -161,6 +152,17 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="ejml" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/ojalgo/ojalgo-31.10.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/ojalgo/ojalgo-31.10-src.zip!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
@@ -185,6 +187,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/ujmp/ujmp-complete-0.2.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jblas/jblas-1.2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

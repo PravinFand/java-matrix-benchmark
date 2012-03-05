@@ -1,3 +1,10 @@
+----- Version 0.9
+
+2012/03/03
+
+- Combined stability and runtime factories in a single factory
+- Added La4j library
+
 ----- Version 0.8
 
 2011/02/19

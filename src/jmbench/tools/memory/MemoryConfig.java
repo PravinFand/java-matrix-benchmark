@@ -43,6 +43,7 @@ public class MemoryConfig {
     public static EvaluationTarget ujmp = new EvaluationTarget( MatrixLibrary.UJMP, UjmpMemoryFactory.class.getName());
     public static EvaluationTarget ujmp_j = new EvaluationTarget( MatrixLibrary.UJMP_JAVA , UjmpJavaMemoryFactory.class.getName());
     public static EvaluationTarget jblas = new EvaluationTarget( MatrixLibrary.JBLAS, JBlasMemoryFactory.class.getName());
+    public static EvaluationTarget la4j = new EvaluationTarget( MatrixLibrary.LA4J, La4jMemoryFactory.class.getName());
 
     // random seed
     public long seed;
@@ -104,8 +105,9 @@ public class MemoryConfig {
         ret.libraries.add( ojalgo );
 //        ret.libraries.add( sejml);
         ret.libraries.add( pcolt );
-        ret.libraries.add( ujmp );
+//        ret.libraries.add( ujmp );
         ret.libraries.add( ujmp_j );
+        ret.libraries.add( la4j );
 
         ret.seed = 234234;
 
@@ -113,7 +115,7 @@ public class MemoryConfig {
         ret.numTrials = 3;
         ret.memoryMinMB = 50;
         ret.memoryMaxMB = 1024*2;
-        ret.matrixSize = 2000;
+        ret.matrixSize = 3000;
         ret.memorySampleType = SampleType.PROC;
 
         ret.mult = true;
