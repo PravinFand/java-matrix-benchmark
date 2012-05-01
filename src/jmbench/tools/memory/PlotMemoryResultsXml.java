@@ -114,7 +114,11 @@ public class PlotMemoryResultsXml {
     private void plotResults( Map<String, List<MemoryResults>> opMap ) {
         MemoryRelativeBarPlot plot = new MemoryRelativeBarPlot("Library Memory Usage: Size "+config.matrixSize);
 
-        for( String key : opMap.keySet() ) {
+        // Sort the keys to ensure the order is the same each time
+        List<String> keys = new ArrayList<String>(opMap.keySet());
+        Collections.sort(keys);
+
+        for( String key : keys ) {
             List<MemoryResults> l = opMap.get(key);
 
             // put into alphabetical order
