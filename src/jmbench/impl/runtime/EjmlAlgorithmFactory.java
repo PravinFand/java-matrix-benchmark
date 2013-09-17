@@ -25,10 +25,9 @@ import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.DetectedException;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
-import org.ejml.alg.dense.decomposition.*;
-import org.ejml.factory.*;
 import org.ejml.alg.dense.linsol.LinearSolverSafe;
 import org.ejml.data.DenseMatrix64F;
+import org.ejml.factory.*;
 import org.ejml.ops.CommonOps;
 import org.ejml.ops.CovarianceOps;
 import org.ejml.ops.EigenOps;
@@ -140,9 +139,9 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
             for( long i = 0; i < numTrials; i++ ) {
                 if( !DecompositionFactory.decomposeSafe(svd,matA) )
                     throw new DetectedException("Decomposition failed");
-                U = svd.getU(null,false);
+                U = svd.getU(null, false);
                 S = svd.getW(S);
-                V = svd.getV(null,false);
+                V = svd.getV(null, false);
             }
 
             long elapsedTime = System.nanoTime() - prev;
@@ -163,7 +162,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
 
-            EigenDecomposition<DenseMatrix64F> eig = DecompositionFactory.eig(matA.numCols,true,true);
+            EigenDecomposition<DenseMatrix64F> eig = DecompositionFactory.eig(matA.numCols, true, true);
 
             long prev = System.nanoTime();
 

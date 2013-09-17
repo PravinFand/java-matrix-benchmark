@@ -40,7 +40,7 @@
 
     <path id="jar.classpath">
         <fileset dir="lib/" includes="EJML.jar"/>
-        <fileset dir="lib/" includes="libpja.jar"/>
+        <fileset dir="lib/" includes="xstream-1.4.4.jar"/>
     </path>
 
 
@@ -75,7 +75,7 @@
         <jar destfile="${jar.dir}/benchmark_app.jar" basedir="${classes.dir}">
 
         <zipgroupfileset dir="lib" includes="EJML.jar"/>
-        <zipgroupfileset dir="lib" includes="libpja.jar"/>
+        <zipgroupfileset dir="lib" includes="xstream-1.4.4.jar"/>
         <zipgroupfileset dir="lib" includes="jfreechart*/*.jar"/>
         <zipgroupfileset dir="${jar.dir}" includes="${ant.project.name}.jar"/>
 
