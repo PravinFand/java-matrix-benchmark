@@ -19,7 +19,7 @@
 
 package jmbench.tools;
 
-import pja.util.UtilXmlSerialization;
+import jmbench.tools.stability.UtilXmlSerialization;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -187,11 +187,7 @@ public class BenchmarkTools {
      */
     private String[] setupSlave(EvaluationTest test) {
         // write out a file describing what the slave should process.
-        try {
-            UtilXmlSerialization.serializeXml(test,"case.xml");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        UtilXmlSerialization.serializeXml(test, "case.xml");
 
         // grab the current classpath and add some additional jars
         String classPath = getClassPath();

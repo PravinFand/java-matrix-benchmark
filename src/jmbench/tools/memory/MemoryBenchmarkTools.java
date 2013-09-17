@@ -21,7 +21,7 @@ package jmbench.tools.memory;
 
 import jmbench.tools.EvaluationTest;
 import jmbench.tools.EvaluatorSlave;
-import pja.util.UtilXmlSerialization;
+import jmbench.tools.stability.UtilXmlSerialization;
 
 import java.io.*;
 import java.util.Date;
@@ -435,11 +435,7 @@ public class MemoryBenchmarkTools {
      */
     private String[] setupSlave(EvaluationTest test) {
         // write out a file describing what the slave should process.
-        try {
-            UtilXmlSerialization.serializeXml(test,"case.xml");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        UtilXmlSerialization.serializeXml(test,"case.xml");
 
         // grab the current classpath and add some additional jars
         String classPath = getClassPath();

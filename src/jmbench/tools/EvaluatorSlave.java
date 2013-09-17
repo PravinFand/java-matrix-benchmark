@@ -19,7 +19,7 @@
 
 package jmbench.tools;
 
-import pja.util.UtilXmlSerialization;
+import jmbench.tools.stability.UtilXmlSerialization;
 
 import java.io.FileNotFoundException;
 import java.io.Serializable;

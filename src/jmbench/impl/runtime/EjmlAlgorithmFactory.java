@@ -26,8 +26,7 @@ import jmbench.interfaces.DetectedException;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
 import org.ejml.alg.dense.decomposition.*;
-import org.ejml.alg.dense.linsol.LinearSolver;
-import org.ejml.alg.dense.linsol.LinearSolverFactory;
+import org.ejml.factory.*;
 import org.ejml.alg.dense.linsol.LinearSolverSafe;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
@@ -95,7 +94,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
 
-            LUDecomposition<DenseMatrix64F> lu = DecompositionFactory.lu(matA.numRows);
+            LUDecomposition<DenseMatrix64F> lu = DecompositionFactory.lu(matA.numRows,matA.numCols);
 
             DenseMatrix64F L = new DenseMatrix64F(matA.numRows,matA.numCols);
             DenseMatrix64F U = new DenseMatrix64F(matA.numRows,matA.numCols);
@@ -130,7 +129,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
 
-            SingularValueDecomposition<DenseMatrix64F> svd = DecompositionFactory.svd(matA.numRows,matA.numCols);
+            SingularValueDecomposition<DenseMatrix64F> svd = DecompositionFactory.svd(matA.numRows,matA.numCols,true,true,false);
 
             DenseMatrix64F U = null;
             DenseMatrix64F S = null;
@@ -141,9 +140,9 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
             for( long i = 0; i < numTrials; i++ ) {
                 if( !DecompositionFactory.decomposeSafe(svd,matA) )
                     throw new DetectedException("Decomposition failed");
-                U = svd.getU(false);
+                U = svd.getU(null,false);
                 S = svd.getW(S);
-                V = svd.getV(false);
+                V = svd.getV(null,false);
             }
 
             long elapsedTime = System.nanoTime() - prev;
@@ -164,7 +163,7 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F matA = inputs[0].getOriginal();
 
-            EigenDecomposition<DenseMatrix64F> eig = DecompositionFactory.eigSymm(matA.numCols,true);
+            EigenDecomposition<DenseMatrix64F> eig = DecompositionFactory.eig(matA.numCols,true,true);
 
             long prev = System.nanoTime();
 

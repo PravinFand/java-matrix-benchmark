@@ -25,7 +25,6 @@ import jmbench.tools.EvaluationTarget;
 import jmbench.tools.EvaluatorSlave;
 import jmbench.tools.TestResults;
 import jmbench.tools.stability.tests.*;
-import pja.util.UtilXmlSerialization;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -302,11 +301,7 @@ public class StabilityBenchmarkLibrary {
         if( directorySave == null )
             return;
 
-        try {
-            UtilXmlSerialization.serializeXml(results,directorySave+"/"+opFileName+".xml");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        UtilXmlSerialization.serializeXml(results,directorySave+"/"+opFileName+".xml");
     }
 
     public StabilityTrialResults evaluateOperation( StabilityTestBase e ) {

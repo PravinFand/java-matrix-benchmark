@@ -22,7 +22,7 @@ package jmbench.tools.memory;
 import jmbench.impl.MatrixLibrary;
 import jmbench.tools.EvaluationTarget;
 import jmbench.tools.SystemInfo;
-import pja.util.UtilXmlSerialization;
+import jmbench.tools.stability.UtilXmlSerialization;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -57,12 +57,8 @@ public class MemoryBenchmark {
         SystemInfo info = new SystemInfo();
         info.grabCurrentInfo();
 
-        try {
-            UtilXmlSerialization.serializeXml(info,directorySave+"/info.xml");
-            UtilXmlSerialization.serializeXml(config,directorySave+"/config.xml");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        UtilXmlSerialization.serializeXml(info,directorySave+"/info.xml");
+        UtilXmlSerialization.serializeXml(config,directorySave+"/config.xml");
 
         long startTime = System.currentTimeMillis();
 
@@ -104,17 +100,13 @@ public class MemoryBenchmark {
     public static void saveLibraryDescriptions( String directorySave , List<EvaluationTarget> libs )
     {
         for( EvaluationTarget desc : libs ) {
-            try {
-                MatrixLibrary lib = MatrixLibrary.lookup(desc.getLibName());
+            MatrixLibrary lib = MatrixLibrary.lookup(desc.getLibName());
 
-                // Add version information to the target description
-                lib.addVersionInfo( desc );
+            // Add version information to the target description
+            lib.addVersionInfo( desc );
 
-                String outputFile = directorySave+"/"+lib.getSaveDirName()+".xml";
-                UtilXmlSerialization.serializeXml(desc,outputFile);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            String outputFile = directorySave+"/"+lib.getSaveDirName()+".xml";
+            UtilXmlSerialization.serializeXml(desc,outputFile);
         }
     }
 

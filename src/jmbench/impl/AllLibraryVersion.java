@@ -104,7 +104,7 @@ public class AllLibraryVersion {
 
         @Override
         public String getReleaseDate() {
-            return "2011-12-04";
+            return "2013-06-21";
         }
     }
 

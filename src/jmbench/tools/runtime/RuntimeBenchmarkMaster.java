@@ -23,7 +23,7 @@ import jmbench.impl.MatrixLibrary;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.EvaluationTarget;
 import jmbench.tools.SystemInfo;
-import pja.util.UtilXmlSerialization;
+import jmbench.tools.stability.UtilXmlSerialization;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -83,12 +83,8 @@ public class RuntimeBenchmarkMaster {
             String libOutputDir = directorySave+"/"+lib.getSaveDirName();
 
             // save the description so that where this came from can be easily extracted
-            try {
-                String outputFile = libOutputDir+".xml";
-                UtilXmlSerialization.serializeXml(desc,outputFile);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            String outputFile = libOutputDir+".xml";
+            UtilXmlSerialization.serializeXml(desc,outputFile);
 
             // run the benchmark
             RuntimePerformanceFactory l = desc.loadAlgorithmFactory();
@@ -122,12 +118,8 @@ public class RuntimeBenchmarkMaster {
             }
         }
 
-        try {
-            UtilXmlSerialization.serializeXml(info,directorySave+"/info.xml");
-            UtilXmlSerialization.serializeXml(config,directorySave+"/config.xml");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        UtilXmlSerialization.serializeXml(info,directorySave+"/info.xml");
+        UtilXmlSerialization.serializeXml(config,directorySave+"/config.xml");
     }
 
     public static void printHelp() {

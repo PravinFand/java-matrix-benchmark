@@ -23,11 +23,10 @@ import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
 import jmbench.interfaces.MemoryProcessorInterface;
-import org.ejml.alg.dense.decomposition.CholeskyDecomposition;
-import org.ejml.alg.dense.decomposition.DecompositionFactory;
-import org.ejml.alg.dense.decomposition.EigenDecomposition;
-import org.ejml.alg.dense.decomposition.SingularValueDecomposition;
 import org.ejml.data.DenseMatrix64F;
+import org.ejml.factory.DecompositionFactory;
+import org.ejml.factory.EigenDecomposition;
+import org.ejml.factory.SingularValueDecomposition;
 import org.ejml.ops.CommonOps;
 import org.ejml.ops.CovarianceOps;
 
@@ -173,7 +172,7 @@ public class EjmlMemoryFactory implements MemoryFactory {
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F A = inputs[0].getOriginal();
 
-            SingularValueDecomposition<DenseMatrix64F> svd = DecompositionFactory.svd(A.numRows,A.numCols);
+            SingularValueDecomposition<DenseMatrix64F> svd = DecompositionFactory.svd(A.numRows,A.numCols,true,true,false);
 
             DenseMatrix64F U =null,V =null, S=null;
             for( int i = 0; i < numTrials; i++ ) {
@@ -181,8 +180,8 @@ public class EjmlMemoryFactory implements MemoryFactory {
                     throw new RuntimeException("SVD failed?!?");
                 }
 
-                U = svd.getU(false);
-                V = svd.getV(false);
+                U = svd.getU(null,false);
+                V = svd.getV(null,false);
                 S = svd.getW(null);
             }
             if( U == null || S == null || V == null )
@@ -201,7 +200,7 @@ public class EjmlMemoryFactory implements MemoryFactory {
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix64F A = inputs[0].getOriginal();
 
-            EigenDecomposition<DenseMatrix64F> eig = DecompositionFactory.eig(A.numRows);
+            EigenDecomposition<DenseMatrix64F> eig = DecompositionFactory.eig(A.numRows,true);
             DenseMatrix64F v[] =  new DenseMatrix64F[Math.min(A.numRows,A.numCols)];
             for( int i = 0; i < numTrials; i++ ) {
                 if( !DecompositionFactory.decomposeSafe(eig,A) ) {

@@ -21,7 +21,7 @@ package jmbench.tools.memory;
 
 import jmbench.plots.MemoryRelativeBarPlot;
 import jmbench.tools.runtime.evaluation.PlotRuntimeResults;
-import pja.util.UtilXmlSerialization;
+import jmbench.tools.stability.UtilXmlSerialization;
 
 import java.io.File;
 import java.util.*;

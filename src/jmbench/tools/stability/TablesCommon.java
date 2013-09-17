@@ -20,7 +20,6 @@
 package jmbench.tools.stability;
 
 import jmbench.impl.MatrixLibrary;
-import pja.util.UtilXmlSerialization;
 
 import java.io.File;
 import java.util.*;

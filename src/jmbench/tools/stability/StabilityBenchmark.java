@@ -26,10 +26,8 @@ import jmbench.tools.memory.MemoryBenchmark;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 import org.ejml.ops.NormOps;
-import pja.util.UtilXmlSerialization;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -61,12 +59,8 @@ public class StabilityBenchmark {
         SystemInfo info = new SystemInfo();
         info.grabCurrentInfo();
 
-        try {
-            UtilXmlSerialization.serializeXml(info,directorySave+"/info.xml");
-            UtilXmlSerialization.serializeXml(config,directorySave+"/config.xml");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        UtilXmlSerialization.serializeXml(info,directorySave+"/info.xml");
+        UtilXmlSerialization.serializeXml(config,directorySave+"/config.xml");
 
         MemoryBenchmark.saveLibraryDescriptions(directorySave,config.targets);
 

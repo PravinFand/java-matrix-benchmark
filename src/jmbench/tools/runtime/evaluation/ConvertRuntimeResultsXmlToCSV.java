@@ -22,7 +22,7 @@ package jmbench.tools.runtime.evaluation;
 import jmbench.impl.MatrixLibrary;
 import jmbench.tools.runtime.RuntimeEvaluationMetrics;
 import jmbench.tools.runtime.RuntimeResults;
-import pja.util.UtilXmlSerialization;
+import jmbench.tools.stability.UtilXmlSerialization;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -24,7 +24,7 @@ import jmbench.interfaces.MemoryProcessorInterface;
 import jmbench.tools.EvaluationTarget;
 import jmbench.tools.runtime.InputOutputGenerator;
 import jmbench.tools.runtime.generator.*;
-import pja.util.UtilXmlSerialization;
+import jmbench.tools.stability.UtilXmlSerialization;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -182,11 +182,7 @@ public class MemoryBenchmarkLibrary {
         if( directorySave == null )
             return;
 
-        try {
-            UtilXmlSerialization.serializeXml(results,directorySave+"/"+results.nameOp+".xml");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        UtilXmlSerialization.serializeXml(results,directorySave+"/"+results.nameOp+".xml");
     }
 
     /**
