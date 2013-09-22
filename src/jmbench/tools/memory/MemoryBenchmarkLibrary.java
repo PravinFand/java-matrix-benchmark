@@ -21,14 +21,14 @@ package jmbench.tools.memory;
 
 import jmbench.impl.FactoryLibraryDescriptions;
 import jmbench.impl.LibraryDescription;
-import jmbench.interfaces.MemoryFactory;
-import jmbench.interfaces.MemoryProcessorInterface;
 import jmbench.tools.runtime.InputOutputGenerator;
 import jmbench.tools.runtime.generator.*;
 import jmbench.tools.stability.UtilXmlSerialization;
+import jmbench.tools.version.PrintLibraryVersion;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class MemoryBenchmarkLibrary {
     // this is subtracted from the results in each library
     private long memoryOverhead;
 
-    private MemoryFactory factory;
+    private LibraryDescription desc;
 
     public MemoryBenchmarkLibrary( MemoryConfig config ,
                                    LibraryDescription desc,
@@ -69,64 +69,72 @@ public class MemoryBenchmarkLibrary {
         this.directorySave = directorySave;
         this.libraryName = desc.location.getPlotName();
         this.memoryOverhead = memoryOverhead;
-        this.factory = desc.loadFactoryMemory();
+        this.desc = desc;
 
         tool.setJars(desc.location.listOfJarFilePaths());
         tool.setVerbose(false);
         tool.sampleType = config.memorySampleType;
 
         if( config.add )
-            addOperation(config, new AddGenerator(), factory.add(), "C=A+B", libraryName, 0 , config.matrixSize);
+            addOperation(config, new AddGenerator(), "add", "C=A+B", libraryName, 0 , config.matrixSize);
 
         if( config.mult )
-            addOperation(config, new MultGenerator(), factory.mult(), "C=A*B", libraryName, 0 , config.matrixSize);
+            addOperation(config, new MultGenerator(), "mult", "C=A*B", libraryName, 0 , config.matrixSize);
 
         if( config.multTransB )
-            addOperation(config, new MultTranBGenerator(), factory.multTransB(), "C=A*B^T", libraryName, 0 , config.matrixSize);
+            addOperation(config, new MultTranBGenerator(), "multTransB", "C=A*B^T", libraryName, 0 , config.matrixSize);
 
         if( config.solveLinear )
-            addOperation(config, new SolveEqGenerator(), factory.solveEq(), "solve m=n", libraryName, 0 , config.matrixSize);
+            addOperation(config, new SolveEqGenerator(), "solveEq", "solve m=n", libraryName, 0 , config.matrixSize);
 
         if( config.solveLS )
-            addOperation(config, new SolveOverGenerator(), factory.solveLS(), "solve m>n", libraryName,0 , config.matrixSize);
+            addOperation(config, new SolveOverGenerator(), "solveLS", "solve m>n", libraryName,0 , config.matrixSize);
 
         if( config.invSymmPosDef )
-            addOperation(config, new InvertSymmPosDefGenerator(), factory.invertSymmPosDef(), "inv |A| > 1", libraryName,0 , config.matrixSize);
+            addOperation(config, new InvertSymmPosDefGenerator(), "invertSymmPosDef", "inv |A| > 1", libraryName,0 , config.matrixSize);
 
         if( config.svd )
-            addOperation(config, new SvdGenerator(), factory.svd(), "SVD", libraryName,0 , config.matrixSize/2 );
+            addOperation(config, new SvdGenerator(), "svd", "SVD", libraryName,0 , config.matrixSize/2 );
 
         if( config.eig )
-            addOperation(config, new EigSymmGenerator(), factory.eig(), "Eigen", libraryName,0 , config.matrixSize);
+            addOperation(config, new EigSymmGenerator(), "eig", "Eigen", libraryName,0 , config.matrixSize);
 
         if( directorySave != null ) {
             setupOutputDirectory();
             setupLog();
         }
+
+        // print the library's version to a file
+        PrintLibraryVersion printVersion = new PrintLibraryVersion(directorySave);
+        try {
+            printVersion.printVersion(desc);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void addOperation(MemoryConfig config, InputOutputGenerator gen ,
-                              MemoryProcessorInterface op,
-                              String opName , String libraryName ,
+                              String nameOperation,
+                              String displayName , String libraryName ,
                               int scale , int matrixSize ) {
-        if( op != null ) {
-            activeTasks.add( new Task(op,gen,
-                    opName,libraryName,config.maxTestTimeMilli,scale,matrixSize));
-        }
+        activeTasks.add( new Task(nameOperation,
+                gen,displayName,libraryName,config.maxTestTimeMilli,scale,matrixSize));
     }
 
     public void process() {
         while( !activeTasks.isEmpty() ) {
             Task task = activeTasks.get( rand.nextInt(activeTasks.size()));
 
-            System.out.println(libraryName+" operation "+task.results.nameOp+"  remaining tasks "+activeTasks.size());
+            System.out.println(libraryName+" operation "+task.results.displayName +"  remaining tasks "+activeTasks.size());
 
             boolean failed = false;
 
             for( int i = 0; i < config.numTrials && !failed ; i++ ) {
                 if( !findMemory(task) ) {
                     System.out.println("Failed!");
-                    logStream.println("FAILED: operation "+task.results.nameOp);
+                    logStream.println("FAILED: operation "+task.results.displayName);
                     failed = true;
                 }
             }
@@ -143,7 +151,7 @@ public class MemoryBenchmarkLibrary {
         if( mem > 0 ) {
             mem -= memoryOverhead;
             if( mem < 0 ) {
-                logStream.println("Memory less than overhead!! "+mem+"  operation "+task.results.nameOp);
+                logStream.println("Memory less than overhead!! "+mem+"  operation "+task.results.displayName);
             }
             task.results.results.add(mem);
         }
@@ -183,7 +191,7 @@ public class MemoryBenchmarkLibrary {
         if( directorySave == null )
             return;
 
-        UtilXmlSerialization.serializeXml(results,directorySave+"/"+results.nameOp+".xml");
+        UtilXmlSerialization.serializeXml(results,directorySave+"/"+results.displayName +".xml");
     }
 
     /**
@@ -238,14 +246,14 @@ public class MemoryBenchmarkLibrary {
         tool.setMemory(config.memoryMinMB,maxMemory);
 
         MemoryTest test = new MemoryTest();
-        test.setup(factory,task.gen,task.op,1,task.matrixSize);
+        test.setup(desc.factoryMemory,task.gen,task.nameOperation,1,task.matrixSize);
         test.setRandomSeed(config.seed);
 
         return tool.runTest(test);
     }
 
     private static class Task {
-        MemoryProcessorInterface op;
+        String nameOperation;
         MemoryResults results;
         InputOutputGenerator gen;
 
@@ -255,17 +263,17 @@ public class MemoryBenchmarkLibrary {
 
         int matrixSize;
 
-        public Task(MemoryProcessorInterface op ,
+        public Task(String nameOperation ,
                     InputOutputGenerator gen,
-                    String nameOp , String nameLibrary ,
+                    String displayName , String nameLibrary ,
                     long time ,
                     int memoryScale ,
                     int matrixSize ) {
-            this.op = op;
+            this.nameOperation = nameOperation;
             this.gen = gen;
             this.timeout = time;
             results = new MemoryResults();
-            results.nameOp = nameOp;
+            results.displayName = displayName;
             results.nameLibrary = nameLibrary;
             this.memoryScale = memoryScale;
             this.matrixSize = matrixSize;

@@ -92,7 +92,7 @@ public class PlotMemoryResultsXml {
                             continue;
                         }
 
-                        System.out.printf("%10.10s  %12s ",nameLevel0,r.getNameOp());
+                        System.out.printf("%10.10s  %12s ",nameLevel0,r.getDisplayName());
                         r.printStatistics();
 
                         List<MemoryResults> l;

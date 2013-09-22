@@ -26,33 +26,48 @@ import jmbench.tools.EvaluationTest;
 import jmbench.tools.TestResults;
 import jmbench.tools.runtime.InputOutputGenerator;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Random;
 
 
 /**
+ * Performs the specified memory test.  If inputs are null that means its a test to see the what the overhead is
+ *
  * @author Peter Abeles
  */
 public class MemoryTest extends EvaluationTest {
 
-    MemoryFactory factory;
+    Class<MemoryFactory> classFactory;
     InputOutputGenerator gen;
-    MemoryProcessorInterface op;
+    String nameOperation;
     int N;
     int size;
 
-    public void setup( MemoryFactory factory , InputOutputGenerator gen , 
-                       MemoryProcessorInterface op , int N , int size ) {
-        this.factory = factory;
+    volatile MemoryFactory factory;
+
+    public void setup( Class<MemoryFactory> classFactory , InputOutputGenerator gen ,
+                       String nameOperation , int N , int size ) {
+        this.classFactory = classFactory;
         this.gen = gen;
-        this.op = op;
+        this.nameOperation = nameOperation;
         this.N = N;
         this.size = size;
     }
 
     @Override
     public void init() {
-        if( factory != null )
+        if( classFactory != null ) {
+            try {
+                factory = classFactory.newInstance();
+            } catch (InstantiationException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+
             factory.configure();
+        }
     }
 
     @Override
@@ -89,8 +104,10 @@ public class MemoryTest extends EvaluationTest {
             }
         }
 
+        MemoryProcessorInterface operation = createAlgorithm();
+
         long start = System.currentTimeMillis();
-        op.process(inputs,outputs,N);
+        operation.process(inputs,outputs,N);
         long stop= System.currentTimeMillis();
 
         if( gen != null ) {
@@ -133,12 +150,37 @@ public class MemoryTest extends EvaluationTest {
         }
     }
 
-    public MemoryProcessorInterface getOp() {
-        return op;
+    private MemoryProcessorInterface createAlgorithm() {
+        if( nameOperation == null ) {
+            return new OverheadProcess();
+        }
+
+        try {
+            Method m = factory.getClass().getMethod(nameOperation);
+            return (MemoryProcessorInterface)m.invoke(factory);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void setOp(MemoryProcessorInterface op) {
-        this.op = op;
+    public Class<MemoryFactory> getClassFactory() {
+        return classFactory;
+    }
+
+    public void setClassFactory(Class<MemoryFactory> classFactory) {
+        this.classFactory = classFactory;
+    }
+
+    public String getNameOperation() {
+        return nameOperation;
+    }
+
+    public void setNameOperation(String nameOperation) {
+        this.nameOperation = nameOperation;
     }
 
     public int getN() {
@@ -155,14 +197,6 @@ public class MemoryTest extends EvaluationTest {
 
     public void setSize(int size) {
         this.size = size;
-    }
-
-    public MemoryFactory getFactory() {
-        return factory;
-    }
-
-    public void setFactory(MemoryFactory factory) {
-        this.factory = factory;
     }
 
     public InputOutputGenerator getGen() {

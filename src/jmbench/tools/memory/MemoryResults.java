@@ -33,7 +33,7 @@ import java.util.List;
 public class MemoryResults implements Serializable {
     String nameLibrary;
     String versionLibrary;
-    String nameOp;
+    String displayName;
 
     EvaluatorSlave.FailReason error;
     String errorMessage;
@@ -75,12 +75,12 @@ public class MemoryResults implements Serializable {
         this.nameLibrary = nameLibrary;
     }
 
-    public String getNameOp() {
-        return nameOp;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setNameOp(String nameOp) {
-        this.nameOp = nameOp;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public String getVersionLibrary() {

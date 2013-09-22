@@ -31,8 +31,6 @@ public class DetermineOverhead {
 
     int numTrials;
 
-    OverheadProcess op = new OverheadProcess();
-
     public DetermineOverhead(MemoryConfig config , int numTrials ) {
         this.numTrials = numTrials;
         this.config = config;
@@ -62,7 +60,7 @@ public class DetermineOverhead {
         tool.setMemory(config.memoryMinMB,config.memoryMaxMB);
 
         MemoryTest test = new MemoryTest();
-        test.setup(null,null,op,1,0);
+        test.setup(null,null,null,1,0);
         test.setRandomSeed(config.seed);
 
         return tool.runTest(test);
