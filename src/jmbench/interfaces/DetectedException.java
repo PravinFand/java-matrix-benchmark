@@ -19,8 +19,6 @@
 
 package jmbench.interfaces;
 
-import org.apache.commons.math.linear.NotPositiveDefiniteMatrixException;
-
 /**
  * Thrown if the library detected an exception
  *

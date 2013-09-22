@@ -47,15 +47,15 @@ public class SolverOverflow extends SolverCommon
     private volatile double scaling;
 
     public SolverOverflow(long randomSeed,
-                          RuntimePerformanceFactory factory,
-                          MatrixProcessorInterface operation,
+                          Class<RuntimePerformanceFactory> classFactory ,
+                          String nameOperation,
                           int totalTrials,
                           double breakingPoint ,
                           int minLength, int maxLength,
                           boolean linearSolver ,
                           boolean overflow )
     {
-        super(randomSeed, factory, operation, totalTrials, breakingPoint , minLength, maxLength, linearSolver);
+        super(randomSeed, classFactory, nameOperation, totalTrials, breakingPoint , minLength, maxLength, linearSolver);
 
         this.overflow = overflow;
     }
@@ -161,6 +161,8 @@ public class SolverOverflow extends SolverCommon
 
         inputsB[0] = factory.convertToLib(A_scale);
         inputsB[1] = factory.convertToLib(b_scale);
+
+        MatrixProcessorInterface operation = createAlgorithm();
 
         try {
             operation.process(inputsB,outputB,1);

@@ -39,12 +39,11 @@ public abstract class AccuracyTestBase extends StabilityTestBase {
     protected int minLength;
     protected int maxLength;
 
-    public AccuracyTestBase(long randomSeed, RuntimePerformanceFactory factory,
-                            MatrixProcessorInterface operation,
+    public AccuracyTestBase(long randomSeed, Class<RuntimePerformanceFactory> factory, String nameOperation,
                             int totalTrials,
                             int minLength, int maxLength)
     {
-        super(randomSeed, factory , operation, totalTrials, 0);
+        super(randomSeed, factory , nameOperation, totalTrials, 0);
         this.minLength = minLength;
         this.maxLength = maxLength;
     }
@@ -77,6 +76,8 @@ public abstract class AccuracyTestBase extends StabilityTestBase {
         for( int i = 0; i < inputs.length; i++ ) {
             inputsB[i] = factory.convertToLib(inputs[i]);
         }
+
+        MatrixProcessorInterface operation = createAlgorithm();
         
         try {
             operation.process(inputsB,outputB,1);

@@ -19,14 +19,16 @@
 
 package jmbench.tools.runtime;
 
-import jmbench.impl.MatrixLibrary;
-import jmbench.impl.runtime.EjmlAlgorithmFactory;
+import jmbench.impl.FactoryLibraryDescriptions;
+import jmbench.impl.LibraryDescription;
+import jmbench.impl.LibraryLocation;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.BenchmarkTools;
 import jmbench.tools.EvaluationTest;
 import jmbench.tools.EvaluatorSlave;
 import jmbench.tools.TestResults;
 import jmbench.tools.runtime.evaluation.RuntimeResultsCsvIO;
+import jmbench.tools.version.PrintLibraryVersion;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -90,11 +92,11 @@ public class RuntimeBenchmarkLibrary {
     // is it too slow to continue testing
     private boolean tooSlow;
 
-    private RuntimePerformanceFactory library;
+    private Class<RuntimePerformanceFactory> library;
 
     private BenchmarkTools tools;
 
-    private MatrixLibrary libraryType;
+    private LibraryLocation libraryType;
 
     private RuntimeBenchmarkConfig config;
 
@@ -104,8 +106,7 @@ public class RuntimeBenchmarkLibrary {
     // should it spawn a slave to run the benchmark or do it in the same java instance as this class
     private static final boolean SPAWN_SLAVE = true;
 
-    public RuntimeBenchmarkLibrary( String outputDir , RuntimePerformanceFactory library  ,
-                             List<String> jarNames , MatrixLibrary libraryType,
+    public RuntimeBenchmarkLibrary( String outputDir , LibraryDescription desc ,
                              RuntimeBenchmarkConfig config )
     {
         this.config = config;
@@ -121,16 +122,25 @@ public class RuntimeBenchmarkLibrary {
         } else if( !d.isDirectory())
             throw new IllegalArgumentException("The output directory already exists and is not a directory");
         
-        this.library = library;
+        this.library = desc.factoryRuntime;
 
         // create the random seeds for each block
         this.rand = new Random(config.seed);
         this.randSeedTrials = rand.nextLong();
 
-        tools = new BenchmarkTools(config.numBlockTrials,config.memorySlaveBase,config.memorySlaveScale,jarNames);
+        tools = new BenchmarkTools(config.numBlockTrials,config.memorySlaveBase,config.memorySlaveScale,
+                desc.location.listOfJarFilePaths());
         tools.setVerbose(false);
 
-        this.libraryType = libraryType;
+        this.libraryType = desc.location;
+
+        PrintLibraryVersion printVersion = new PrintLibraryVersion(outputDir);
+        try {
+            printVersion.printVersion(desc);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);        }
     }
 
     /**
@@ -177,7 +187,7 @@ public class RuntimeBenchmarkLibrary {
 
         for( RuntimeEvaluationCase c : cases ) {
             // see if the file already exists
-            File f = new File(directorySave+"/"+c.getFileName()+".csv");
+            File f = new File(directorySave+"/"+c.getNameAlgorithm()+".csv");
 
             if( f.exists() ) {
                 // if it exists read it in and see if it finished
@@ -306,7 +316,7 @@ public class RuntimeBenchmarkLibrary {
         r.complete = done;
 
         // save the current state of the test
-        RuntimeResultsCsvIO.write(r,directorySave+"/"+e.getFileName()+".csv");
+        RuntimeResultsCsvIO.write(r,directorySave+"/"+e.getNameAlgorithm()+".csv");
 //        UtilXmlSerialization.serializeXml(r,directorySave+"/"+e.getFileName()+".xml");
 
         return done;
@@ -512,8 +522,8 @@ public class RuntimeBenchmarkLibrary {
 
         RuntimeBenchmarkConfig config = RuntimeBenchmarkConfig.createAllConfig();
 
-        RuntimeBenchmarkLibrary master = new RuntimeBenchmarkLibrary("results/temp",new EjmlAlgorithmFactory(),
-                null,MatrixLibrary.EJML,config);
+        RuntimeBenchmarkLibrary master = new RuntimeBenchmarkLibrary("results/temp",
+                FactoryLibraryDescriptions.createEJML(),config);
         master.performBenchmark();
     }
 }

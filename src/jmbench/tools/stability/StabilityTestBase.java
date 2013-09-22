@@ -25,6 +25,8 @@ import jmbench.tools.EvaluationTest;
 import jmbench.tools.OutputError;
 import jmbench.tools.TestResults;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Random;
 
 
@@ -33,26 +35,27 @@ import java.util.Random;
  */
 public abstract class StabilityTestBase extends EvaluationTest {
 
-    protected RuntimePerformanceFactory factory;
-    protected MatrixProcessorInterface operation;
-
+    protected Class<RuntimePerformanceFactory> classFactory;
+    protected String nameOperation;
     protected int totalTrials;
-    protected double breakingPoint;
 
+    protected double breakingPoint;
     protected transient Random rand;
+
+    protected transient RuntimePerformanceFactory factory;
     protected transient double foundResult;
     protected transient OutputError reason;
     protected transient StabilityTrialResults results;
     protected transient int numResults;
 
     protected StabilityTestBase(long randomSeed,
-                                RuntimePerformanceFactory factory,
-                                MatrixProcessorInterface operation,
+                                Class<RuntimePerformanceFactory> classFactory,
+                                String nameOperation,
                                 int totalTrials,
                                 double breakingPoint ) {
         super(randomSeed);
-        this.factory = factory;
-        this.operation = operation;
+        this.classFactory = classFactory;
+        this.nameOperation = nameOperation;
         this.totalTrials = totalTrials;
         this.breakingPoint = breakingPoint;
     }
@@ -78,6 +81,14 @@ public abstract class StabilityTestBase extends EvaluationTest {
 
     @Override
     public void init() {
+        try {
+            factory = classFactory.newInstance();
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
         rand = new Random(randomSeed);
         factory.configure();
     }
@@ -158,20 +169,33 @@ public abstract class StabilityTestBase extends EvaluationTest {
         System.gc();
     }
 
-    public RuntimePerformanceFactory getFactory() {
-        return factory;
+    protected MatrixProcessorInterface createAlgorithm() {
+        try {
+            Method m = factory.getClass().getMethod(nameOperation);
+            return (MatrixProcessorInterface)m.invoke(factory);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void setFactory(RuntimePerformanceFactory factory) {
-        this.factory = factory;
+    public Class<RuntimePerformanceFactory> getClassFactory() {
+        return classFactory;
     }
 
-    public MatrixProcessorInterface getOperation() {
-        return operation;
+    public void setClassFactory(Class<RuntimePerformanceFactory> classFactory) {
+        this.classFactory = classFactory;
     }
 
-    public void setOperation(MatrixProcessorInterface operation) {
-        this.operation = operation;
+    public String getNameOperation() {
+        return nameOperation;
+    }
+
+    public void setNameOperation(String nameOperation) {
+        this.nameOperation = nameOperation;
     }
 
     public int getTotalTrials() {

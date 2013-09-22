@@ -27,6 +27,10 @@ package jmbench.tools;
  */
 public enum OutputError {
     /**
+     * The operation isn't supported by the library
+     */
+    NOT_SUPPORTED,
+    /**
      * Its solution was outside of tolerance
      */
     LARGE_ERROR,

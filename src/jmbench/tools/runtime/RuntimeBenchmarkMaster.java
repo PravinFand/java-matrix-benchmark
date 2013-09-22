@@ -19,9 +19,8 @@
 
 package jmbench.tools.runtime;
 
-import jmbench.impl.MatrixLibrary;
-import jmbench.interfaces.RuntimePerformanceFactory;
-import jmbench.tools.EvaluationTarget;
+import jmbench.impl.FactoryLibraryDescriptions;
+import jmbench.impl.LibraryDescription;
 import jmbench.tools.SystemInfo;
 import jmbench.tools.stability.UtilXmlSerialization;
 
@@ -71,27 +70,18 @@ public class RuntimeBenchmarkMaster {
         System.out.println("Total processing time = "+seconds+" (s) or "+days+" days");
     }
 
-    private void processLibraries( List<EvaluationTarget> libs, RuntimeBenchmarkConfig config ) {
+    private void processLibraries( List<LibraryDescription> libs, RuntimeBenchmarkConfig config ) {
 
 
-        for( EvaluationTarget desc : libs ) {
+        for( LibraryDescription desc : libs ) {
 
-            MatrixLibrary lib = MatrixLibrary.lookup(desc.getLibName());
-
-            lib.addVersionInfo( desc );
-
-            String libOutputDir = directorySave+"/"+lib.getSaveDirName();
+            String libOutputDir = directorySave+"/"+desc.location.getSaveDirName();
 
             // save the description so that where this came from can be easily extracted
-            String outputFile = libOutputDir+".xml";
-            UtilXmlSerialization.serializeXml(desc,outputFile);
+//            String outputFile = libOutputDir+".xml";
+//            UtilXmlSerialization.serializeXml(desc,outputFile);
 
-            // run the benchmark
-            RuntimePerformanceFactory l = desc.loadAlgorithmFactory();
-
-            RuntimeBenchmarkLibrary benchmark = new RuntimeBenchmarkLibrary(libOutputDir,l,
-                    desc.getJarFiles(),lib,
-                    config);
+            RuntimeBenchmarkLibrary benchmark = new RuntimeBenchmarkLibrary(libOutputDir,desc,config);
 
             try {
                 benchmark.performBenchmark();
@@ -127,6 +117,7 @@ public class RuntimeBenchmarkMaster {
         System.out.println("  --Config=<file>          |  Configure using the specified xml file.");
         System.out.println("  --Size=min:max           |  Test matrices from the specified minimum size to the specified maximum size.");
         System.out.println("  --Quick                  |  Generate results much faster by sacrificing accuracy/stability of the results.");
+        System.out.println("  --Library=<lib>          |  To run a specific library only");
         System.out.println("  --Seed=<number>          |  used to set the random seed to the specified value.");
         System.out.println("  --TrailTime=<ms>         |  The minimum amount of time spent in each trial.  Typical is 3000.");
         System.out.println("  --MaxTime=<ms>           |  Maximum number of milliseconds it can spend in a single test.  Typical is 300000.");
@@ -185,6 +176,12 @@ public class RuntimeBenchmarkMaster {
                 config.numBlockTrials = 2;
                 config.trialTime = 1000;
                 System.out.println("Using quick and dirty config.");
+            } else if( flag.compareTo("Library") == 0 ) {
+                if( splits.length != 2 ) {failed = true; break;}
+                LibraryDescription match = FactoryLibraryDescriptions.find(splits[1]);
+                if( match == null ) { failed = true; System.out.println("Can't find library"); break;}
+                config.targets.clear();
+                config.targets.add(match);
             } else if( flag.compareTo("Seed") == 0 ) {
                 if( splits.length != 2 ) {failed = true; break;}
                 config.seed = Long.parseLong(splits[1]);

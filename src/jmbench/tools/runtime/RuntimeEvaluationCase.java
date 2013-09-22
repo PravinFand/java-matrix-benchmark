@@ -19,7 +19,6 @@
 
 package jmbench.tools.runtime;
 
-import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.RuntimePerformanceFactory;
 
 import java.io.Serializable;
@@ -34,27 +33,23 @@ public class RuntimeEvaluationCase implements Serializable {
     // the different matrix sizes that can be evaluated
     private int dimens[];
     // configures the library's runtime environment
-    private RuntimePerformanceFactory factory;
+    private Class<RuntimePerformanceFactory> classFactory;
     // list of algorithms it it can run
-    private AlgorithmInterface alg;
+    private String nameAlgorithm;
     // what creates the matrices it processes
     private InputOutputGenerator generator;
 
-    private volatile String fileName;
-
     private volatile RuntimeEvaluationTest theTest = new RuntimeEvaluationTest();
 
-    public RuntimeEvaluationCase( String opName , String fileName , int dimens[] ,
-                                  RuntimePerformanceFactory factory ,
-                                  AlgorithmInterface alg ,
+    public RuntimeEvaluationCase( String opName , String nameAlgorithm , int dimens[] ,
+                                  Class<RuntimePerformanceFactory> classFactory ,
                                   InputOutputGenerator generator )
     {
         this.opName = opName;
         this.dimens = dimens.clone();
-        this.factory = factory;
-        this.alg = alg;
+        this.classFactory = classFactory;
+        this.nameAlgorithm = nameAlgorithm;
         this.generator = generator;
-        this.fileName = fileName;
     }
 
     public RuntimeEvaluationCase(){}
@@ -64,14 +59,30 @@ public class RuntimeEvaluationCase implements Serializable {
                                              boolean sanityCheck ) {
         theTest.setNumTrials(numTrials);
         theTest.setDimen(dimens[dimenIndex]);
-        theTest.setAlg(alg);
-        theTest.setFactory(factory);
+        theTest.setNameAlgorithm(nameAlgorithm);
+        theTest.setClassFactory(classFactory);
         theTest.setGenerator(generator);
         theTest.setGoalRuntime(duration);
         theTest.setMaximumRuntime(maxRuntime);
         theTest.setSanityCheck(sanityCheck);
 
         return theTest;
+    }
+
+    public String getNameAlgorithm() {
+        return nameAlgorithm;
+    }
+
+    public void setNameAlgorithm(String nameAlgorithm) {
+        this.nameAlgorithm = nameAlgorithm;
+    }
+
+    public Class<RuntimePerformanceFactory> getClassFactory() {
+        return classFactory;
+    }
+
+    public void setClassFactory(Class<RuntimePerformanceFactory> classFactory) {
+        this.classFactory = classFactory;
     }
 
     public String getOpName() {
@@ -90,14 +101,6 @@ public class RuntimeEvaluationCase implements Serializable {
         this.dimens = dimens;
     }
 
-    public AlgorithmInterface getAlg() {
-        return alg;
-    }
-
-    public void setAlg(AlgorithmInterface alg) {
-        this.alg = alg;
-    }
-
     public InputOutputGenerator getGenerator() {
         return generator;
     }
@@ -105,9 +108,4 @@ public class RuntimeEvaluationCase implements Serializable {
     public void setGenerator(InputOutputGenerator generator) {
         this.generator = generator;
     }
-
-    public String getFileName() {
-        return fileName;
-    }
-
 }

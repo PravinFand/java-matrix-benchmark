@@ -19,11 +19,9 @@
 
 package jmbench.tools.memory;
 
-import jmbench.impl.MatrixLibrary;
-import jmbench.impl.memory.*;
-import jmbench.tools.EvaluationTarget;
+import jmbench.impl.FactoryLibraryDescriptions;
+import jmbench.impl.LibraryDescription;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -32,24 +30,11 @@ import java.util.List;
  */
 public class MemoryConfig {
 
-    public static EvaluationTarget ejml = new EvaluationTarget( MatrixLibrary.EJML, EjmlMemoryFactory.class.getName());
-    public static EvaluationTarget sejml = new EvaluationTarget( MatrixLibrary.SEJML, SejmlMemoryFactory.class.getName());
-    public static EvaluationTarget jama = new EvaluationTarget( MatrixLibrary.JAMA, JamaMemoryFactory.class.getName());
-    public static EvaluationTarget ojalgo = new EvaluationTarget( MatrixLibrary.OJALGO, OjAlgoMemoryFactory.class.getName());
-    public static EvaluationTarget commons = new EvaluationTarget( MatrixLibrary.CM, CommonsMathMemoryFactory.class.getName());
-    public static EvaluationTarget colt = new EvaluationTarget( MatrixLibrary.COLT, ColtMemoryFactory.class.getName());
-    public static EvaluationTarget mtj = new EvaluationTarget( MatrixLibrary.MTJ, MtjMemoryFactory.class.getName());
-    public static EvaluationTarget pcolt = new EvaluationTarget( MatrixLibrary.PCOLT, PColtMemoryFactory.class.getName());
-    public static EvaluationTarget ujmp = new EvaluationTarget( MatrixLibrary.UJMP, UjmpMemoryFactory.class.getName());
-    public static EvaluationTarget ujmp_j = new EvaluationTarget( MatrixLibrary.UJMP_JAVA , UjmpJavaMemoryFactory.class.getName());
-    public static EvaluationTarget jblas = new EvaluationTarget( MatrixLibrary.JBLAS, JBlasMemoryFactory.class.getName());
-    public static EvaluationTarget la4j = new EvaluationTarget( MatrixLibrary.LA4J, La4jMemoryFactory.class.getName());
-
     // random seed
     public long seed;
 
     // list of all the libraries being tested
-    public List<EvaluationTarget> libraries;
+    public List<LibraryDescription> libraries;
 
     // maximum amount of time it allows for any test
     public long maxTestTimeMilli;
@@ -95,19 +80,7 @@ public class MemoryConfig {
     public static MemoryConfig createDefault() {
         MemoryConfig ret = new MemoryConfig();
 
-        ret.libraries = new ArrayList<EvaluationTarget>();
-        ret.libraries.add( ejml);
-        ret.libraries.add( jama );
-        ret.libraries.add( commons );
-        ret.libraries.add( colt );
-        ret.libraries.add( jblas );
-        ret.libraries.add( mtj );
-        ret.libraries.add( ojalgo );
-//        ret.libraries.add( sejml);
-        ret.libraries.add( pcolt );
-//        ret.libraries.add( ujmp );
-        ret.libraries.add( ujmp_j );
-        ret.libraries.add( la4j );
+        ret.libraries = FactoryLibraryDescriptions.createDefault();
 
         ret.seed = 234234;
 
@@ -131,11 +104,11 @@ public class MemoryConfig {
         return ret;
     }
 
-    public List<EvaluationTarget> getLibraries() {
+    public List<LibraryDescription> getLibraries() {
         return libraries;
     }
 
-    public void setLibraries(List<EvaluationTarget> libraries) {
+    public void setLibraries(List<LibraryDescription> libraries) {
         this.libraries = libraries;
     }
 

@@ -19,9 +19,10 @@
 
 package jmbench.tools.memory;
 
+import jmbench.impl.FactoryLibraryDescriptions;
+import jmbench.impl.LibraryDescription;
 import jmbench.interfaces.MemoryFactory;
 import jmbench.interfaces.MemoryProcessorInterface;
-import jmbench.tools.EvaluationTarget;
 import jmbench.tools.runtime.InputOutputGenerator;
 import jmbench.tools.runtime.generator.*;
 import jmbench.tools.stability.UtilXmlSerialization;
@@ -59,18 +60,18 @@ public class MemoryBenchmarkLibrary {
     private MemoryFactory factory;
 
     public MemoryBenchmarkLibrary( MemoryConfig config ,
-                                   EvaluationTarget desc,
+                                   LibraryDescription desc,
                                    String directorySave ,
                                    long memoryOverhead )
     {
         this.rand = new Random(config.seed);
         this.config = config;
         this.directorySave = directorySave;
-        this.libraryName = desc.getLibName();
+        this.libraryName = desc.location.getPlotName();
         this.memoryOverhead = memoryOverhead;
-        this.factory = desc.loadAlgorithmFactory();
+        this.factory = desc.loadFactoryMemory();
 
-        tool.setJars(desc.getJarFiles());
+        tool.setJars(desc.location.listOfJarFilePaths());
         tool.setVerbose(false);
         tool.sampleType = config.memorySampleType;
 
@@ -274,7 +275,7 @@ public class MemoryBenchmarkLibrary {
     public static void main( String []args ) {
         MemoryConfig config = MemoryConfig.createDefault();
 
-        MemoryBenchmarkLibrary benchmark = new MemoryBenchmarkLibrary(config,MemoryConfig.ejml,null,0);
+        MemoryBenchmarkLibrary benchmark = new MemoryBenchmarkLibrary(config, FactoryLibraryDescriptions.createEJML(),null,0);
 
         benchmark.process();
     }

@@ -19,8 +19,7 @@
 
 package jmbench.tools.stability;
 
-import jmbench.impl.MatrixLibrary;
-import jmbench.tools.EvaluationTarget;
+import jmbench.impl.LibraryDescription;
 import jmbench.tools.SystemInfo;
 import jmbench.tools.memory.MemoryBenchmark;
 import org.ejml.data.DenseMatrix64F;
@@ -72,7 +71,7 @@ public class StabilityBenchmark {
         System.out.println("Done with stability benchmark. Processing time "+(timeAfter-timeBefore)+" (ms)");
     }
 
-    private void processLibraries( List<EvaluationTarget> libs, StabilityBenchmarkConfig config ) {
+    private void processLibraries( List<LibraryDescription> libs, StabilityBenchmarkConfig config ) {
 
         benchmarkLibraries(libs, config, "small",config.smallSizeMin,config.smallSizeMax,
                     config.trialsSmallSolve,config.trialsSmallSvd );
@@ -84,14 +83,13 @@ public class StabilityBenchmark {
                 config.trialsLargeSolve,config.trialsLargeSvd );
     }
 
-    private void benchmarkLibraries(List<EvaluationTarget> libs,
+    private void benchmarkLibraries(List<LibraryDescription> libs,
                                     StabilityBenchmarkConfig config,
                                     String dirSize ,
                                     int sizeMin , int sizeMax ,
                                     int numTrialsSolve , int numTrialsSvd) {
-        for( EvaluationTarget desc : libs ) {
-            MatrixLibrary lib = MatrixLibrary.lookup(desc.getLibName());
-            String libOutputDir = directorySave+"/"+dirSize+"/"+lib.getSaveDirName();
+        for( LibraryDescription desc : libs ) {
+            String libOutputDir = directorySave+"/"+dirSize+"/"+desc.location.getSaveDirName();
 
             StabilityBenchmarkLibrary benchmark = new StabilityBenchmarkLibrary(
                     libOutputDir,config,desc,sizeMin,sizeMax,

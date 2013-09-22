@@ -33,7 +33,6 @@ import la4j.err.MatrixException;
 import la4j.err.MatrixInversionException;
 import la4j.factory.DenseFactory;
 import la4j.inversion.GaussianInvertor;
-import la4j.linear.GaussianSolver;
 import la4j.linear.LinearSystem;
 import la4j.matrix.Matrix;
 import la4j.vector.Vector;

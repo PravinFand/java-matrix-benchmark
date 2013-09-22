@@ -23,8 +23,11 @@ import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MatrixProcessorInterface;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.EvaluationTest;
+import jmbench.tools.OutputError;
 import jmbench.tools.TestResults;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Random;
 
 
@@ -38,20 +41,21 @@ public class RuntimeEvaluationTest extends EvaluationTest {
     // how many trials have already been completed.  Used to determine which random seed is used
     private int numTrials;
 
+    private String nameAlgorithm;
     private int dimen;
-    private RuntimePerformanceFactory factory;
-    private MatrixProcessorInterface alg;
+    private Class<RuntimePerformanceFactory> classFactory;
     private InputOutputGenerator generator;
-
     // how long it should try to run the tests for in milliseconds
     private long goalRuntime;
+
     // the max amount of time it will let a test run for
     private long maxRuntime;
-
     // randomly generated input matrices
     private volatile Random masterRand;
+
     private volatile BenchmarkMatrix inputs[];
     private volatile BenchmarkMatrix outputs[];
+    private volatile RuntimePerformanceFactory factory;
 
     // should it make sure the tested operation is performing the expected oepration
     private boolean sanityCheck;
@@ -64,7 +68,7 @@ public class RuntimeEvaluationTest extends EvaluationTest {
      * Creates a new evaluation test.
      *
      * @param dimen How big the matrices are that are being processed.
-     * @param alg The algorithm that is being processed.
+     * @param nameAlgorithm The algorithm that is being processed.
      * @param generator Creates the inputs and expected outputs for the tested operation
      * @param goalRuntime  How long it wants to try to run the test for in milliseconds
      * @param maxRuntime  How long it will let a test run for in milliseconds
@@ -72,8 +76,8 @@ public class RuntimeEvaluationTest extends EvaluationTest {
      */
     public RuntimeEvaluationTest( int numTrials,
                                   int dimen ,
-                                  RuntimePerformanceFactory factory,
-                                  MatrixProcessorInterface alg ,
+                                  Class<RuntimePerformanceFactory> classFactory,
+                                  String nameAlgorithm ,
                                   InputOutputGenerator generator ,
                                   boolean sanityCheck ,
                                   long goalRuntime, long maxRuntime , long randomSeed )
@@ -81,8 +85,8 @@ public class RuntimeEvaluationTest extends EvaluationTest {
         super(randomSeed);
         this.numTrials = numTrials;
         this.dimen = dimen;
-        this.factory = factory;
-        this.alg = alg;
+        this.classFactory = classFactory;
+        this.nameAlgorithm = nameAlgorithm;
         this.generator = generator;
         this.sanityCheck = sanityCheck;
         this.goalRuntime = goalRuntime;
@@ -101,6 +105,14 @@ public class RuntimeEvaluationTest extends EvaluationTest {
      */
     @Override
     public void init() {
+        try {
+            factory = classFactory.newInstance();
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
         estimatedTrials = 0;
         masterRand = new Random(randomSeed);
         for( int i = 0; i < numTrials; i++ )
@@ -146,6 +158,13 @@ public class RuntimeEvaluationTest extends EvaluationTest {
         // try to purge all temporary data that has yet to be clean up so that the GC won't run
         // while performance is being measured
         runGarbageCollector();
+
+        MatrixProcessorInterface alg = createAlgorithm();
+
+        // see if the operation isn't supported
+        if( alg == null ) {
+            return new RuntimeMeasurement(-1,-1, OutputError.NOT_SUPPORTED);
+        }
 
         // translate it to nanoseconds
         long goalDuration = this.goalRuntime *1000000;
@@ -199,20 +218,41 @@ public class RuntimeEvaluationTest extends EvaluationTest {
         return results;
     }
 
+    private MatrixProcessorInterface createAlgorithm() {
+        try {
+            Method m = factory.getClass().getMethod(nameAlgorithm);
+            return (MatrixProcessorInterface)m.invoke(factory);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Class<RuntimePerformanceFactory> getClassFactory() {
+        return classFactory;
+    }
+
+    public void setClassFactory(Class<RuntimePerformanceFactory> classFactory) {
+        this.classFactory = classFactory;
+    }
+
+    public String getNameAlgorithm() {
+        return nameAlgorithm;
+    }
+
+    public void setNameAlgorithm(String nameAlgorithm) {
+        this.nameAlgorithm = nameAlgorithm;
+    }
+
     public int getDimen() {
         return dimen;
     }
 
     public void setDimen(int dimen) {
         this.dimen = dimen;
-    }
-
-    public MatrixProcessorInterface getAlg() {
-        return alg;
-    }
-
-    public void setAlg(MatrixProcessorInterface alg) {
-        this.alg = alg;
     }
 
     public InputOutputGenerator getGenerator() {
@@ -237,14 +277,6 @@ public class RuntimeEvaluationTest extends EvaluationTest {
 
     public void setSanityCheck(boolean sanityCheck) {
         this.sanityCheck = sanityCheck;
-    }
-
-    public RuntimePerformanceFactory getFactory() {
-        return factory;
-    }
-
-    public void setFactory(RuntimePerformanceFactory factory) {
-        this.factory = factory;
     }
 
     public int getNumTrials() {

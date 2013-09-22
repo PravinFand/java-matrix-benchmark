@@ -19,7 +19,7 @@
 
 package jmbench.tools.stability;
 
-import jmbench.impl.MatrixLibrary;
+import jmbench.impl.LibraryLocation;
 
 import java.io.File;
 import java.util.*;
@@ -98,7 +98,7 @@ public abstract class TablesCommon {
             List<StabilityTrialResults> l = e.getValue();
 
             for( StabilityTrialResults s : l ) {
-                MatrixLibrary lib = MatrixLibrary.lookup(s.getLibraryName());
+                LibraryLocation lib = LibraryLocation.lookup(s.getLibraryName());
                 
                 if( !names.contains(lib.getPlotName()) )
                     names.add(lib.getPlotName());
@@ -111,7 +111,7 @@ public abstract class TablesCommon {
     protected Data findByName(List<StabilityTrialResults> l , String name )
     {
         for( StabilityTrialResults s : l ) {
-            MatrixLibrary lib = MatrixLibrary.lookup(s.getLibraryName());
+            LibraryLocation lib = LibraryLocation.lookup(s.getLibraryName());
 
             if( name.compareTo(lib.getPlotName()) == 0 ) {
                 Data d = new Data();

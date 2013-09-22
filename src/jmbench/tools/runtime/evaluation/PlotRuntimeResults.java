@@ -19,11 +19,9 @@
 
 package jmbench.tools.runtime.evaluation;
 
-import jmbench.impl.MatrixLibrary;
-import jmbench.tools.EvaluationTarget;
+import jmbench.impl.LibraryLocation;
 import jmbench.tools.runtime.RuntimeEvaluationMetrics;
 import jmbench.tools.runtime.RuntimeResults;
-import jmbench.tools.stability.UtilXmlSerialization;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -196,7 +194,7 @@ public class PlotRuntimeResults {
                     r[j] = Double.NaN;
             }
 
-            MatrixLibrary lib = MatrixLibrary.lookup(a.getLibraryName());
+            LibraryLocation lib = LibraryLocation.lookup(a.getLibraryName());
             ret.addLibrary(lib.getPlotName(),r,lib.getPlotLineType());
         }
 
@@ -210,16 +208,19 @@ public class PlotRuntimeResults {
      * @return true if it should be included
      */
     private boolean checkIncludeLibrary(String pathDir) {
-        EvaluationTarget target = UtilXmlSerialization.deserializeXml(pathDir+".xml");
+        System.out.println("HACK HACK");
+        return true;
 
-        if( target == null ) {
-            // no library info associated with this directory so its probably not a results directory
-            return false;
-        }
-
-        MatrixLibrary lib = MatrixLibrary.lookup(target.getLibName());
-
-        return !(lib.isNativeCode() && !plotNativeLibraries);
+//        EvaluationTarget target = UtilXmlSerialization.deserializeXml(pathDir+".xml");
+//
+//        if( target == null ) {
+//            // no library info associated with this directory so its probably not a results directory
+//            return false;
+//        }
+//
+//        LibraryLocation lib = LibraryLocation.lookup(target.getLibName());
+//
+//        return !(lib.isNativeCode() && !plotNativeLibraries);
     }
 
     /**

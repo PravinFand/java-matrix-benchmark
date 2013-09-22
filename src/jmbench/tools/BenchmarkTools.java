@@ -126,7 +126,7 @@ public class BenchmarkTools {
 
         requestID++;
 
-        String[] params = setupSlave(test);
+        params = setupJvmParam(test);
 
         if(verbose) {
             System.out.println("Test random seed = "+test.getRandomSeed());
@@ -185,7 +185,7 @@ public class BenchmarkTools {
      * Writes out an xml file that tells the slave what to run and puts together the runtime
      * parameters that are passed on to it.
      */
-    private String[] setupSlave(EvaluationTest test) {
+    public String[] setupJvmParam(EvaluationTest test) {
         // write out a file describing what the slave should process.
         UtilXmlSerialization.serializeXml(test, "case.xml");
 
@@ -199,7 +199,7 @@ public class BenchmarkTools {
         if(verbose)
             System.out.println("Memory = "+allocatedMemory+" MB");
 
-        params = new String[10];
+        String []params = new String[10];
         params[0] = app;
         params[1] = "-server";
         params[2] = "-Xms"+allocatedMemory+"M";

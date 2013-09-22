@@ -59,6 +59,7 @@
         <mkdir dir="${classes.dir}"/>
         <javac srcdir="${src.dir}" destdir="${classes.dir}"
                fork="yes" executable="${java.compilor}"
+	       debug="true"
                includejavaruntime="false"
                includeantruntime="false" >
             <classpath refid="project.classpath"/>
@@ -93,6 +94,7 @@
 
         <javac srcdir="${test.dir}" destdir="${testclasses.dir}"
                fork="yes" executable="${java.compilor}"
+	       debug="true"
                includejavaruntime="false"
                includeantruntime="false" >
            <classpath>

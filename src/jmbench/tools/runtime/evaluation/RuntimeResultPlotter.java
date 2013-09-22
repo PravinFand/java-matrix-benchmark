@@ -19,7 +19,7 @@
 
 package jmbench.tools.runtime.evaluation;
 
-import jmbench.impl.MatrixLibrary;
+import jmbench.impl.LibraryLocation;
 import jmbench.plots.OperationsVersusSizePlot;
 import jmbench.plots.SummaryWhiskerPlot;
 import jmbench.tools.runtime.RuntimeEvaluationMetrics;
@@ -209,7 +209,7 @@ public class RuntimeResultPlotter {
                 }
             }
 
-            MatrixLibrary lib = MatrixLibrary.lookup(ops.getLibraryName());
+            LibraryLocation lib = LibraryLocation.lookup(ops.getLibraryName());
             splot.addResults(matDimen,results,lib.getPlotName(),numMatrixSizes,
                     lib.getPlotLineType());
         }

@@ -19,9 +19,9 @@
 
 package jmbench.tools.stability;
 
+import jmbench.impl.LibraryDescription;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.BenchmarkTools;
-import jmbench.tools.EvaluationTarget;
 import jmbench.tools.EvaluatorSlave;
 import jmbench.tools.TestResults;
 import jmbench.tools.stability.tests.*;
@@ -64,7 +64,7 @@ public class StabilityBenchmarkLibrary {
 
     public StabilityBenchmarkLibrary(  String outputDir ,
                                        StabilityBenchmarkConfig config ,
-                                       EvaluationTarget target,
+                                       LibraryDescription target,
                                        int sizeMin ,
                                        int sizeMax ,
                                        int numSolve ,
@@ -72,9 +72,8 @@ public class StabilityBenchmarkLibrary {
 
         this.directorySave = outputDir;
 
-        RuntimePerformanceFactory factory = target.loadAlgorithmFactory();
 
-        tools = new BenchmarkTools(1,config.baseMemory,config.scaleMemory,target.getJarFiles());
+        tools = new BenchmarkTools(1,config.baseMemory,config.scaleMemory,target.location.listOfJarFilePaths());
         tools.setFrozenDefaultTime(config.maxProcessingTime);
 
         if( directorySave != null ) {
@@ -83,7 +82,7 @@ public class StabilityBenchmarkLibrary {
         }
 
         this.config = config;
-        this.libraryName = target.getLibName();
+        this.libraryName = target.location.getPlotName();
         
         this.sizeMin = sizeMin;
         this.sizeMax = sizeMax;
@@ -91,7 +90,7 @@ public class StabilityBenchmarkLibrary {
         this.numSolve = numSolve;
         this.numSvd = numSvd;
 
-        createOperationsList(factory);
+        createOperationsList(target.factoryRuntime);
     }
 
     private void setupOutputDirectory() {
@@ -120,42 +119,42 @@ public class StabilityBenchmarkLibrary {
         logStream.println(tools.getClassPath());
     }
 
-    private void createOperationsList(RuntimePerformanceFactory library) {
+    private void createOperationsList(Class<RuntimePerformanceFactory> library) {
         operations = new ArrayList<StabilityTestBase>();
 
         if( config.checkOverflow ) {
             if( config.checkLinear )
                 operations.add( new SolverOverflow(config.randomSeed,
                         library,
-                        library.solveExact(),
+                        "solveExact",
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,true,true) );
 
             if( config.checkLS )
                 operations.add( new SolverOverflow(config.randomSeed,
                         library,
-                        library.solveOver(),
+                        "solveOver",
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,false,true) );
 
             if( config.checkSVD )
                 operations.add( new SvdOverflow(config.randomSeed,
                         library,
-                        library.svd(),
+                        "svd",
                         numSvd/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,true) );
 
             if( config.checkEVD )
                 operations.add( new EigSymmOverflow(config.randomSeed,
                         library,
-                        library.eigSymm(),
+                        "eigSymm",
                         numSvd/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,true) );
 
             if( config.checkSymInv )
                 operations.add( new InvSymmOverflow(config.randomSeed,
                         library,
-                        library.invertSymmPosDef(),
+                        "invertSymmPosDef",
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,true) );
         }
@@ -164,35 +163,35 @@ public class StabilityBenchmarkLibrary {
             if( config.checkLinear )
                 operations.add( new SolverOverflow(config.randomSeed,
                         library,
-                        library.solveExact(),
+                        "solveExact",
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,true,false) );
 
             if( config.checkLS )
                 operations.add( new SolverOverflow(config.randomSeed,
                         library,
-                        library.solveOver(),
+                        "solveOver",
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,false,false) );
 
             if( config.checkSVD )
                 operations.add( new SvdOverflow(config.randomSeed,
                         library,
-                        library.svd(),
+                        "svd",
                         numSvd/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,false) );
 
             if( config.checkEVD )
                 operations.add( new EigSymmOverflow(config.randomSeed,
                         library,
-                        library.eigSymm(),
+                        "eigSymm",
                         numSvd/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,false) );
 
             if( config.checkSymInv )
                 operations.add( new InvSymmOverflow(config.randomSeed,
                         library,
-                        library.invertSymmPosDef(),
+                        "invertSymmPosDef",
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,false) );
         }
@@ -201,14 +200,14 @@ public class StabilityBenchmarkLibrary {
             if( config.checkLinear )
                 operations.add( new SolverSingular(config.randomSeed,
                         library,
-                        library.solveExact(),
+                        "solveExact",
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,true) );
 
             if( config.checkLS )
                 operations.add( new SolverSingular(config.randomSeed,
                         library,
-                        library.solveOver(),
+                        "solveOver",
                         numSolve/config.overFlowFactor,
                         config.breakingPoint,sizeMin,sizeMax,false) );
         }
@@ -216,35 +215,35 @@ public class StabilityBenchmarkLibrary {
             if( config.checkLinear )
                 operations.add( new SolverAccuracy(config.randomSeed,
                         library,
-                        library.solveExact(),
+                        "solveExact",
                         numSolve,
                         config.breakingPoint,sizeMin,sizeMax,true) );
 
             if( config.checkLS )
                 operations.add( new SolverAccuracy(config.randomSeed,
                         library,
-                        library.solveOver(),
+                        "solveOver",
                         numSolve,
                         config.breakingPoint,sizeMin,sizeMax,false) );
 
             if( config.checkSVD )
                 operations.add( new SvdAccuracy(config.randomSeed,
                         library,
-                        library.svd(),
+                        "svd",
                         numSvd,
                         sizeMin,sizeMax) );
 
             if( config.checkEVD )
                 operations.add( new EigSymmAccuracy(config.randomSeed,
                         library,
-                        library.eigSymm(),
+                        "eigSymm",
                         numSvd,
                         sizeMin,sizeMax) );
 
             if( config.checkSymInv )
                 operations.add( new InvSymmAccuracy(config.randomSeed,
                         library,
-                        library.invertSymmPosDef(),
+                        "invertSymmPosDef",
                         numSolve,
                         sizeMin,sizeMax) );
         }
@@ -254,10 +253,6 @@ public class StabilityBenchmarkLibrary {
 //        MatrixLibrary libInfo = library.getLibrary();
 
         for( StabilityTestBase op : operations ) {
-            if( op.getOperation() == null ) {
-                logStream.println("Operator not supported: "+op.getTestName());
-                continue;
-            }
 
             System.out.println(libraryName+" :  Processing op: "+op.getTestName());
 

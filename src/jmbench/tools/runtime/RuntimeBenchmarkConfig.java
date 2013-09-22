@@ -19,12 +19,10 @@
 
 package jmbench.tools.runtime;
 
-import jmbench.impl.MatrixLibrary;
-import jmbench.impl.runtime.*;
-import jmbench.tools.EvaluationTarget;
+import jmbench.impl.FactoryLibraryDescriptions;
+import jmbench.impl.LibraryDescription;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,19 +33,6 @@ import java.util.List;
  * @author Peter Abeles
  */
 public class RuntimeBenchmarkConfig implements Serializable {
-
-    public static final EvaluationTarget ejml = new EvaluationTarget( MatrixLibrary.EJML, EjmlAlgorithmFactory.class.getName());
-    public static final EvaluationTarget sejml = new EvaluationTarget( MatrixLibrary.SEJML, SejmlAlgorithmFactory.class.getName());
-    public static final EvaluationTarget jama = new EvaluationTarget( MatrixLibrary.JAMA, JamaAlgorithmFactory.class.getName());
-    public static final EvaluationTarget ojalgo = new EvaluationTarget( MatrixLibrary.OJALGO, OjAlgoAlgorithmFactory.class.getName());
-    public static final EvaluationTarget commons = new EvaluationTarget( MatrixLibrary.CM, CommonsMathAlgorithmFactory.class.getName());
-    public static final EvaluationTarget colt = new EvaluationTarget( MatrixLibrary.COLT, ColtAlgorithmFactory.class.getName());
-    public static final EvaluationTarget mtj = new EvaluationTarget( MatrixLibrary.MTJ, MtjAlgorithmFactory.class.getName());
-    public static final EvaluationTarget pcolt = new EvaluationTarget( MatrixLibrary.PCOLT, PColtAlgorithmFactory.class.getName());
-    public static final EvaluationTarget ujmp = new EvaluationTarget( MatrixLibrary.UJMP, UjmpAlgorithmFactory.class.getName());
-    public static final EvaluationTarget ujmp_j = new EvaluationTarget( MatrixLibrary.UJMP_JAVA , UjmpJavaAlgorithmFactory.class.getName());
-    public static final EvaluationTarget jblas = new EvaluationTarget( MatrixLibrary.JBLAS, JBlasAlgorithmFactory.class.getName());
-    public static final EvaluationTarget la4j = new EvaluationTarget( MatrixLibrary.LA4J, La4jAlgorithmFactory.class.getName());
 
     // random seed used to create matrices used as inputs
     public long seed;
@@ -75,7 +60,7 @@ public class RuntimeBenchmarkConfig implements Serializable {
     public boolean transposeWide;
 
     // which libraries are to be evaluated
-    public List<EvaluationTarget> targets;
+    public List<LibraryDescription> targets;
 
     // how many performance trials should it run in a block
     public int numBlockTrials;
@@ -145,20 +130,7 @@ public class RuntimeBenchmarkConfig implements Serializable {
         config.solveOver = true;
         config.transposeSquare = true;
 
-        config.targets = new ArrayList<EvaluationTarget>();
-
-        config.targets.add(ejml);
-//        config.targets.add(sejml);
-        config.targets.add(jama);
-        config.targets.add(ojalgo);
-        config.targets.add(commons);
-        config.targets.add(colt);
-        config.targets.add(pcolt);
-        config.targets.add(mtj);
-        config.targets.add(ujmp_j);
-//        config.targets.add(ujmp);
-        config.targets.add(jblas);
-        config.targets.add(la4j);
+        config.targets = FactoryLibraryDescriptions.createDefault();
 
         return config;
     }
@@ -299,11 +271,11 @@ public class RuntimeBenchmarkConfig implements Serializable {
         this.transposeWide = transposeWide;
     }
 
-    public List<EvaluationTarget> getTargets() {
+    public List<LibraryDescription> getTargets() {
         return targets;
     }
 
-    public void setTargets(List<EvaluationTarget> targets) {
+    public void setTargets(List<LibraryDescription> targets) {
         this.targets = targets;
     }
 

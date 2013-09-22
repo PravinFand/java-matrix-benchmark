@@ -46,7 +46,8 @@ public abstract class OverflowTestBase extends StabilityTestBase
 
     private volatile BreakingPointBinarySearch search;
 
-    public OverflowTestBase(long randomSeed, RuntimePerformanceFactory factory , MatrixProcessorInterface operation,
+    public OverflowTestBase(long randomSeed, Class<RuntimePerformanceFactory> factory ,
+                            String operation,
                        int totalTrials, double breakingPoint, int minLength, int maxLength,
                        boolean overflow)
     {
@@ -102,6 +103,8 @@ public abstract class OverflowTestBase extends StabilityTestBase
         for( int i = 0; i < inputs.length; i++ ) {
             inputsB[i] = factory.convertToLib(inputs[i]);
         }
+
+        MatrixProcessorInterface operation = createAlgorithm();
 
         try {
             operation.process(inputsB,outputB,1);

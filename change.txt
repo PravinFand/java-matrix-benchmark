@@ -1,5 +1,17 @@
 ----- Version 0.9
 
+2013
+
+- Factories are not created until a the new VM is launched
+  * Avoids potentially contaminating the version info which is printed.  e.g. one library loads an older version first
+- Version information is printed into its own file now
+- Tweaked make file to build the application by default
+- Each library is fully described by a single LibraryDescription instead of spreading that information across several
+  locations
+
+
+----- Version 0.9
+
 2012/03/03
 
 - Combined stability and runtime factories in a single factory

@@ -45,12 +45,12 @@ public class SolverSingular extends SolverCommon
     private volatile int whichSV;
     private volatile BreakingPointBinarySearch search;
 
-    public SolverSingular(long randomSeed, RuntimePerformanceFactory factory, MatrixProcessorInterface operation,
+    public SolverSingular(long randomSeed, Class<RuntimePerformanceFactory> factory, String nameOperation,
                           int totalTrials,
                           double breakingPoint ,
                           int minLength, int maxLength,
                           boolean linearSolver) {
-        super(randomSeed, factory, operation, totalTrials, breakingPoint , minLength, maxLength, linearSolver);
+        super(randomSeed, factory, nameOperation, totalTrials, breakingPoint , minLength, maxLength, linearSolver);
     }
 
     public SolverSingular() {
@@ -135,6 +135,8 @@ public class SolverSingular extends SolverCommon
 
         inputsB[0] = factory.convertToLib(A_adj);
         inputsB[1] = factory.convertToLib(b);
+
+        MatrixProcessorInterface operation = createAlgorithm();
 
         try {
             operation.process(inputsB,outputB,1);

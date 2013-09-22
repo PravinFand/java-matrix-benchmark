@@ -19,7 +19,6 @@
 
 package jmbench.tools.stability.tests;
 
-import jmbench.interfaces.MatrixProcessorInterface;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityBenchmark;
@@ -38,9 +37,9 @@ public class EigSymmAccuracy extends AccuracyTestBase {
     protected volatile DenseMatrix64F L;
     protected volatile DenseMatrix64F R;
 
-    public EigSymmAccuracy(long randomSeed, RuntimePerformanceFactory factory, MatrixProcessorInterface operation,
+    public EigSymmAccuracy(long randomSeed, Class<RuntimePerformanceFactory> factory, String nameOperation,
                            int totalTrials, int minLength, int maxLength) {
-        super(randomSeed, factory , operation, totalTrials, minLength, maxLength);
+        super(randomSeed, factory , nameOperation, totalTrials, minLength, maxLength);
     }
 
     public EigSymmAccuracy() {}

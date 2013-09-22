@@ -19,7 +19,7 @@
 
 package jmbench.tools.runtime.evaluation;
 
-import jmbench.impl.MatrixLibrary;
+import jmbench.impl.LibraryLocation;
 import jmbench.tools.runtime.RuntimeEvaluationMetrics;
 import jmbench.tools.runtime.RuntimeResults;
 import jmbench.tools.stability.UtilXmlSerialization;
@@ -141,7 +141,7 @@ public class ConvertRuntimeResultsXmlToCSV {
         // save the library number so that the plots use the same color line when plotting
         fileStream.print("\t");
         for( RuntimeResults r : results ) {
-            MatrixLibrary lib = MatrixLibrary.lookup(r.getLibraryName());
+            LibraryLocation lib = LibraryLocation.lookup(r.getLibraryName());
             fileStream.print("\t"+lib.getPlotLineType());
         }
         fileStream.println();

@@ -19,9 +19,8 @@
 
 package jmbench.tools.stability;
 
-import jmbench.impl.MatrixLibrary;
-import jmbench.impl.runtime.*;
-import jmbench.tools.EvaluationTarget;
+import jmbench.impl.FactoryLibraryDescriptions;
+import jmbench.impl.LibraryDescription;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,17 +31,6 @@ import java.util.List;
  * @author Peter Abeles
  */
 public class StabilityBenchmarkConfig implements Serializable {
-
-    public static EvaluationTarget ejml = new EvaluationTarget( MatrixLibrary.EJML, EjmlAlgorithmFactory.class.getName());
-    public static EvaluationTarget jama = new EvaluationTarget( MatrixLibrary.JAMA, JamaAlgorithmFactory.class.getName());
-    public static EvaluationTarget ojalgo = new EvaluationTarget( MatrixLibrary.OJALGO, OjAlgoAlgorithmFactory.class.getName());
-    public static EvaluationTarget commons = new EvaluationTarget( MatrixLibrary.CM, CommonsMathAlgorithmFactory.class.getName());
-    public static EvaluationTarget colt = new EvaluationTarget( MatrixLibrary.COLT, ColtAlgorithmFactory.class.getName());
-    public static EvaluationTarget mtj = new EvaluationTarget( MatrixLibrary.MTJ, MtjAlgorithmFactory.class.getName());
-    public static EvaluationTarget pcolt = new EvaluationTarget( MatrixLibrary.PCOLT, PColtAlgorithmFactory.class.getName());
-    public static EvaluationTarget ujmp = new EvaluationTarget( MatrixLibrary.UJMP, UjmpAlgorithmFactory.class.getName());
-    public static EvaluationTarget jblas = new EvaluationTarget( MatrixLibrary.JBLAS, JBlasAlgorithmFactory.class.getName());
-    public static EvaluationTarget la4j = new EvaluationTarget( MatrixLibrary.LA4J, La4jAlgorithmFactory.class.getName());
 
     public long randomSeed;
     public long maxProcessingTime;
@@ -91,7 +79,7 @@ public class StabilityBenchmarkConfig implements Serializable {
     public boolean checkSymInv;
 
     // which libraries are to be evaluated
-    public List<EvaluationTarget> targets = new ArrayList<EvaluationTarget>();
+    public List<LibraryDescription> targets = new ArrayList<LibraryDescription>();
 
     public static StabilityBenchmarkConfig createDefault() {
         StabilityBenchmarkConfig config = new StabilityBenchmarkConfig();
@@ -126,16 +114,7 @@ public class StabilityBenchmarkConfig implements Serializable {
         config.trialsMediumSvd = 18*off;
         config.trialsLargeSvd = 7*off;
 
-        config.targets.add(ejml);
-        config.targets.add(jama);
-        config.targets.add(ojalgo);
-        config.targets.add(commons);
-        config.targets.add(colt);
-        config.targets.add(mtj);
-        config.targets.add(pcolt);
-        config.targets.add(ujmp);
-        config.targets.add(jblas);
-        config.targets.add(la4j);
+        config.targets = FactoryLibraryDescriptions.createDefault();
 
         config.checkAccuracy = true;
         config.checkOverflow = true;
@@ -238,11 +217,11 @@ public class StabilityBenchmarkConfig implements Serializable {
         this.trialsLargeSolve = trialsLargeSolve;
     }
 
-    public List<EvaluationTarget> getTargets() {
+    public List<LibraryDescription> getTargets() {
         return targets;
     }
 
-    public void setTargets(List<EvaluationTarget> targets) {
+    public void setTargets(List<LibraryDescription> targets) {
         this.targets = targets;
     }
 

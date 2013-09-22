@@ -19,8 +19,7 @@
 
 package jmbench.tools.memory;
 
-import jmbench.impl.MatrixLibrary;
-import jmbench.tools.EvaluationTarget;
+import jmbench.impl.LibraryDescription;
 import jmbench.tools.SystemInfo;
 import jmbench.tools.stability.UtilXmlSerialization;
 
@@ -76,13 +75,11 @@ public class MemoryBenchmark {
         System.out.println("  elapsed time "+(stopTime-startTime)+" (ms) "+((stopTime-startTime)/(60*60*1000.0))+" hrs");
     }
 
-    private void processLibraries( List<EvaluationTarget> libs, MemoryConfig config , long overhead ) {
+    private void processLibraries( List<LibraryDescription> libs, MemoryConfig config , long overhead ) {
 
-        for(  EvaluationTarget desc : libs ) {
+        for(  LibraryDescription desc : libs ) {
             // run the benchmark
-            MatrixLibrary lib = MatrixLibrary.lookup(desc.getLibName());
-
-            String libOutputDir = directorySave+"/"+lib.getSaveDirName();
+            String libOutputDir = directorySave+"/"+desc.location.getSaveDirName();
 
             MemoryBenchmarkLibrary bench = new MemoryBenchmarkLibrary(config,desc,libOutputDir,overhead);
 
@@ -96,15 +93,11 @@ public class MemoryBenchmark {
     /**
      * Save the description so that where this came from can be easily extracted
      */
-    public static void saveLibraryDescriptions( String directorySave , List<EvaluationTarget> libs )
+    public static void saveLibraryDescriptions( String directorySave , List<LibraryDescription> libs )
     {
-        for( EvaluationTarget desc : libs ) {
-            MatrixLibrary lib = MatrixLibrary.lookup(desc.getLibName());
+        for( LibraryDescription desc : libs ) {
 
-            // Add version information to the target description
-            lib.addVersionInfo( desc );
-
-            String outputFile = directorySave+"/"+lib.getSaveDirName()+".xml";
+            String outputFile = directorySave+"/"+desc.location.getSaveDirName()+".xml";
             UtilXmlSerialization.serializeXml(desc,outputFile);
         }
     }
