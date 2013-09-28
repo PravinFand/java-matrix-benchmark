@@ -142,17 +142,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/mtj/mtj-0.9.14.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/mtj/arpack_combo-0.1.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/mtj/netlib-java-0.9.3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/ojalgo/ojalgo-31.10.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -212,6 +201,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/EJML.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/mtj/mtj-1.0-snapshot.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

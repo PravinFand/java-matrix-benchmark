@@ -19,9 +19,7 @@
 
 package jmbench.impl;
 
-import jmbench.impl.configure.DoNothingSpecialConfigure;
-import jmbench.impl.configure.UjmpLibraryConfigure;
-import jmbench.impl.configure.UjmpNativeLibraryConfigure;
+import jmbench.impl.configure.*;
 import jmbench.impl.memory.*;
 import jmbench.impl.runtime.*;
 
@@ -39,17 +37,18 @@ public class FactoryLibraryDescriptions {
         List<LibraryDescription> list = new ArrayList<LibraryDescription>();
 
         list.add(createColt());
-//        list.add(createCommonsMath());
+        list.add(createCommonsMath());
         list.add(createEJML());
         list.add(createJAMA());
-//        list.add(createJBlas());
-//        list.add(createLa4j());
-//        list.add(createMtj());
-//        list.add(createOjAlgo());
-//        list.add(createPColt());
+        list.add(createJBlas());
+        list.add(createLa4j());
+        list.add(createMtj());
+        list.add(createMtj_Native());
+        list.add(createOjAlgo());
+        list.add(createPColt());
 //        list.add(createSejml());
-//        list.add(createUJMP());
-//        list.add(createUJMP_Native());
+        list.add(createUJMP());
+        list.add(createUJMP_Native());
 
         return list;
     }
@@ -139,7 +138,7 @@ public class FactoryLibraryDescriptions {
     public static LibraryDescription createMtj() {
         LibraryDescription ret = new LibraryDescription();
 
-        ret.configure = (Class)DoNothingSpecialConfigure.class;
+        ret.configure = (Class)MtjLibraryConfigure.class;
         ret.factoryMemory = (Class)MtjMemoryFactory.class;
         ret.factoryRuntime = (Class)MtjAlgorithmFactory.class;
         ret.location = LibraryLocation.MTJ;
@@ -151,7 +150,7 @@ public class FactoryLibraryDescriptions {
     public static LibraryDescription createMtj_Native() {
         LibraryDescription ret = new LibraryDescription();
 
-        ret.configure = (Class)DoNothingSpecialConfigure.class;
+        ret.configure = (Class)MtjNativeLibraryConfigure.class;
         ret.factoryMemory = (Class)MtjMemoryFactory.class;
         ret.factoryRuntime = (Class)MtjAlgorithmFactory.class;
         ret.location = LibraryLocation.MTJ_NATIVE;
