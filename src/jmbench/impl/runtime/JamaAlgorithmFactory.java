@@ -37,10 +37,6 @@ import org.ejml.ops.SpecializedOps;
 public class JamaAlgorithmFactory implements RuntimePerformanceFactory {
 
     @Override
-    public void configure() {
-    }
-
-    @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         return wrap(new Matrix(numRows,numCols));
     }

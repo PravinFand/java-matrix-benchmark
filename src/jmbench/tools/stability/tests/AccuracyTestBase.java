@@ -19,6 +19,7 @@
 
 package jmbench.tools.stability.tests;
 
+import jmbench.impl.LibraryConfigure;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.DetectedException;
 import jmbench.interfaces.MatrixProcessorInterface;
@@ -39,11 +40,12 @@ public abstract class AccuracyTestBase extends StabilityTestBase {
     protected int minLength;
     protected int maxLength;
 
-    public AccuracyTestBase(long randomSeed, Class<RuntimePerformanceFactory> factory, String nameOperation,
+    public AccuracyTestBase(long randomSeed, Class<LibraryConfigure> classConfigure ,
+                            Class<RuntimePerformanceFactory> classFactory, String nameOperation,
                             int totalTrials,
                             int minLength, int maxLength)
     {
-        super(randomSeed, factory , nameOperation, totalTrials, 0);
+        super(randomSeed, classConfigure , classFactory , nameOperation, totalTrials, 0);
         this.minLength = minLength;
         this.maxLength = maxLength;
     }

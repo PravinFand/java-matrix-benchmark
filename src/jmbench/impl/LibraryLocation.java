@@ -36,14 +36,15 @@ public class LibraryLocation implements Serializable {
     public static final LibraryLocation EJML = new LibraryLocation("EJML","ejml","ejml", false,false,0);
     public static final LibraryLocation JAMA = new LibraryLocation("JAMA","jama","jama", false, false, 1);
     public static final LibraryLocation MTJ = new LibraryLocation("MTJ","mtj","mtj", true, false, 2);
-    public static final LibraryLocation SEJML = new LibraryLocation("SEJML","sejml","sejml", true, false, 3);
-    public static final LibraryLocation CM = new LibraryLocation("CommMath","commons-math", "commons-math", true, false, 4);
+    public static final LibraryLocation MTJ_NATIVE = new LibraryLocation("MTJ-N","mtj","mtj-native", true, true, 3);
+    public static final LibraryLocation SEJML = new LibraryLocation("SEJML","sejml","sejml", true, false, 4);
+    public static final LibraryLocation CM = new LibraryLocation("CommMath","commons-math", "commons-math", true, false, 5);
     public static final LibraryLocation OJALGO = new LibraryLocation("ojAlgo","ojalgo","ojalgo", true, false, 6);
     public static final LibraryLocation COLT = new LibraryLocation("Colt","colt","colt", true, false, 7);
     public static final LibraryLocation PCOLT = new LibraryLocation("PColt","parallelcolt","parallelcolt", true, false, 8);
-    public static final LibraryLocation UJMP = new LibraryLocation("UJMP","ujmp","ujmp", true, true, 9);
-    public static final LibraryLocation JBLAS = new LibraryLocation("JBLAS","jblas","jblas", true, true, 10);
-    public static final LibraryLocation UJMP_JAVA = new LibraryLocation("UJMP-J","ujmp","ujmp-java", true,false, 11);
+    public static final LibraryLocation JBLAS = new LibraryLocation("JBLAS","jblas","jblas", true, true, 9);
+    public static final LibraryLocation UJMP = new LibraryLocation("UJMP","ujmp","ujmp", true,false, 10);
+    public static final LibraryLocation UJMP_NATIVE = new LibraryLocation("UJMP-N","ujmp","ujmp-native", true, true, 11);
     public static final LibraryLocation LA4J = new LibraryLocation("la4j","la4j","la4j", true,false,12);
 
     public String plotName;

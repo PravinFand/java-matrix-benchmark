@@ -17,15 +17,26 @@
  * along with JMatrixBenchmark.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jmbench.interfaces;
+package jmbench.impl.configure;
 
+import jmbench.impl.LibraryConfigure;
+import org.ujmp.core.util.UJMPSettings;
 
 /**
- * Interface that all factories must implement.  Each library in a benchmark will implement
- * a factory that creates the operations that are being benchmarked.
+ * Allows native code to be turned on and off at runtime
  *
  * @author Peter Abeles
  */
-public interface LibraryFactory {
+public class UjmpNativeLibraryConfigure implements LibraryConfigure {
 
+
+    @Override
+    public void runtimeConfigure() {
+        UJMPSettings.setUseJBlas(true);
+    }
+
+    @Override
+    public String[] getJreFlags() {
+        return new String[0];
+    }
 }

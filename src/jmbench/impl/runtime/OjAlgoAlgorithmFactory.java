@@ -462,10 +462,6 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
     }
 
     @Override
-    public void configure() {
-    }
-
-    @Override
     public BenchmarkMatrix create(final int numRows, final int numCols) {
         return this.wrap(FACTORY.makeZero(numRows, numCols));
     }

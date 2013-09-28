@@ -19,6 +19,7 @@
 
 package jmbench.tools.stability.tests;
 
+import jmbench.impl.LibraryConfigure;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityBenchmark;
@@ -39,9 +40,11 @@ public class InvSymmAccuracy extends AccuracyTestBase {
     protected volatile DenseMatrix64F I_found;
     protected volatile DenseMatrix64F I;
 
-    public InvSymmAccuracy(long randomSeed, Class<RuntimePerformanceFactory> factory, String nameOperation,
+    public InvSymmAccuracy(long randomSeed,
+                           Class<LibraryConfigure> classConfigure , Class<RuntimePerformanceFactory> classFactory,
+                           String nameOperation,
                            int totalTrials, int minLength, int maxLength) {
-        super(randomSeed, factory, nameOperation, totalTrials, minLength, maxLength);
+        super(randomSeed, classConfigure , classFactory, nameOperation, totalTrials, minLength, maxLength);
     }
 
     public InvSymmAccuracy() {}

@@ -19,6 +19,7 @@
 
 package jmbench.tools.runtime;
 
+import jmbench.impl.LibraryConfigure;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.*;
 
@@ -30,11 +31,15 @@ import java.util.List;
  * @author Peter Abeles
  */
 public class FactoryRuntimeEvaluationCase {
+    Class<LibraryConfigure> configure;
     Class<RuntimePerformanceFactory> factory;
 
     RuntimeBenchmarkConfig config;
 
-    public FactoryRuntimeEvaluationCase( Class<RuntimePerformanceFactory> factory , RuntimeBenchmarkConfig config ) {
+    public FactoryRuntimeEvaluationCase( Class<LibraryConfigure> configure ,
+                                         Class<RuntimePerformanceFactory> factory ,
+                                         RuntimeBenchmarkConfig config ) {
+        this.configure = configure;
         this.factory = factory;
         this.config = config;
     }
@@ -44,216 +49,216 @@ public class FactoryRuntimeEvaluationCase {
         List<RuntimeEvaluationCase> ret = new ArrayList<RuntimeEvaluationCase>();
 
 
-        if( config.mult ) ret.add( createMatrixMult(factory));
+        if( config.mult ) ret.add( createMatrixMult(configure,factory));
 
-        if( config.add ) ret.add( createMatrixAdd(factory));
+        if( config.add ) ret.add( createMatrixAdd(configure,factory));
 
-        if( config.transposeSquare ) ret.add( createTransposeSquare(factory));
+        if( config.transposeSquare ) ret.add( createTransposeSquare(configure,factory));
 
-        if( config.transposeTall ) ret.add( createTransposeTall(factory));
+        if( config.transposeTall ) ret.add( createTransposeTall(configure,factory));
 
-        if( config.transposeWide ) ret.add( createTransposeWide(factory));
+        if( config.transposeWide ) ret.add( createTransposeWide(configure,factory));
 
-        if( config.scale ) ret.add( createScale(factory));
+        if( config.scale ) ret.add( createScale(configure,factory));
 
-        if( config.det ) ret.add( createDeterminant(factory));
+        if( config.det ) ret.add( createDeterminant(configure,factory));
 
-        if( config.invert ) ret.add( createInvert(factory));
+        if( config.invert ) ret.add( createInvert(configure,factory));
 
-        if( config.invertSymmPosDef ) ret.add( createInvertSymmPosDef(factory));
+        if( config.invertSymmPosDef ) ret.add( createInvertSymmPosDef(configure,factory));
 
-        if( config.svd ) ret.add( createSVD(factory));
+        if( config.svd ) ret.add( createSVD(configure,factory));
 
-        if( config.chol ) ret.add( createCholesky(factory));
+        if( config.chol ) ret.add( createCholesky(configure,factory));
 
-        if( config.multTransB ) ret.add( createMultTranB(factory));
+        if( config.multTransB ) ret.add( createMultTranB(configure,factory));
 
-        if( config.solveExact ) ret.add( createSolveEq(factory));
+        if( config.solveExact ) ret.add( createSolveEq(configure,factory));
 
-        if( config.solveOver ) ret.add( createSolveOver(factory));
+        if( config.solveOver ) ret.add( createSolveOver(configure,factory));
 
-        if( config.qr ) ret.add( createQR(factory));
+        if( config.qr ) ret.add( createQR(configure,factory));
 
-        if( config.lu ) ret.add( createLU(factory));
+        if( config.lu ) ret.add( createLU(configure,factory));
 
-        if( config.eigSymm ) ret.add( createEigSymm(factory));
+        if( config.eigSymm ) ret.add( createEigSymm(configure,factory));
 
         return ret;
     }
 
 
-    public RuntimeEvaluationCase createMatrixMult( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createMatrixMult( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new MultGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("Mult c=a*b","mult",matDimen,
+        return new RuntimeEvaluationCase("Mult c=a*b","mult",matDimen,configure,
                 factory,generator);
     }
 
-    public RuntimeEvaluationCase createMatrixAdd( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createMatrixAdd( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new AddGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("Add c=a+b","add",matDimen,
+        return new RuntimeEvaluationCase("Add c=a+b","add",matDimen,configure,
                 factory,generator);
     }
 
-    public RuntimeEvaluationCase createTransposeSquare( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createTransposeSquare( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new TransposeSquareGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("Transpose Square: b=a^T","transpose",matDimen,
+        return new RuntimeEvaluationCase("Transpose Square: b=a^T","transpose",matDimen,configure,
                 factory,generator);
     }
 
-    public RuntimeEvaluationCase createTransposeTall( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createTransposeTall( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new TransposeTallGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("Transpose Tall: b=a^T","tranTall",matDimen,
+        return new RuntimeEvaluationCase("Transpose Tall: b=a^T","tranTall",matDimen,configure,
                 factory,generator);
     }
 
-    public RuntimeEvaluationCase createTransposeWide( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createTransposeWide( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new TransposeWideGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("Transpose Wide: b=a^T","tranWide",matDimen,
+        return new RuntimeEvaluationCase("Transpose Wide: b=a^T","tranWide",matDimen,configure,
                 factory,generator);
     }
 
-    public RuntimeEvaluationCase createScale( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createScale( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new ScaleGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("Scale b=alpha*a","scale",matDimen,
+        return new RuntimeEvaluationCase("Scale b=alpha*a","scale",matDimen,configure,
                 factory,generator);
     }
 
-    public RuntimeEvaluationCase createDeterminant( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createDeterminant( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new DeterminantGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("Determinant","det",matDimen,
+        return new RuntimeEvaluationCase("Determinant","det",matDimen,configure,
                 factory,generator);
     }
 
-    public RuntimeEvaluationCase createInvert( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createInvert( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new InvertGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("Invert b=inv(a)","invert",matDimen,
+        return new RuntimeEvaluationCase("Invert b=inv(a)","invert",matDimen,configure,
                 factory,generator);
     }
 
-    public RuntimeEvaluationCase createInvertSymmPosDef( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createInvertSymmPosDef( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new InvertSymmPosDefGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("Invert Symm b=inv(a)","invertSymmPosDef",matDimen,
+        return new RuntimeEvaluationCase("Invert Symm b=inv(a)","invertSymmPosDef",matDimen,configure,
                 factory,generator);
     }
 
-    public RuntimeEvaluationCase createSVD( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createSVD( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new SvdGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("SVD","svd",matDimen,
+        return new RuntimeEvaluationCase("SVD","svd",matDimen,configure,
                 factory,generator);
     }
 
-    public RuntimeEvaluationCase createCholesky( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createCholesky( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new CholeskyGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("Cholesky","chol",matDimen,
+        return new RuntimeEvaluationCase("Cholesky","chol",matDimen,configure,
                 factory,generator);
     }
 
-    public RuntimeEvaluationCase createMultTranB( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createMultTranB( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new MultTranBGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("Mult c=a*b^T","multTransB",matDimen,
+        return new RuntimeEvaluationCase("Mult c=a*b^T","multTransB",matDimen,configure,
                 factory,generator);
     }
 
     /**
      * The number of unknowns matches the number of equations.
      */
-    public RuntimeEvaluationCase createSolveEq( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createSolveEq( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new SolveEqGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("Solve m=n","solveExact",matDimen,
+        return new RuntimeEvaluationCase("Solve m=n","solveExact",matDimen,configure,
                 factory,generator);
     }
 
     /**
      * See how well it can solve an overdetermined system.
      */
-    public RuntimeEvaluationCase createSolveOver( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createSolveOver( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new SolveOverGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("Solve m>n","solveOver",matDimen,
+        return new RuntimeEvaluationCase("Solve m>n","solveOver",matDimen,configure,
                 factory,generator);
     }
 
-    public RuntimeEvaluationCase createQR( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createQR( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new QrGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("QR","qr",matDimen,
+        return new RuntimeEvaluationCase("QR","qr",matDimen,configure,
                 factory,generator);
     }
 
-    public RuntimeEvaluationCase createLU( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createLU( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new LuGenerator();
 
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("LU","lu",matDimen,
+        return new RuntimeEvaluationCase("LU","lu",matDimen,configure,
                 factory,generator);
     }
 
-    public RuntimeEvaluationCase createEigSymm( Class<RuntimePerformanceFactory> factory ) {
+    public RuntimeEvaluationCase createEigSymm( Class<LibraryConfigure> configure , Class<RuntimePerformanceFactory> factory ) {
 
         InputOutputGenerator generator = new EigSymmGenerator();
         int matDimen[] = createDimenList(config.minMatrixSize, config.maxMatrixSize);
 
-        return new RuntimeEvaluationCase("Eigen for Symm Matrices","eigSymm",matDimen,
+        return new RuntimeEvaluationCase("Eigen for Symm Matrices","eigSymm",matDimen,configure,
                 factory,generator);
     }
 

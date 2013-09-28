@@ -34,11 +34,6 @@ import org.jblas.Solve;
 public class JBlasMemoryFactory implements MemoryFactory {
 
     @Override
-    public void configure() {
-        
-    }
-
-    @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         return wrap(new DoubleMatrix(numRows,numCols));
     }

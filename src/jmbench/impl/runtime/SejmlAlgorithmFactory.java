@@ -38,10 +38,6 @@ import org.ejml.simple.SimpleSVD;
 public class SejmlAlgorithmFactory implements RuntimePerformanceFactory {
 
     @Override
-    public void configure() {
-    }
-
-    @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         return wrap( new SimpleMatrix(numRows,numCols));
     }

@@ -19,6 +19,7 @@
 
 package jmbench.tools.stability.tests;
 
+import jmbench.impl.LibraryConfigure;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.DetectedException;
 import jmbench.interfaces.MatrixProcessorInterface;
@@ -45,12 +46,14 @@ public class SolverSingular extends SolverCommon
     private volatile int whichSV;
     private volatile BreakingPointBinarySearch search;
 
-    public SolverSingular(long randomSeed, Class<RuntimePerformanceFactory> factory, String nameOperation,
+    public SolverSingular(long randomSeed,
+                          Class<LibraryConfigure> classConfigure ,
+                          Class<RuntimePerformanceFactory> classFactory, String nameOperation,
                           int totalTrials,
                           double breakingPoint ,
                           int minLength, int maxLength,
                           boolean linearSolver) {
-        super(randomSeed, factory, nameOperation, totalTrials, breakingPoint , minLength, maxLength, linearSolver);
+        super(randomSeed, classConfigure , classFactory, nameOperation, totalTrials, breakingPoint , minLength, maxLength, linearSolver);
     }
 
     public SolverSingular() {

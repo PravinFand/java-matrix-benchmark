@@ -17,16 +17,24 @@
  * along with JMatrixBenchmark.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jmbench.impl.runtime;
+package jmbench.impl;
 
+import java.io.Serializable;
 
 /**
- * Algorithm factory for UJMP that does not use native libraries, just pure java.
- * 
+ * Interface which allows the library to configure itself at runtime and how the JRE operates
+ *
  * @author Peter Abeles
  */
-public class UjmpJavaAlgorithmFactory extends UjmpAlgorithmFactory {
-    public UjmpJavaAlgorithmFactory() {
-        super(false);
-    }
+public interface LibraryConfigure extends Serializable {
+
+    /**
+     * Called once when the benchmark thread starts to configure the library at runtime
+     */
+    public void runtimeConfigure();
+
+    /**
+     * Returns runtime flags which are to be passed to the JRE
+     */
+    public String[] getJreFlags();
 }

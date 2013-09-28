@@ -19,6 +19,7 @@
 
 package jmbench.tools.stability.tests;
 
+import jmbench.impl.LibraryConfigure;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.OutputError;
 import jmbench.tools.stability.StabilityBenchmark;
@@ -35,9 +36,11 @@ public class EigSymmOverflow extends OverflowTestBase
     protected volatile DenseMatrix64F L;
     protected volatile DenseMatrix64F R;
 
-    public EigSymmOverflow(long randomSeed, Class<RuntimePerformanceFactory> factory, String nameOperation, int totalTrials,
+    public EigSymmOverflow(long randomSeed,
+                           Class<LibraryConfigure> classConfigure , Class<RuntimePerformanceFactory> factory,
+                           String nameOperation, int totalTrials,
                            double breakingPoint, int minLength, int maxLength, boolean overflow) {
-        super(randomSeed, factory, nameOperation, totalTrials, breakingPoint, minLength, maxLength, overflow);
+        super(randomSeed, classConfigure , factory, nameOperation, totalTrials, breakingPoint, minLength, maxLength, overflow);
     }
 
     public EigSymmOverflow(){}

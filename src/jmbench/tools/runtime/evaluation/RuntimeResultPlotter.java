@@ -240,18 +240,21 @@ public class RuntimeResultPlotter {
         }
 
         for( RuntimePlotData.SourceResults s : data.libraries) {
+            boolean allInvalid = true;
             for( int i = 0; i < numMatrixSizes; i++ ) {
                 double libResult = s.getResult(i);
                 
-                if( !Double.isNaN(libResult) ) {
+                if( !Double.isNaN(libResult) && libResult > 0 ) {
+                    allInvalid = false;
                     results[i] = 1.0/libResult;
                 } else {
                     results[i] = Double.NaN;
                 }
             }
 
-            splot.addResults(matDimen,results,s.label,numMatrixSizes,
-                    s.plotLineType);
+            if( !allInvalid )
+                splot.addResults(matDimen,results,s.label,numMatrixSizes,
+                        s.plotLineType);
         }
 
         if( savePDF )

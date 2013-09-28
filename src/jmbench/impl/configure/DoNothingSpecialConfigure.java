@@ -17,15 +17,21 @@
  * along with JMatrixBenchmark.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jmbench.impl.memory;
+package jmbench.impl.configure;
+
+import jmbench.impl.LibraryConfigure;
 
 /**
- * Only uses pure java functions.
+ * Do nothing at all to configure the library at runtime
  *
  * @author Peter Abeles
  */
-public class UjmpJavaMemoryFactory extends UjmpMemoryFactory {
-    public UjmpJavaMemoryFactory() {
-        super(false);
+public class DoNothingSpecialConfigure implements LibraryConfigure {
+    @Override
+    public void runtimeConfigure() {}
+
+    @Override
+    public String[] getJreFlags() {
+        return new String[0];
     }
 }

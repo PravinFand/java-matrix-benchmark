@@ -36,11 +36,6 @@ import org.jblas.Solve;
  */
 public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
 
-
-    @Override
-    public void configure() {
-    }
-
     @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         return wrap(new DoubleMatrix(numRows,numCols));

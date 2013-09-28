@@ -51,10 +51,6 @@ public class EjmlAlgorithmFactory implements RuntimePerformanceFactory {
     }
 
     @Override
-    public void configure() {
-    }
-
-    @Override
     public AlgorithmInterface chol() {
         return new Chol();
     }

@@ -33,11 +33,6 @@ import org.apache.commons.math.util.MathUtils;
 public class CommonsMathMemoryFactory implements MemoryFactory {
 
     @Override
-    public void configure() {
-
-    }
-
-    @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         return wrap(MatrixUtils.createRealMatrix(numRows,numCols));
     }

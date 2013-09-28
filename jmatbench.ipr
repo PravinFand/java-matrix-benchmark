@@ -387,7 +387,7 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../../ejml/trunk/ejml.iml" filepath="$PROJECT_DIR$/../../ejml/trunk/ejml.iml" />
+      <module fileurl="file://$USER_HOME$/ejml/trunk/ejml.iml" filepath="$USER_HOME$/ejml/trunk/ejml.iml" />
       <module fileurl="file://$PROJECT_DIR$/jmatbench.iml" filepath="$PROJECT_DIR$/jmatbench.iml" />
     </modules>
   </component>
@@ -418,38 +418,10 @@
   <component name="SvnBranchConfigurationManager">
     <option name="myConfigurationMap">
       <map>
-        <entry key="$PROJECT_DIR$/../../ejml/trunk">
-          <value>
-            <SvnBranchConfiguration>
-              <option name="branchUrls">
-                <list>
-                  <option value="https://efficient-java-matrix-library.googlecode.com/svn/branches" />
-                  <option value="https://efficient-java-matrix-library.googlecode.com/svn/javadoc" />
-                  <option value="https://efficient-java-matrix-library.googlecode.com/svn/tags" />
-                  <option value="https://efficient-java-matrix-library.googlecode.com/svn/wiki" />
-                </list>
-              </option>
-              <option name="trunkUrl" value="https://efficient-java-matrix-library.googlecode.com/svn/trunk" />
-            </SvnBranchConfiguration>
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$">
           <value>
             <SvnBranchConfiguration>
               <option name="trunkUrl" value="svn+ssh://127.0.0.1/opt/repos/math/jmatbench/trunk" />
-            </SvnBranchConfiguration>
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/../../libpjajava">
-          <value>
-            <SvnBranchConfiguration>
-              <option name="branchUrls">
-                <list>
-                  <option value="svn+ssh://10.0.0.3/opt/repos/libpjajava/branches" />
-                  <option value="svn+ssh://10.0.0.3/opt/repos/libpjajava/tags" />
-                </list>
-              </option>
-              <option name="trunkUrl" value="svn+ssh://10.0.0.3/opt/repos/libpjajava/trunk" />
             </SvnBranchConfiguration>
           </value>
         </entry>
@@ -460,8 +432,8 @@
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="svn" />
-    <mapping directory="$PROJECT_DIR$/../../ejml/trunk" vcs="svn" />
-    <mapping directory="$PROJECT_DIR$/../../java/libpjajava" vcs="svn" />
+    <mapping directory="$USER_HOME$/ejml/trunk" vcs="svn" />
+    <mapping directory="$USER_HOME$/java/libpjajava" vcs="svn" />
   </component>
   <component name="VssConfiguration">
     <option name="CLIENT_PATH" value="" />

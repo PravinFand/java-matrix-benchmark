@@ -456,10 +456,6 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     }
 
     @Override
-    public void configure() {
-    }
-
-    @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         return new La4jBenchmarkMatrix(new DenseFactory().createMatrix(numRows, numCols));
     }

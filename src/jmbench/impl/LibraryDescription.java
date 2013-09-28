@@ -30,6 +30,8 @@ import jmbench.interfaces.RuntimePerformanceFactory;
 public class LibraryDescription {
     /** Information on the library's name and location */
     public LibraryLocation location;
+    /** Specifies how to configure the library at runtime */
+    public Class<LibraryConfigure> configure;
     /** Creates functions for runtime benchmark */
     public Class<RuntimePerformanceFactory> factoryRuntime;
     /** Creates functions for the memory benchmark */
@@ -37,14 +39,5 @@ public class LibraryDescription {
     /** Used to extract the libraries version */
     public Class<LibraryVersion> version;
 
-    public MemoryFactory loadFactoryMemory() {
-        try {
-            return factoryMemory.newInstance();
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
 }

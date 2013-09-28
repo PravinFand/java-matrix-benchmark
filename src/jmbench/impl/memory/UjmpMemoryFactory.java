@@ -26,28 +26,12 @@ import jmbench.interfaces.MemoryProcessorInterface;
 import org.ujmp.core.Matrix;
 import org.ujmp.core.MatrixFactory;
 import org.ujmp.core.doublematrix.DenseDoubleMatrix2D;
-import org.ujmp.core.util.UJMPSettings;
 
 
 /**
  * @author Peter Abeles
  */
 public class UjmpMemoryFactory implements MemoryFactory {
-
-
-    boolean useNative = true;
-
-    public UjmpMemoryFactory() {
-    }
-
-    public UjmpMemoryFactory( boolean useNative ) {
-        this.useNative = useNative;
-    }
-
-    @Override
-    public void configure() {
-        UJMPSettings.setUseJBlas(useNative);
-    }
 
     @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
@@ -202,13 +186,5 @@ public class UjmpMemoryFactory implements MemoryFactory {
             if( T == null )
                 throw new RuntimeException("There is a null");
         }
-    }
-
-    public boolean isUseNative() {
-        return useNative;
-    }
-
-    public void setUseNative(boolean useNative) {
-        this.useNative = useNative;
     }
 }

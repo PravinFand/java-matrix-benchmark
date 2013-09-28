@@ -42,10 +42,6 @@ import org.ejml.ops.SpecializedOps;
 public class PColtAlgorithmFactory implements RuntimePerformanceFactory {
 
     @Override
-    public void configure() {
-    }
-
-    @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         return wrap(new DenseDoubleMatrix2D(numRows,numCols));
     }

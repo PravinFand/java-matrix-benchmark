@@ -37,10 +37,6 @@ import org.ejml.ops.CommonOps;
 public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
 
     @Override
-    public void configure() {
-    }
-
-    @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         return wrap(new DenseMatrix(numRows,numCols));
     }

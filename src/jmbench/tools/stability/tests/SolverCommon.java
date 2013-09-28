@@ -19,6 +19,7 @@
 
 package jmbench.tools.stability.tests;
 
+import jmbench.impl.LibraryConfigure;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.stability.StabilityTestBase;
 import org.ejml.data.DenseMatrix64F;
@@ -39,13 +40,14 @@ public abstract class SolverCommon extends StabilityTestBase {
     protected transient DenseMatrix64F A,b;
 
     public SolverCommon(long randomSeed,
+                        Class<LibraryConfigure> classConfigure ,
                         Class<RuntimePerformanceFactory> classFactory ,
                         String nameOperation,
                         int totalTrials,
                         double breakingPoint ,
                         int minLength, int maxLength,
                         boolean linearSolver) {
-        super(randomSeed, classFactory , nameOperation, totalTrials, breakingPoint);
+        super(randomSeed, classConfigure, classFactory , nameOperation, totalTrials, breakingPoint);
         this.minLength = minLength;
         this.maxLength = maxLength;
         isLinearSolver = linearSolver;

@@ -37,11 +37,6 @@ import org.ejml.ops.CovarianceOps;
 public class EjmlMemoryFactory implements MemoryFactory {
 
     @Override
-    public void configure() {
-        
-    }
-
-    @Override
     public BenchmarkMatrix wrap(Object matrix) {
         return new EjmlBenchmarkMatrix((DenseMatrix64F)matrix);
     }

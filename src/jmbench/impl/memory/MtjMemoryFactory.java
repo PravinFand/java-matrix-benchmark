@@ -32,11 +32,6 @@ import no.uib.cipr.matrix.*;
 public class MtjMemoryFactory implements MemoryFactory {
 
     @Override
-    public void configure() {
-        
-    }
-
-    @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         return wrap(new DenseMatrix(numRows,numCols));
     }

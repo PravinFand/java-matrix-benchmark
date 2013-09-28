@@ -19,6 +19,7 @@
 
 package jmbench.tools.runtime;
 
+import jmbench.impl.LibraryConfigure;
 import jmbench.interfaces.RuntimePerformanceFactory;
 
 import java.io.Serializable;
@@ -33,6 +34,8 @@ public class RuntimeEvaluationCase implements Serializable {
     // the different matrix sizes that can be evaluated
     private int dimens[];
     // configures the library's runtime environment
+    private Class<LibraryConfigure> classConfigure;
+    // used to create perform tests
     private Class<RuntimePerformanceFactory> classFactory;
     // list of algorithms it it can run
     private String nameAlgorithm;
@@ -42,11 +45,13 @@ public class RuntimeEvaluationCase implements Serializable {
     private volatile RuntimeEvaluationTest theTest = new RuntimeEvaluationTest();
 
     public RuntimeEvaluationCase( String opName , String nameAlgorithm , int dimens[] ,
+                                  Class<LibraryConfigure> classConfigure ,
                                   Class<RuntimePerformanceFactory> classFactory ,
                                   InputOutputGenerator generator )
     {
         this.opName = opName;
         this.dimens = dimens.clone();
+        this.classConfigure = classConfigure;
         this.classFactory = classFactory;
         this.nameAlgorithm = nameAlgorithm;
         this.generator = generator;
@@ -60,6 +65,7 @@ public class RuntimeEvaluationCase implements Serializable {
         theTest.setNumTrials(numTrials);
         theTest.setDimen(dimens[dimenIndex]);
         theTest.setNameAlgorithm(nameAlgorithm);
+        theTest.setClassConfigure(classConfigure);
         theTest.setClassFactory(classFactory);
         theTest.setGenerator(generator);
         theTest.setGoalRuntime(duration);
@@ -107,5 +113,13 @@ public class RuntimeEvaluationCase implements Serializable {
 
     public void setGenerator(InputOutputGenerator generator) {
         this.generator = generator;
+    }
+
+    public Class<LibraryConfigure> getClassConfigure() {
+        return classConfigure;
+    }
+
+    public void setClassConfigure(Class<LibraryConfigure> classConfigure) {
+        this.classConfigure = classConfigure;
     }
 }

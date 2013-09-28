@@ -178,11 +178,6 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
     }
 
     @Override
-    public void configure() {
-
-    }
-
-    @Override
     public BenchmarkMatrix create(final int numRows, final int numCols) {
         return this.wrap(PrimitiveDenseStore.FACTORY.makeZero(numRows, numCols));
     }

@@ -39,11 +39,6 @@ import jmbench.interfaces.MemoryProcessorInterface;
 public class PColtMemoryFactory implements MemoryFactory {
 
     @Override
-    public void configure() {
-        
-    }
-
-    @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         return wrap(new DenseDoubleMatrix2D(numRows,numCols));
     }

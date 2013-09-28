@@ -32,11 +32,6 @@ import jmbench.interfaces.MemoryProcessorInterface;
  * @author Peter Abeles
  */
 public class JamaMemoryFactory implements MemoryFactory {
-    
-    @Override
-    public void configure() {
-        
-    }
 
     @Override
     public BenchmarkMatrix create(int numRows, int numCols) {

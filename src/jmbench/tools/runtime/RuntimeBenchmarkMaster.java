@@ -78,8 +78,8 @@ public class RuntimeBenchmarkMaster {
             String libOutputDir = directorySave+"/"+desc.location.getSaveDirName();
 
             // save the description so that where this came from can be easily extracted
-//            String outputFile = libOutputDir+".xml";
-//            UtilXmlSerialization.serializeXml(desc,outputFile);
+            String outputFile = libOutputDir+".xml";
+            UtilXmlSerialization.serializeXml(desc,outputFile);
 
             RuntimeBenchmarkLibrary benchmark = new RuntimeBenchmarkLibrary(libOutputDir,desc,config);
 

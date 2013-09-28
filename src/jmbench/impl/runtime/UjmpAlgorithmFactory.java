@@ -28,7 +28,6 @@ import org.ejml.data.DenseMatrix64F;
 import org.ujmp.core.Matrix;
 import org.ujmp.core.MatrixFactory;
 import org.ujmp.core.doublematrix.DenseDoubleMatrix2D;
-import org.ujmp.core.util.UJMPSettings;
 
 /**
  *
@@ -36,20 +35,6 @@ import org.ujmp.core.util.UJMPSettings;
  * @author Holger Arndt
  */
 public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
-
-    boolean useNative = true;
-
-    public UjmpAlgorithmFactory() {
-    }
-
-    public UjmpAlgorithmFactory( boolean useNative ) {
-        this.useNative = useNative;
-    }
-
-    @Override
-    public void configure() {
-        UJMPSettings.setUseJBlas(useNative);
-    }
 
     @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
@@ -479,12 +464,4 @@ public class UjmpAlgorithmFactory implements RuntimePerformanceFactory {
 
 		return ret;
 	}
-
-    public boolean isUseNative() {
-        return useNative;
-    }
-
-    public void setUseNative(boolean useNative) {
-        this.useNative = useNative;
-    }
 }

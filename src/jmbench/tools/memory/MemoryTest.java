@@ -19,6 +19,7 @@
 
 package jmbench.tools.memory;
 
+import jmbench.impl.LibraryConfigure;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
 import jmbench.interfaces.MemoryProcessorInterface;
@@ -39,6 +40,7 @@ import java.util.Random;
 public class MemoryTest extends EvaluationTest {
 
     Class<MemoryFactory> classFactory;
+    Class<LibraryConfigure> classConfigure;
     InputOutputGenerator gen;
     String nameOperation;
     int N;
@@ -46,8 +48,9 @@ public class MemoryTest extends EvaluationTest {
 
     volatile MemoryFactory factory;
 
-    public void setup( Class<MemoryFactory> classFactory , InputOutputGenerator gen ,
+    public void setup( Class<LibraryConfigure> classConfigure, Class<MemoryFactory> classFactory , InputOutputGenerator gen ,
                        String nameOperation , int N , int size ) {
+        this.classConfigure = classConfigure;
         this.classFactory = classFactory;
         this.gen = gen;
         this.nameOperation = nameOperation;
@@ -57,8 +60,10 @@ public class MemoryTest extends EvaluationTest {
 
     @Override
     public void init() {
+        LibraryConfigure configure;
         if( classFactory != null ) {
             try {
+                configure = classConfigure.newInstance();
                 factory = classFactory.newInstance();
             } catch (InstantiationException e) {
                 throw new RuntimeException(e);
@@ -66,7 +71,7 @@ public class MemoryTest extends EvaluationTest {
                 throw new RuntimeException(e);
             }
 
-            factory.configure();
+            configure.runtimeConfigure();
         }
     }
 

@@ -40,10 +40,6 @@ import org.ejml.ops.SpecializedOps;
 public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
 
     @Override
-    public void configure() {
-    }
-
-    @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         DenseDoubleMatrix2D mat = new DenseDoubleMatrix2D(numRows,numCols);
 

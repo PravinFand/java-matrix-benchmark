@@ -19,6 +19,7 @@
 
 package jmbench.tools.stability;
 
+import jmbench.impl.LibraryConfigure;
 import jmbench.interfaces.MatrixProcessorInterface;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.EvaluationTest;
@@ -36,6 +37,7 @@ import java.util.Random;
 public abstract class StabilityTestBase extends EvaluationTest {
 
     protected Class<RuntimePerformanceFactory> classFactory;
+    protected Class<LibraryConfigure> classConfigure;
     protected String nameOperation;
     protected int totalTrials;
 
@@ -49,11 +51,13 @@ public abstract class StabilityTestBase extends EvaluationTest {
     protected transient int numResults;
 
     protected StabilityTestBase(long randomSeed,
+                                Class<LibraryConfigure> classConfigure,
                                 Class<RuntimePerformanceFactory> classFactory,
                                 String nameOperation,
                                 int totalTrials,
                                 double breakingPoint ) {
         super(randomSeed);
+        this.classConfigure = classConfigure;
         this.classFactory = classFactory;
         this.nameOperation = nameOperation;
         this.totalTrials = totalTrials;
@@ -81,8 +85,10 @@ public abstract class StabilityTestBase extends EvaluationTest {
 
     @Override
     public void init() {
+        LibraryConfigure configure;
         try {
             factory = classFactory.newInstance();
+            configure = classConfigure.newInstance();
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
@@ -90,7 +96,7 @@ public abstract class StabilityTestBase extends EvaluationTest {
         }
 
         rand = new Random(randomSeed);
-        factory.configure();
+        configure.runtimeConfigure();
     }
 
     @Override

@@ -38,11 +38,6 @@ import jmbench.interfaces.MemoryProcessorInterface;
 public class ColtMemoryFactory implements MemoryFactory {
 
     @Override
-    public void configure() {
-
-    }
-
-    @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         DenseDoubleMatrix2D mat = new DenseDoubleMatrix2D(numRows,numCols);
 

@@ -19,6 +19,7 @@
 
 package jmbench.tools.runtime;
 
+import jmbench.impl.LibraryConfigure;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MatrixProcessorInterface;
 import jmbench.interfaces.RuntimePerformanceFactory;
@@ -64,6 +65,9 @@ public class RuntimeEvaluationTest extends EvaluationTest {
     // amount of time
     private volatile long estimatedTrials;
 
+    // used to configure the library at runtime
+    private Class<LibraryConfigure> classConfigure;
+
     /**
      * Creates a new evaluation test.
      *
@@ -76,6 +80,7 @@ public class RuntimeEvaluationTest extends EvaluationTest {
      */
     public RuntimeEvaluationTest( int numTrials,
                                   int dimen ,
+                                  Class<LibraryConfigure> classConfigure,
                                   Class<RuntimePerformanceFactory> classFactory,
                                   String nameAlgorithm ,
                                   InputOutputGenerator generator ,
@@ -85,6 +90,7 @@ public class RuntimeEvaluationTest extends EvaluationTest {
         super(randomSeed);
         this.numTrials = numTrials;
         this.dimen = dimen;
+        this.classConfigure = classConfigure;
         this.classFactory = classFactory;
         this.nameAlgorithm = nameAlgorithm;
         this.generator = generator;
@@ -105,8 +111,10 @@ public class RuntimeEvaluationTest extends EvaluationTest {
      */
     @Override
     public void init() {
+        LibraryConfigure configure;
         try {
             factory = classFactory.newInstance();
+            configure = classConfigure.newInstance();
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
@@ -117,7 +125,7 @@ public class RuntimeEvaluationTest extends EvaluationTest {
         masterRand = new Random(randomSeed);
         for( int i = 0; i < numTrials; i++ )
             masterRand.nextLong();
-        factory.configure();
+        configure.runtimeConfigure();
     }
 
     @Override
@@ -237,6 +245,14 @@ public class RuntimeEvaluationTest extends EvaluationTest {
 
     public void setClassFactory(Class<RuntimePerformanceFactory> classFactory) {
         this.classFactory = classFactory;
+    }
+
+    public Class<LibraryConfigure> getClassConfigure() {
+        return classConfigure;
+    }
+
+    public void setClassConfigure(Class<LibraryConfigure> classConfigure) {
+        this.classConfigure = classConfigure;
     }
 
     public String getNameAlgorithm() {

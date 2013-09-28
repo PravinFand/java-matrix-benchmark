@@ -19,6 +19,7 @@
 
 package jmbench.tools.stability.tests;
 
+import jmbench.impl.LibraryConfigure;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.DetectedException;
 import jmbench.interfaces.MatrixProcessorInterface;
@@ -47,6 +48,7 @@ public class SolverOverflow extends SolverCommon
     private volatile double scaling;
 
     public SolverOverflow(long randomSeed,
+                          Class<LibraryConfigure> classConfigure ,
                           Class<RuntimePerformanceFactory> classFactory ,
                           String nameOperation,
                           int totalTrials,
@@ -55,7 +57,7 @@ public class SolverOverflow extends SolverCommon
                           boolean linearSolver ,
                           boolean overflow )
     {
-        super(randomSeed, classFactory, nameOperation, totalTrials, breakingPoint , minLength, maxLength, linearSolver);
+        super(randomSeed, classConfigure, classFactory, nameOperation, totalTrials, breakingPoint , minLength, maxLength, linearSolver);
 
         this.overflow = overflow;
     }

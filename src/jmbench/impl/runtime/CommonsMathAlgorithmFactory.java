@@ -36,10 +36,6 @@ import org.ejml.data.DenseMatrix64F;
 public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
 
     @Override
-    public void configure() {
-    }
-
-    @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         return wrap(MatrixUtils.createRealMatrix(numRows,numCols));
     }

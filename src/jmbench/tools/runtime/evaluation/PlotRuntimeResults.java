@@ -19,9 +19,11 @@
 
 package jmbench.tools.runtime.evaluation;
 
+import jmbench.impl.LibraryDescription;
 import jmbench.impl.LibraryLocation;
 import jmbench.tools.runtime.RuntimeEvaluationMetrics;
 import jmbench.tools.runtime.RuntimeResults;
+import jmbench.tools.stability.UtilXmlSerialization;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -81,6 +83,9 @@ public class PlotRuntimeResults {
             File level0 = new File(directory.getPath()+"/"+nameLevel0);
 
             if( level0.isDirectory() ) {
+                if( level0.getName().compareTo("plots") == 0 )
+                    continue;
+
                 // see if it should include this library in the results or not
                 if( !checkIncludeLibrary(level0.getAbsolutePath()))
                     continue;
@@ -208,19 +213,14 @@ public class PlotRuntimeResults {
      * @return true if it should be included
      */
     private boolean checkIncludeLibrary(String pathDir) {
-        System.out.println("HACK HACK");
-        return true;
+        LibraryDescription target = UtilXmlSerialization.deserializeXml(pathDir + ".xml");
 
-//        EvaluationTarget target = UtilXmlSerialization.deserializeXml(pathDir+".xml");
-//
-//        if( target == null ) {
-//            // no library info associated with this directory so its probably not a results directory
-//            return false;
-//        }
-//
-//        LibraryLocation lib = LibraryLocation.lookup(target.getLibName());
-//
-//        return !(lib.isNativeCode() && !plotNativeLibraries);
+        if( target == null ) {
+            // no library info associated with this directory so its probably not a results directory
+            return false;
+        }
+
+        return !(target.location.isNativeCode() && !plotNativeLibraries);
     }
 
     /**

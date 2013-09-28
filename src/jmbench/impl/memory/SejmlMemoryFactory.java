@@ -32,11 +32,6 @@ import org.ejml.simple.SimpleMatrix;
 public class SejmlMemoryFactory implements MemoryFactory {
 
     @Override
-    public void configure() {
-        
-    }
-
-    @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
         return wrap( new SimpleMatrix(numRows,numCols));
     }

@@ -20,6 +20,7 @@
 package jmbench.tools.runtime;
 
 import jmbench.impl.FactoryLibraryDescriptions;
+import jmbench.impl.LibraryConfigure;
 import jmbench.impl.LibraryDescription;
 import jmbench.impl.LibraryLocation;
 import jmbench.interfaces.RuntimePerformanceFactory;
@@ -92,7 +93,8 @@ public class RuntimeBenchmarkLibrary {
     // is it too slow to continue testing
     private boolean tooSlow;
 
-    private Class<RuntimePerformanceFactory> library;
+    private Class<LibraryConfigure> classConfigure;
+    private Class<RuntimePerformanceFactory> classFactory;
 
     private BenchmarkTools tools;
 
@@ -107,7 +109,7 @@ public class RuntimeBenchmarkLibrary {
     private static final boolean SPAWN_SLAVE = true;
 
     public RuntimeBenchmarkLibrary( String outputDir , LibraryDescription desc ,
-                             RuntimeBenchmarkConfig config )
+                                    RuntimeBenchmarkConfig config )
     {
         this.config = config;
 
@@ -121,8 +123,9 @@ public class RuntimeBenchmarkLibrary {
             }
         } else if( !d.isDirectory())
             throw new IllegalArgumentException("The output directory already exists and is not a directory");
-        
-        this.library = desc.factoryRuntime;
+
+        this.classConfigure = desc.configure;
+        this.classFactory = desc.factoryRuntime;
 
         // create the random seeds for each block
         this.rand = new Random(config.seed);
@@ -149,7 +152,8 @@ public class RuntimeBenchmarkLibrary {
     public void performBenchmark() throws FileNotFoundException {
         setupLog();
 
-        List<RuntimeEvaluationCase> cases = new FactoryRuntimeEvaluationCase(library,config).createCases();
+        List<RuntimeEvaluationCase> cases =
+                new FactoryRuntimeEvaluationCase(classConfigure,classFactory,config).createCases();
 
         List<CaseState> states = createCaseList(cases);
 
