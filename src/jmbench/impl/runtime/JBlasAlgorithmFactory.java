@@ -25,10 +25,7 @@ import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
 import org.ejml.data.DenseMatrix64F;
-import org.jblas.Decompose;
-import org.jblas.DoubleMatrix;
-import org.jblas.Eigen;
-import org.jblas.Solve;
+import org.jblas.*;
 
 
 /**
@@ -103,7 +100,33 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
 
     @Override
     public AlgorithmInterface svd() {
-        return null;
+        return new MySvd();
+    }
+
+    public static class MySvd implements AlgorithmInterface {
+        @Override
+        public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            DoubleMatrix matA = inputs[0].getOriginal();
+
+            DoubleMatrix U = null;
+            DoubleMatrix S = null;
+            DoubleMatrix Vt = null;
+
+            long prev = System.nanoTime();
+
+            for( long i = 0; i < numTrials; i++ ) {
+                DoubleMatrix[] evd = Singular.fullSVD(matA);
+                U = evd[0];
+                S = evd[1];
+                Vt = evd[2];
+            }
+
+            long elapsed = System.nanoTime()-prev;
+            outputs[0] = new JBlasBenchmarkMatrix(U);
+            outputs[1] = new JBlasBenchmarkMatrix(S);
+            outputs[1] = new JBlasBenchmarkMatrix(Vt.transpose());
+            return elapsed;
+        }
     }
 
 

@@ -179,7 +179,12 @@ public class RuntimeBenchmarkMaster {
             } else if( flag.compareTo("Library") == 0 ) {
                 if( splits.length != 2 ) {failed = true; break;}
                 LibraryDescription match = FactoryLibraryDescriptions.find(splits[1]);
-                if( match == null ) { failed = true; System.out.println("Can't find library"); break;}
+                if( match == null ) {
+                    failed = true;
+                    System.out.println("Can't find library.  See list below:");
+                    FactoryLibraryDescriptions.printAllNames();
+                    break;
+                }
                 config.targets.clear();
                 config.targets.add(match);
             } else if( flag.compareTo("Seed") == 0 ) {
@@ -215,6 +220,7 @@ public class RuntimeBenchmarkMaster {
                 System.out.println("Sanity check output = "+config.sanityCheck);
             } else {
                 System.out.println("Unknown flag: "+flag);
+                printHelp();
                 failed = true;
                 break;
             }
@@ -224,7 +230,7 @@ public class RuntimeBenchmarkMaster {
         System.out.println();
 
         if( failed ) {
-            printHelp();
+            System.out.println("Unable to parse command.  Try --Help");
         } else {
             if( !configFileSpecified && !memorySpecified ) {
                 System.out.println("The amount of memory must be specified using \"--Memory=<MB>\"!");

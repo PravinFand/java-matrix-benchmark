@@ -157,7 +157,7 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             int n = matA.numColumns();
 
             outputs[0] = new MtjBenchmarkMatrix(U);
-            outputs[1] = new EjmlBenchmarkMatrix(CommonOps.diagR(m,n,svd.getS()));
+            outputs[1] = new EjmlBenchmarkMatrix(CommonOps.diagR(m,n,S));
             outputs[2] = new MtjBenchmarkMatrix(Vt.transpose());
             return elapsedTime;
         }

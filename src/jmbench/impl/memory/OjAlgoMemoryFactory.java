@@ -23,10 +23,9 @@ import jmbench.impl.wrapper.OjAlgoBenchmarkMatrix;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
 import jmbench.interfaces.MemoryProcessorInterface;
-import org.ojalgo.function.implementation.PrimitiveFunction;
+import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.matrix.decomposition.*;
 import org.ojalgo.matrix.store.MatrixStore;
-import org.ojalgo.matrix.store.PhysicalStore;
 import org.ojalgo.matrix.store.PrimitiveDenseStore;
 import org.ojalgo.matrix.store.TransposedStore;
 
@@ -40,9 +39,9 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
 
         @Override
         public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
-            final PhysicalStore A = inputs[0].getOriginal();
-            final PhysicalStore B = inputs[1].getOriginal();
-            final PhysicalStore C = PrimitiveDenseStore.FACTORY.makeZero(A.getRowDim(), A.getColDim());
+            final MatrixStore<Double> A = inputs[0].getOriginal();
+            final MatrixStore<Double> B = inputs[1].getOriginal();
+            final PrimitiveDenseStore C = PrimitiveDenseStore.FACTORY.makeZero(A.countRows(), A.countColumns());
 
             for (int i = 0; i < numTrials; i++) {
                 C.fillMatching(A, PrimitiveFunction.ADD, B);
@@ -54,7 +53,7 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
 
         @Override
         public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
-            final PhysicalStore A = inputs[0].getOriginal();
+            final MatrixStore<Double> A = inputs[0].getOriginal();
 
             final Eigenvalue<Double> eig = EigenvalueDecomposition.make(A);
 
@@ -76,9 +75,9 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
 
         @Override
         public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
-            final PhysicalStore A = inputs[0].getOriginal();
-            final PhysicalStore B = inputs[1].getOriginal();
-            final PhysicalStore C = PrimitiveDenseStore.FACTORY.makeZero(A.getRowDim(), B.getColDim());
+            final MatrixStore<Double> A = inputs[0].getOriginal();
+            final MatrixStore<Double> B = inputs[1].getOriginal();
+            final PrimitiveDenseStore C = PrimitiveDenseStore.FACTORY.makeZero(A.countRows(), B.countColumns());
 
             for (int i = 0; i < numTrials; i++) {
                 C.fillByMultiplying(A, B);
@@ -90,9 +89,9 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
 
         @Override
         public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
-            final PhysicalStore A = inputs[0].getOriginal();
-            final MatrixStore BT = new TransposedStore<Number>((MatrixStore<Number>) inputs[1].getOriginal());
-            final PhysicalStore C = PrimitiveDenseStore.FACTORY.makeZero(A.getRowDim(), BT.getColDim());
+            final MatrixStore<Double> A = inputs[0].getOriginal();
+            final MatrixStore<Double> BT = new TransposedStore<Double>((MatrixStore<Double>) inputs[1].getOriginal());
+            final PrimitiveDenseStore C = PrimitiveDenseStore.FACTORY.makeZero(A.countRows(), BT.countColumns());
 
             for (int i = 0; i < numTrials; i++) {
                 C.fillByMultiplying(A, BT);
@@ -104,15 +103,17 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
 
         @Override
         public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
-            final PhysicalStore A = inputs[0].getOriginal();
+            final MatrixStore<Double> A = inputs[0].getOriginal();
 
             final Cholesky<Double> chol = CholeskyDecomposition.make(A);
+
+            final DecompositionStore<Double> tmpPreallocated = chol.preallocate(A, A);
 
             for (int i = 0; i < numTrials; i++) {
                 if (!chol.compute(A)) {
                     throw new RuntimeException("Decomposition failed");
                 }
-                chol.getInverse();
+                chol.getInverse(tmpPreallocated);
             }
         }
     }
@@ -121,14 +122,16 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
 
         @Override
         public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
-            final PhysicalStore A = inputs[0].getOriginal();
-            final PhysicalStore y = inputs[1].getOriginal();
+            final MatrixStore<Double> A = inputs[0].getOriginal();
+            final MatrixStore<Double> y = inputs[1].getOriginal();
 
             final LU<Double> lu = LUDecomposition.make(A);
 
+            final DecompositionStore<Double> tmpPreallocated = lu.preallocate(A, y);
+
             for (int i = 0; i < numTrials; i++) {
                 lu.compute(A);
-                lu.solve(y);
+                lu.solve(y, tmpPreallocated);
             }
         }
     }
@@ -137,14 +140,16 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
 
         @Override
         public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
-            final PhysicalStore A = inputs[0].getOriginal();
-            final PhysicalStore y = inputs[1].getOriginal();
+            final MatrixStore<Double> A = inputs[0].getOriginal();
+            final MatrixStore<Double> y = inputs[1].getOriginal();
 
             final QR<Double> qr = QRDecomposition.make(A);
 
+            final DecompositionStore<Double> tmpPreallocated = qr.preallocate(A, y);
+
             for (int i = 0; i < numTrials; i++) {
                 qr.compute(A);
-                qr.solve(y);
+                qr.solve(y, tmpPreallocated);
             }
         }
     }
@@ -153,7 +158,7 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
 
         @Override
         public void process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
-            final PhysicalStore A = inputs[0].getOriginal();
+            final MatrixStore<Double> A = inputs[0].getOriginal();
 
             final SingularValue<Double> svd = SingularValueDecomposition.make(A);
 
@@ -219,6 +224,6 @@ public class OjAlgoMemoryFactory implements MemoryFactory {
 
     @Override
     public BenchmarkMatrix wrap(final Object matrix) {
-        return new OjAlgoBenchmarkMatrix((PrimitiveDenseStore) matrix);
+        return new OjAlgoBenchmarkMatrix((MatrixStore<?>) matrix);
     }
 }

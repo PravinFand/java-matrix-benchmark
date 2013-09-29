@@ -50,16 +50,16 @@ public class OjAlgoBenchmarkMatrix implements BenchmarkMatrix {
 
     @Override
     public int numCols() {
-        return mat.getColDim();
+        return (int) mat.countColumns();
     }
 
     @Override
     public int numRows() {
-        return mat.getRowDim();
+        return (int) mat.countRows();
     }
 
     @Override
     public void set(final int row, final int col, final double value) {
-        ((PhysicalStore<Double>) mat).set(row, col, value);
+        ((PhysicalStore<?>) mat).set(row, col, value);
     }
 }

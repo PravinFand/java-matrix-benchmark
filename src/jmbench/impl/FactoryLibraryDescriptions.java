@@ -63,6 +63,14 @@ public class FactoryLibraryDescriptions {
         return null;
     }
 
+    public static void printAllNames() {
+        List<LibraryDescription> list = createDefault();
+
+        for( LibraryDescription l : list ) {
+            System.out.println(l.location.getPlotName());
+        }
+    }
+
     public static LibraryDescription createColt() {
         LibraryDescription ret = new LibraryDescription();
 

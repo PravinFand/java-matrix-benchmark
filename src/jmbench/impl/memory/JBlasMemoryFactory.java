@@ -25,6 +25,7 @@ import jmbench.interfaces.MemoryFactory;
 import jmbench.interfaces.MemoryProcessorInterface;
 import org.jblas.DoubleMatrix;
 import org.jblas.Eigen;
+import org.jblas.Singular;
 import org.jblas.Solve;
 
 
@@ -136,7 +137,22 @@ public class JBlasMemoryFactory implements MemoryFactory {
 
     @Override
     public MemoryProcessorInterface svd() {
-        return null;
+        return new SVD();
+    }
+
+    public static class SVD implements MemoryProcessorInterface
+    {
+        @Override
+        public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+            DoubleMatrix A = inputs[0].getOriginal();
+
+            DoubleMatrix[] s = null;
+            for( int i = 0; i < numTrials; i++ ) {
+                s = Singular.fullSVD(A);
+            }
+            if( s == null )
+                throw new RuntimeException("there is a null");
+        }
     }
 
 
