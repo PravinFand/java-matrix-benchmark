@@ -20,6 +20,7 @@
 package jmbench.impl;
 
 import org.ejml.UtilEjml;
+import org.la4j.LinearAlgebra;
 import org.ojalgo.OjAlgoUtils;
 
 /**
@@ -152,12 +153,12 @@ public class AllLibraryVersion {
 
         @Override
         public String getVersionString() {
-            return "0.2.0";
+            return LinearAlgebra.VERSION;
         }
 
         @Override
         public String getReleaseDate() {
-            return "2011-11-01";
+            return LinearAlgebra.DATE;
         }
     }
 

@@ -117,7 +117,7 @@ public class RuntimeBenchmarkMaster {
         System.out.println("  --Config=<file>          |  Configure using the specified xml file.");
         System.out.println("  --Size=min:max           |  Test matrices from the specified minimum size to the specified maximum size.");
         System.out.println("  --Quick                  |  Generate results much faster by sacrificing accuracy/stability of the results.");
-        System.out.println("  --Library=<lib>          |  To run a specific library only");
+        System.out.println("  --Library=<lib>          |  To run a specific library only.  --Library=? will print a list");
         System.out.println("  --Seed=<number>          |  used to set the random seed to the specified value.");
         System.out.println("  --TrailTime=<ms>         |  The minimum amount of time spent in each trial.  Typical is 3000.");
         System.out.println("  --MaxTime=<ms>           |  Maximum number of milliseconds it can spend in a single test.  Typical is 300000.");

@@ -162,17 +162,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/la4j/la4j-0.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/la4j/la4j-0.2.0-src.zip!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/ujmp/ujmp-complete-0.2.5.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -210,6 +199,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/jama/Jama-1.0.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/la4j/la4j-0.4.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

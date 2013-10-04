@@ -19,28 +19,25 @@
 
 package jmbench.impl.runtime;
 
-import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.impl.wrapper.La4jBenchmarkMatrix;
 import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
-import jmbench.interfaces.DetectedException;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
-import la4j.decomposition.*;
-import la4j.err.LinearSystemException;
-import la4j.err.MatrixDecompositionException;
-import la4j.err.MatrixException;
-import la4j.err.MatrixInversionException;
-import la4j.factory.DenseFactory;
-import la4j.inversion.GaussianInvertor;
-import la4j.linear.LinearSystem;
-import la4j.matrix.Matrix;
-import la4j.vector.Vector;
 import org.ejml.data.DenseMatrix64F;
-import org.ejml.ops.CommonOps;
+import org.la4j.LinearAlgebra;
+import org.la4j.decomposition.MatrixDecompositor;
+import org.la4j.inversion.MatrixInverter;
+import org.la4j.linear.LinearSystemSolver;
+import org.la4j.matrix.Matrix;
+import org.la4j.matrix.dense.Basic2DMatrix;
+import org.la4j.vector.Vector;
 
 /**
  * Wrapper around la4j
+ *
+ * @author Peter Abels
+ * @author Vladimir Kostyukov
  */
 public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     @Override
@@ -51,23 +48,19 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     public static class Chol implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
+            Matrix a = inputs[0].getOriginal();
 
-            Matrix U = null;
+            Matrix L = null;
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    Matrix[] c = matA.decompose(new CholeskyDecompositor());
-                    U = c[0];
-                } catch (MatrixDecompositionException e) {
-                    throw new DetectedException(e);
-                }
+                MatrixDecompositor decompositor = a.withDecompositor(LinearAlgebra.CHOLESKY);
+                Matrix l[] = decompositor.decompose();
+                L = l[0];
             }
 
-            Matrix L = U.transpose();
-            long elapsed = System.nanoTime()-prev;
+            long elapsed = System.nanoTime() - prev;
             outputs[0] = new La4jBenchmarkMatrix(L);
             return elapsed;
         }
@@ -81,29 +74,26 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     public static class LU implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
+            Matrix a = inputs[0].getOriginal();
 
             Matrix L = null;
             Matrix U = null;
+            Matrix P = null;
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    Matrix[] d = matA.decompose(new LUDecompositor());
-                    L = d[0];
-                    U = d[1];
-
-                } catch (MatrixDecompositionException e) {
-                    throw new DetectedException(e);
-                }
+                MatrixDecompositor decompositor = a.withDecompositor(LinearAlgebra.LU);
+                Matrix[] lup = decompositor.decompose();
+                L = lup[0];
+                U = lup[1];
+                P = lup[2];
             }
 
-            long elapsed = System.nanoTime()-prev;
+            long elapsed = System.nanoTime() - prev;
             outputs[0] = new La4jBenchmarkMatrix(L);
             outputs[1] = new La4jBenchmarkMatrix(U);
-            // no pivot matrix provided
-            outputs[2] = new EjmlBenchmarkMatrix(CommonOps.identity(L.columns()));
+            outputs[2] = new La4jBenchmarkMatrix(P);
             return elapsed;
         }
     }
@@ -116,7 +106,7 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     public static class SVD implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
+            Matrix a = inputs[0].getOriginal();
 
             Matrix U = null;
             Matrix S = null;
@@ -125,17 +115,14 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    Matrix[] d = matA.decompose(new SingularValueDecompositor());
-                    U = d[0];
-                    S = d[1];
-                    V = d[2];
-                } catch (MatrixDecompositionException e) {
-                    throw new DetectedException(e);
-                }
+                MatrixDecompositor decompositor = a.withDecompositor(LinearAlgebra.SVD);
+                Matrix usv[] = decompositor.decompose();
+                U = usv[0];
+                S = usv[1];
+                V = usv[2];
             }
 
-            long elapsed = System.nanoTime()-prev;
+            long elapsed = System.nanoTime() - prev;
             outputs[0] = new La4jBenchmarkMatrix(U);
             outputs[1] = new La4jBenchmarkMatrix(S);
             outputs[2] = new La4jBenchmarkMatrix(V);
@@ -151,7 +138,7 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     public static class QR implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
+            Matrix a = inputs[0].getOriginal();
 
             Matrix Q = null;
             Matrix R = null;
@@ -159,16 +146,13 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    Matrix[] d = matA.decompose(new QRDecompositor());
-                    Q = d[0];
-                    R = d[1];
-                } catch (MatrixDecompositionException e) {
-                    throw new DetectedException(e);
-                }
+                MatrixDecompositor decompositor = a.withDecompositor(LinearAlgebra.QR);
+                Matrix qr[] = decompositor.decompose();
+                Q = qr[0];
+                R = qr[1];
             }
 
-            long elapsed = System.nanoTime()-prev;
+            long elapsed = System.nanoTime() - prev;
             outputs[0] = new La4jBenchmarkMatrix(Q);
             outputs[1] = new La4jBenchmarkMatrix(R);
             return elapsed;
@@ -183,7 +167,7 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     public static class Eig implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
+            Matrix a = inputs[0].getOriginal();
 
             Matrix D = null;
             Matrix V = null;
@@ -191,16 +175,13 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    Matrix[] d = matA.decompose(new EigenDecompositor());
-                    V = d[0];
-                    D = d[1];
-                } catch (MatrixDecompositionException e) {
-                    throw new DetectedException("bad decomposition");
-                }
+                MatrixDecompositor decompositor = a.withDecompositor(LinearAlgebra.EIGEN);
+                Matrix vd[] = decompositor.decompose();
+                V = vd[0];
+                D = vd[1];
             }
 
-            long elapsed = System.nanoTime()-prev;
+            long elapsed = System.nanoTime() - prev;
             outputs[0] = new La4jBenchmarkMatrix(D);
             outputs[1] = new La4jBenchmarkMatrix(V);
             return elapsed;
@@ -215,69 +196,44 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     public static class Det implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
+            Matrix a = inputs[0].getOriginal();
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                matA.determinant();
+                a.determinant();
             }
 
-            return System.nanoTime()-prev;
+            return System.nanoTime() - prev;
         }
     }
     @Override
     public AlgorithmInterface invert() {
-        return new Inv();
-    }
-
-    public static class Inv implements AlgorithmInterface {
-        @Override
-        public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
-
-            Matrix result = null;
-
-            long prev = System.nanoTime();
-
-            for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    result = matA.inverse(new GaussianInvertor());
-                } catch (MatrixInversionException e) {
-                    throw new DetectedException(e);
-                }
-            }
-
-            long elapsed = System.nanoTime()-prev;
-            outputs[0] = new La4jBenchmarkMatrix(result);
-            return elapsed;
-        }
+        return new SmartInverse();
     }
 
     @Override
     public AlgorithmInterface invertSymmPosDef() {
-        return new InvSymmPosDef();
+        return new SmartInverse();
     }
 
-    public static class InvSymmPosDef implements AlgorithmInterface {
+
+    public static class SmartInverse implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
+            Matrix a = inputs[0].getOriginal();
 
-            Matrix result = null;
+            Matrix A = null;
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    result = matA.inverse(new GaussianInvertor());
-                } catch (MatrixInversionException e) {
-                    throw new DetectedException(e);
-                }
+                MatrixInverter inverter = a.withInverter(LinearAlgebra.INVERTER);
+                A = inverter.inverse();
             }
 
-            long elapsed = System.nanoTime()-prev;
-            outputs[0] = new La4jBenchmarkMatrix(result);
+            long elapsed = System.nanoTime() - prev;
+            outputs[0] = new La4jBenchmarkMatrix(A);
             return elapsed;
         }
     }
@@ -290,23 +246,19 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     public static class Add implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
-            Matrix matB = inputs[1].getOriginal();
+            Matrix a = inputs[0].getOriginal();
+            Matrix b = inputs[1].getOriginal();
 
-            Matrix result = null;
+            Matrix C = null;
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    result = matA.add(matB);
-                } catch (MatrixException e) {
-                    throw new RuntimeException(e);
-                }
+                C = a.add(b);
             }
 
-            long elapsed = System.nanoTime()-prev;
-            outputs[0] = new La4jBenchmarkMatrix(result);
+            long elapsed = System.nanoTime() - prev;
+            outputs[0] = new La4jBenchmarkMatrix(C);
             return elapsed;
         }
     }
@@ -319,23 +271,19 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     public static class Mult implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
-            Matrix matB = inputs[1].getOriginal();
+            Matrix a = inputs[0].getOriginal();
+            Matrix b = inputs[1].getOriginal();
 
             long prev = System.nanoTime();
 
-            Matrix result = null;
+            Matrix C = null;
 
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    result = matA.multiply(matB);
-                } catch (MatrixException e) {
-                    throw new DetectedException(e);
-                }
+                C = a.multiply(b);
             }
 
-            long elapsed = System.nanoTime()-prev;
-            outputs[0] = new La4jBenchmarkMatrix(result);
+            long elapsed = System.nanoTime() - prev;
+            outputs[0] = new La4jBenchmarkMatrix(C);
             return elapsed;
         }
     }
@@ -348,23 +296,19 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     public static class MulTranB implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
-            Matrix matB = inputs[1].getOriginal();
+            Matrix a = inputs[0].getOriginal();
+            Matrix b = inputs[1].getOriginal();
 
-            Matrix result = null;
+            Matrix C = null;
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    result = matA.multiply(matB.transpose());
-                } catch (MatrixException e) {
-                    throw new DetectedException(e);
-                }
+                C = a.multiply(b.transpose());
             }
 
-            long elapsed = System.nanoTime()-prev;
-            outputs[0] = new La4jBenchmarkMatrix(result);
+            long elapsed = System.nanoTime() - prev;
+            outputs[0] = new La4jBenchmarkMatrix(C);
             return elapsed;
         }
     }
@@ -377,56 +321,49 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     public static class Scale implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
+            Matrix a = inputs[0].getOriginal();
 
-            Matrix result = null;
+            Matrix B = null;
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                result = matA.multiply(ScaleGenerator.SCALE);
+                B = a.multiply(ScaleGenerator.SCALE);
             }
 
-            long elapsed = System.nanoTime()-prev;
-            outputs[0] = new La4jBenchmarkMatrix(result);
+            long elapsed = System.nanoTime() - prev;
+            outputs[0] = new La4jBenchmarkMatrix(B);
             return elapsed;
         }
     }
 
     @Override
     public AlgorithmInterface solveExact() {
-        return new Solve();
+        return new SmartSolve();
     }
 
     @Override
     public AlgorithmInterface solveOver() {
-        return null;//new Solve();
+        return new SmartSolve();
     }
 
-    public static class Solve implements AlgorithmInterface {
+    public static class SmartSolve implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
-            Matrix matB = inputs[1].getOriginal();
+            Matrix a = inputs[0].getOriginal();
+            Vector b = La4jBenchmarkMatrix.toVector((Matrix) inputs[1].getOriginal());
 
-            Vector vecB = La4jBenchmarkMatrix.toVector(matB);
-            
-            Vector result = null;
+            Vector X = null;
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                LinearSystem system = new LinearSystem(matA, vecB);
-
-                try {
-                    result = system.solve();
-                } catch (LinearSystemException e) {
-                    throw new DetectedException(e);
-                }
+                LinearSystemSolver solver = a.withSolver(LinearAlgebra.SOLVER);
+                X = solver.solve(b);
             }
 
-            long elapsed = System.nanoTime()-prev;
-            outputs[0] = new La4jBenchmarkMatrix(La4jBenchmarkMatrix.toMatrix(result));
+            long elapsed = System.nanoTime() - prev;
+            outputs[0] = new La4jBenchmarkMatrix(La4jBenchmarkMatrix.toMatrix(X));
             return elapsed;
         }
     }
@@ -439,25 +376,25 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     public static class Transpose implements AlgorithmInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
+            Matrix a = inputs[0].getOriginal();
 
-            Matrix result = null;
+            Matrix B = null;
 
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                result = matA.transpose();
+                B = a.transpose();
             }
 
-            long elapsed = System.nanoTime()-prev;
-            outputs[0] = new La4jBenchmarkMatrix(result);
+            long elapsed = System.nanoTime()- prev;
+            outputs[0] = new La4jBenchmarkMatrix(B);
             return elapsed;
         }
     }
 
     @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
-        return new La4jBenchmarkMatrix(new DenseFactory().createMatrix(numRows, numCols));
+        return new La4jBenchmarkMatrix(new Basic2DMatrix(numRows, numCols));
     }
 
     @Override
@@ -477,14 +414,14 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     }
     
     public static Matrix ejmlToLa4j( DenseMatrix64F orig ) {
-        Matrix m = new DenseFactory().createMatrix(orig.numRows,orig.numCols);
-        
+        Matrix m = new Basic2DMatrix(orig.numRows, orig.numCols);
+
         for( int i = 0; i < orig.numRows; i++ ) {
             for( int j = 0; j < orig.numCols; j++ ) {
-                m.set(i,j,orig.get(i,j));
+                m.set(i,j, orig.get(i,j));
             }
         }
-        
+
         return m;
     }
 
@@ -493,7 +430,7 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
 
         for( int i = 0; i < m.numRows; i++ ) {
             for( int j = 0; j < m.numCols; j++ ) {
-                m.set(i,j,orig.get(i,j));
+                m.set(i,j, orig.get(i,j));
             }
         }
 

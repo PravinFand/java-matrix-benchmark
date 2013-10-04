@@ -21,23 +21,19 @@ package jmbench.impl.memory;
 
 import jmbench.impl.wrapper.La4jBenchmarkMatrix;
 import jmbench.interfaces.BenchmarkMatrix;
-import jmbench.interfaces.DetectedException;
 import jmbench.interfaces.MemoryFactory;
 import jmbench.interfaces.MemoryProcessorInterface;
-import la4j.decomposition.EigenDecompositor;
-import la4j.decomposition.SingularValueDecompositor;
-import la4j.err.LinearSystemException;
-import la4j.err.MatrixDecompositionException;
-import la4j.err.MatrixException;
-import la4j.err.MatrixInversionException;
-import la4j.factory.DenseFactory;
-import la4j.inversion.GaussianInvertor;
-import la4j.linear.LinearSystem;
-import la4j.matrix.Matrix;
-import la4j.vector.Vector;
+import org.la4j.LinearAlgebra;
+import org.la4j.decomposition.MatrixDecompositor;
+import org.la4j.inversion.MatrixInverter;
+import org.la4j.linear.LinearSystemSolver;
+import org.la4j.matrix.Matrix;
+import org.la4j.matrix.dense.Basic2DMatrix;
+import org.la4j.vector.Vector;
 
 /**
  * @author Peter Abeles
+ * @author Vladimir Kostyukov
  */
 public class La4jMemoryFactory implements MemoryFactory {
 
@@ -49,18 +45,11 @@ public class La4jMemoryFactory implements MemoryFactory {
     public static class SVD implements MemoryProcessorInterface {
         @Override
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
-
-            Matrix U = null;
-            Matrix S = null;
-            Matrix V = null;
+            Matrix a = inputs[0].getOriginal();
 
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    matA.decompose(new SingularValueDecompositor());
-                } catch (MatrixDecompositionException e) {
-                    throw new DetectedException(e);
-                }
+                MatrixDecompositor decompositor = a.withDecompositor(LinearAlgebra.SVD);
+                decompositor.decompose();
             }
         }
     }
@@ -73,14 +62,11 @@ public class La4jMemoryFactory implements MemoryFactory {
     public static class Eig implements MemoryProcessorInterface {
         @Override
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
+            Matrix a = inputs[0].getOriginal();
 
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    matA.decompose(new EigenDecompositor());
-                } catch (MatrixDecompositionException e) {
-                    throw new DetectedException("bad decomposition");
-                }
+                MatrixDecompositor decompositor = a.withDecompositor(LinearAlgebra.EIGEN);
+                decompositor.decompose();
             }
         }
     }
@@ -93,13 +79,11 @@ public class La4jMemoryFactory implements MemoryFactory {
     public static class InvSymmPosDef implements MemoryProcessorInterface {
         @Override
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
+            Matrix a = inputs[0].getOriginal();
+
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    matA.inverse(new GaussianInvertor());
-                } catch (MatrixInversionException e) {
-                    throw new DetectedException(e);
-                }
+                MatrixInverter inverter = a.withInverter(LinearAlgebra.INVERTER);
+                inverter.inverse();
             }
         }
     }
@@ -112,15 +96,11 @@ public class La4jMemoryFactory implements MemoryFactory {
     public static class Add implements MemoryProcessorInterface {
         @Override
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
-            Matrix matB = inputs[1].getOriginal();
+            Matrix a = inputs[0].getOriginal();
+            Matrix b = inputs[1].getOriginal();
 
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    matA.add(matB);
-                } catch (MatrixException e) {
-                    throw new RuntimeException(e);
-                }
+                a.add(b);
             }
         }
     }
@@ -133,15 +113,11 @@ public class La4jMemoryFactory implements MemoryFactory {
     public static class Mult implements MemoryProcessorInterface {
         @Override
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
-            Matrix matB = inputs[1].getOriginal();
+            Matrix a = inputs[0].getOriginal();
+            Matrix b = inputs[1].getOriginal();
 
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    matA.multiply(matB);
-                } catch (MatrixException e) {
-                    throw new DetectedException(e);
-                }
+                a.multiply(b);
             }
         }
     }
@@ -154,55 +130,45 @@ public class La4jMemoryFactory implements MemoryFactory {
     public static class MulTranB implements MemoryProcessorInterface {
         @Override
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
-            Matrix matB = inputs[1].getOriginal();
+            Matrix a = inputs[0].getOriginal();
+            Matrix b = inputs[1].getOriginal();
 
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    matA.multiply(matB.transpose());
-                } catch (MatrixException e) {
-                    throw new DetectedException(e);
-                }
+                a.multiply(b.transpose());
             }
         }
     }
 
     @Override
     public MemoryProcessorInterface solveEq() {
-        return new Solve();
+        return new SmartSolve();
     }
 
     @Override
     public MemoryProcessorInterface solveLS() {
-        return null;//new Solve();
+        return new SmartSolve();
     }
 
-    public static class Solve implements MemoryProcessorInterface {
+    public static class SmartSolve implements MemoryProcessorInterface {
         @Override
         public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
-            Matrix matA = inputs[0].getOriginal();
-            Matrix matB = inputs[1].getOriginal();
+            Matrix a = inputs[0].getOriginal();
+            Vector b = La4jBenchmarkMatrix.toVector((Matrix) inputs[1].getOriginal());
 
-            Vector vecB = La4jBenchmarkMatrix.toVector(matB);
             for( long i = 0; i < numTrials; i++ ) {
-                LinearSystem system = new LinearSystem(matA, vecB);
-
-                try {
-                    system.solve();
-                } catch (LinearSystemException e) {
-                    throw new DetectedException(e);
-                }
+                LinearSystemSolver solver = a.withSolver(LinearAlgebra.SOLVER);
+                solver.solve(b);
             }
         }
     }
 
     @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
-        return new La4jBenchmarkMatrix(new DenseFactory().createMatrix(numRows, numCols));
+        return new La4jBenchmarkMatrix(new Basic2DMatrix(numRows, numCols));
     }
 
     @Override
     public BenchmarkMatrix wrap(Object matrix) {
-        return new La4jBenchmarkMatrix((Matrix)matrix);
+        return new La4jBenchmarkMatrix((Matrix) matrix);
     }
 }

@@ -20,34 +20,23 @@
 package jmbench.impl.wrapper;
 
 import jmbench.interfaces.BenchmarkMatrix;
-import la4j.factory.DenseFactory;
-import la4j.matrix.Matrix;
-import la4j.vector.Vector;
+import org.la4j.matrix.Matrix;
+import org.la4j.vector.Vector;
 
 /**
  * @author Peter Abeles
+ * @author Vladimir Kostyukov
  */
 public class La4jBenchmarkMatrix implements BenchmarkMatrix  {
+
     Matrix matrix;
 
-    public static Vector toVector( Matrix m ) {
-        Vector v = new DenseFactory().createVector(m.rows());
-        
-        for( int i = 0; i < v.length(); i++ ) {
-            v.set(i,m.get(i,0));
-        }
-
-        return v;
+    public static Vector toVector(Matrix m) {
+        return m.toColumnVector();
     }
 
-    public static Matrix toMatrix( Vector v ) {
-        Matrix m = new DenseFactory().createMatrix(v.length(),1);
-
-        for( int i = 0; i < v.length(); i++ ) {
-            m.set(i,0,v.get(i));
-        }
-
-        return m;
+    public static Matrix toMatrix(Vector v) {
+        return v.toColumnMatrix();
     }
     
     public La4jBenchmarkMatrix(Matrix matrix) {
@@ -56,12 +45,12 @@ public class La4jBenchmarkMatrix implements BenchmarkMatrix  {
 
     @Override
     public double get(int row, int col) {
-        return matrix.get(row,col);
+        return matrix.get(row, col);
     }
 
     @Override
     public void set(int row, int col, double value) {
-        matrix.set(row,col,value);
+        matrix.set(row, col, value);
     }
 
     @Override
@@ -76,6 +65,6 @@ public class La4jBenchmarkMatrix implements BenchmarkMatrix  {
 
     @Override
     public <T> T getOriginal() {
-        return(T)matrix;
+        return (T)matrix;
     }
 }

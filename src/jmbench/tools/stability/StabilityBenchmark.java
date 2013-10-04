@@ -19,6 +19,7 @@
 
 package jmbench.tools.stability;
 
+import jmbench.impl.FactoryLibraryDescriptions;
 import jmbench.impl.LibraryDescription;
 import jmbench.tools.SystemInfo;
 import jmbench.tools.memory.MemoryBenchmark;
@@ -176,6 +177,7 @@ public class StabilityBenchmark {
     public static void printHelp() {
         System.out.println("Stability Benchmark: The following options are valid:");
         System.out.println("  --Config=<file>          |  COnfigure using the specified xml file.");
+        System.out.println("  --Library=<lib>          |  To run a specific library only.  --Library=? will print a list");
         System.out.println();
         System.out.println("If no options are specified then a default configuration will be used.");
     }
@@ -203,6 +205,17 @@ public class StabilityBenchmark {
                 if( splits.length != 2 || args.length != 1 ) {failed = true; break;}
                 System.out.println("Loading config: "+splits[1]);
                 config = UtilXmlSerialization.deserializeXml(splits[1]);
+            } else if( flag.compareTo("Library") == 0 ) {
+                if( splits.length != 2 ) {failed = true; break;}
+                LibraryDescription match = FactoryLibraryDescriptions.find(splits[1]);
+                if( match == null ) {
+                    failed = true;
+                    System.out.println("Can't find library.  See list below:");
+                    FactoryLibraryDescriptions.printAllNames();
+                    break;
+                }
+                config.targets.clear();
+                config.targets.add(match);
             } else {
                 System.out.println("Unknown flag: "+flag);
                 failed = true;
