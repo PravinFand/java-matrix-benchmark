@@ -321,8 +321,11 @@ public class BenchmarkTools {
                 ret = UtilXmlSerialization.deserializeXml("slave_results.xml");
 
                 // make sure these results are not stale
-                if( ret.getRequestID() != requestID ) {
-                    errorStream.println("Stale request ID");
+                if( ret == null ) {
+                    errorStream.println("exitVal = "+exitVal+"  Can't found slave_results.xml!");
+                    ret = null;
+                } else if( ret.getRequestID() != requestID ) {
+                    errorStream.println("exitVal = "+exitVal+"  Stale request ID");
                     ret = null;
                 }
             }

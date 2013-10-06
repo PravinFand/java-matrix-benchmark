@@ -46,7 +46,7 @@ public class UtilXmlSerialization {
         try {
             return (T)xstream.fromXML(new FileReader(fileName));
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            return null;
         }
     }
 }

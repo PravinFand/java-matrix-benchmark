@@ -503,7 +503,10 @@ public class MemoryBenchmarkTools {
                 EvaluatorSlave.Results results = UtilXmlSerialization.deserializeXml("slave_results.xml");
 
                 // make sure these results are not stale
-                if( results.getRequestID() != requestID ) {
+                if( results == null ) {
+                    errorStream.println("Can't find slave_results.xml");
+                    failed = true;
+                } if( results.getRequestID() != requestID ) {
                     errorStream.println("Stale request ID");
                     failed = true;
                 } else if( results.failed != null ) {
