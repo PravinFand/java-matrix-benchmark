@@ -48,12 +48,12 @@ public class AllLibraryVersion {
 
         @Override
         public String getVersionString() {
-            return "2.2";
+            return "3.2";
         }
 
         @Override
         public String getReleaseDate() {
-            return "2011-02-26";
+            return "2013-04-03";
         }
     }
 

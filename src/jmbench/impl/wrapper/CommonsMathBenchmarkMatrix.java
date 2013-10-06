@@ -20,7 +20,7 @@
 package jmbench.impl.wrapper;
 
 import jmbench.interfaces.BenchmarkMatrix;
-import org.apache.commons.math.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
 
 
 /**

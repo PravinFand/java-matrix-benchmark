@@ -25,8 +25,10 @@ import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.DetectedException;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
-import org.apache.commons.math.linear.*;
-import org.apache.commons.math.util.MathUtils;
+import org.apache.commons.math3.exception.MathArithmeticException;
+import org.apache.commons.math3.exception.MaxCountExceededException;
+import org.apache.commons.math3.linear.*;
+import org.apache.commons.math3.util.MathUtils;
 import org.ejml.data.DenseMatrix64F;
 
 
@@ -61,11 +63,11 @@ public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
 
             for( long i = 0; i < numTrials; i++ ) {
                 try {
-                    CholeskyDecompositionImpl chol = new CholeskyDecompositionImpl(matA);
+                    CholeskyDecomposition chol = new CholeskyDecomposition(matA);
                     L = chol.getL();
-                } catch (NotSymmetricMatrixException e) {
+                } catch( NonSymmetricMatrixException e ) {
                     throw new DetectedException(e);
-                } catch (NotPositiveDefiniteMatrixException e) {
+                } catch( NonPositiveDefiniteMatrixException e ) {
                     throw new DetectedException(e);
                 }
             }
@@ -93,14 +95,10 @@ public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                try {
-                    LUDecompositionImpl LU = new LUDecompositionImpl(matA);
-                    L = LU.getL();
-                    U = LU.getU();
-                    P = LU.getP();
-                } catch( InvalidMatrixException e ) {
-                    throw new DetectedException(e);
-                }
+                LUDecomposition LU = new LUDecomposition(matA);
+                L = LU.getL();
+                U = LU.getU();
+                P = LU.getP();
             }
 
             long elapsedTime = System.nanoTime()-prev;
@@ -128,7 +126,7 @@ public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                SingularValueDecomposition svd = new SingularValueDecompositionImpl(matA);
+                SingularValueDecomposition svd = new SingularValueDecomposition(matA);
                 // need to call this functions so that it performs the full decomposition
                 U = svd.getU();
                 S = svd.getS();
@@ -160,11 +158,13 @@ public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
 
             for( long i = 0; i < numTrials; i++ ) {
                 try {
-                    EigenDecompositionImpl eig = new EigenDecompositionImpl(matA, MathUtils.SAFE_MIN);
+                    EigenDecomposition eig = new EigenDecomposition(matA);
                     // need to do this so that it computes the complete eigen vector
                     V = eig.getV();
                     D = eig.getD();
-                } catch( InvalidMatrixException e ) {
+                } catch( MaxCountExceededException e ) {
+                    throw new DetectedException(e);
+                } catch( MathArithmeticException e ) {
                     throw new DetectedException(e);
                 }
             }
@@ -192,7 +192,7 @@ public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                QRDecompositionImpl decomp = new QRDecompositionImpl(matA);
+                QRDecomposition decomp = new QRDecomposition(matA);
 
                 Q = decomp.getQ();
                 R = decomp.getR();
@@ -221,7 +221,7 @@ public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
             // LU decompose is a bit of a mess because of all the depreciated stuff everywhere
             // I believe this is the way the designers want you to do it
             for( long i = 0; i < numTrials; i++ ) {
-                LUDecomposition lu = new LUDecompositionImpl(matA);
+                LUDecomposition lu = new LUDecomposition(matA);
                 lu.getDeterminant();
             }
 
@@ -245,8 +245,12 @@ public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
             // LU decompose is a bit of a mess because of all the depreciated stuff everywhere
             // I believe this is the way the designers want you to do it
             for( long i = 0; i < numTrials; i++ ) {
-                LUDecomposition lu = new LUDecompositionImpl(matA);
-                result = lu.getSolver().getInverse();
+                try {
+                    LUDecomposition lu = new LUDecomposition(matA);
+                    result = lu.getSolver().getInverse();
+                } catch( SingularMatrixException e ) {
+                    throw new DetectedException(e);
+                }
             }
 
             long elapsedTime = System.nanoTime()-prev;
@@ -268,18 +272,17 @@ public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
             RealMatrix result = null;
             long prev = System.nanoTime();
 
-            // LU decompose is a bit of a mess because of all the depreciated stuff everywhere
-            // I believe this is the way the designers want you to do it
             for( long i = 0; i < numTrials; i++ ) {
-                CholeskyDecompositionImpl chol = null;
                 try {
-                    chol = new CholeskyDecompositionImpl(matA);
-                } catch (NotSymmetricMatrixException e) {
+                    CholeskyDecomposition chol = new CholeskyDecomposition(matA);
+                    result = chol.getSolver().getInverse();
+                } catch( NonSymmetricMatrixException e ) {
                     throw new DetectedException(e);
-                } catch (NotPositiveDefiniteMatrixException e) {
+                } catch( NonPositiveDefiniteMatrixException e ) {
+                    throw new DetectedException(e);
+                } catch( SingularMatrixException e ) {
                     throw new DetectedException(e);
                 }
-                result = chol.getSolver().getInverse();
             }
 
             long elapsedTime = System.nanoTime()-prev;
@@ -403,7 +406,7 @@ public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                LUDecomposition lu = new LUDecompositionImpl(matA);
+                LUDecomposition lu = new LUDecomposition(matA);
                 result = lu.getSolver().solve(matB);
             }
 
@@ -423,7 +426,7 @@ public class CommonsMathAlgorithmFactory implements RuntimePerformanceFactory {
             long prev = System.nanoTime();
 
             for( long i = 0; i < numTrials; i++ ) {
-                QRDecomposition qr = new QRDecompositionImpl(matA);
+                QRDecomposition qr = new QRDecomposition(matA);
                 result = qr.getSolver().solve(matB);
             }
             long elapsedTime = System.nanoTime()-prev;

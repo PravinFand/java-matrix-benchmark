@@ -21,8 +21,8 @@ package jmbench;
 
 import Jama.Matrix;
 import no.uib.cipr.matrix.DenseMatrix;
-import org.apache.commons.math.linear.Array2DRowRealMatrix;
-import org.apache.commons.math.linear.BlockRealMatrix;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.ejml.data.DenseMatrix64F;
 import org.ojalgo.access.Access2D;
 

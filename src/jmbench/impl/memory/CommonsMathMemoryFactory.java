@@ -23,8 +23,8 @@ import jmbench.impl.wrapper.CommonsMathBenchmarkMatrix;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.MemoryFactory;
 import jmbench.interfaces.MemoryProcessorInterface;
-import org.apache.commons.math.linear.*;
-import org.apache.commons.math.util.MathUtils;
+import org.apache.commons.math3.linear.*;
+import org.apache.commons.math3.util.MathUtils;
 
 
 /**
@@ -34,7 +34,7 @@ public class CommonsMathMemoryFactory implements MemoryFactory {
 
     @Override
     public BenchmarkMatrix create(int numRows, int numCols) {
-        return wrap(MatrixUtils.createRealMatrix(numRows,numCols));
+        return wrap(MatrixUtils.createRealMatrix(numRows, numCols));
     }
 
     @Override
@@ -54,14 +54,7 @@ public class CommonsMathMemoryFactory implements MemoryFactory {
             RealMatrix A = inputs[0].getOriginal();
 
             for( int i = 0; i < numTrials; i++ ) {
-                CholeskyDecompositionImpl chol = null;
-                try {
-                    chol = new CholeskyDecompositionImpl(A);
-                } catch (NotSymmetricMatrixException e) {
-                    throw new RuntimeException(e);
-                } catch (NotPositiveDefiniteMatrixException e) {
-                    throw new RuntimeException(e);
-                }
+                CholeskyDecomposition chol =  new CholeskyDecomposition(A);
                 chol.getSolver().getInverse();
             }
         }
@@ -134,7 +127,7 @@ public class CommonsMathMemoryFactory implements MemoryFactory {
             RealMatrix y = inputs[1].getOriginal();
 
             for( int i = 0; i < numTrials; i++ ) {
-                LUDecomposition lu = new LUDecompositionImpl(A);
+                LUDecomposition lu = new LUDecomposition(A);
                 lu.getSolver().solve(y);
             }
 
@@ -154,7 +147,7 @@ public class CommonsMathMemoryFactory implements MemoryFactory {
             RealMatrix y = inputs[1].getOriginal();
 
             for( int i = 0; i < numTrials; i++ ) {
-                QRDecomposition qr = new QRDecompositionImpl(A);
+                QRDecomposition qr = new QRDecomposition(A);
                 qr.getSolver().solve(y);
             }
         }
@@ -173,7 +166,7 @@ public class CommonsMathMemoryFactory implements MemoryFactory {
 
             RealMatrix U = null, S = null, V=null;
             for( int i = 0; i < numTrials; i++ ) {
-                org.apache.commons.math.linear.SingularValueDecomposition svd = new SingularValueDecompositionImpl(A);
+                SingularValueDecomposition svd = new SingularValueDecomposition(A);
                 // need to call this functions so that it performs the full decomposition
                 U = svd.getU();
                 S = svd.getS();
@@ -197,7 +190,7 @@ public class CommonsMathMemoryFactory implements MemoryFactory {
 
             RealMatrix V=null,D=null;
             for( int i = 0; i < numTrials; i++ ) {
-                EigenDecompositionImpl eig = new EigenDecompositionImpl(A, MathUtils.SAFE_MIN);
+                EigenDecomposition eig = new EigenDecomposition(A);
                 // need to do this so that it computes the complete eigen vector
                 V = eig.getV();
                 D = eig.getD();
