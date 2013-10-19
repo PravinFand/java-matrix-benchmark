@@ -48,7 +48,7 @@ public class FactoryLibraryDescriptions {
         list.add(createPColt());
 //        list.add(createSejml());
         list.add(createUJMP());
-        list.add(createUJMP_Native());
+//        list.add(createUJMP_Native()); // The last version posted online does not contain native binaries
 
         return list;
     }

@@ -110,9 +110,14 @@ public class RuntimeResultPlotter {
         String subtitle = weighted ? "Weighted by Operation Time" : null;
 
         SummaryWhiskerPlot plot = new SummaryWhiskerPlot(title,subtitle);
-        for( String libName : overallResults.keySet() ) {
-            List<OverallData> libOverall = overallResults.get(libName);
 
+        // sort the names so that they appear in a consistent order
+        List<String> orderedNames = new ArrayList<String>();
+        orderedNames.addAll( overallResults.keySet());
+        Collections.sort(orderedNames);
+
+        for( String libName : orderedNames ) {
+            List<OverallData> libOverall = overallResults.get(libName);
 
             plot.addLibrary(libName,
                     addSample(libOverall,0,numMatrices,maxSamples),
