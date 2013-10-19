@@ -43,7 +43,7 @@ public class VersionSlave implements Serializable {
 
         LibraryVersion version = classVersion.newInstance();
 
-        PrintStream out = new PrintStream(new FileOutputStream(libraryName+"_version.txt"));
+        PrintStream out = new PrintStream(new FileOutputStream(libraryName+"version.txt"));
 
         out.println("version: " + version.getVersionString());
         out.println("release date: " + version.getReleaseDate());

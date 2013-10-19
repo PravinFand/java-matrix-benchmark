@@ -484,6 +484,20 @@ public class RuntimeBenchmarkLibrary {
 //                logStream.println("------------------------------------------------");
                 caseFailed = true;
             }
+        } else {
+            // See if the slave caught an error.  Typically this will be the operation isn't supported or
+            // sanity check failed
+            for( TestResults tr : r.getResults() ) {
+                RuntimeMeasurement rm = (RuntimeMeasurement)tr;
+
+                if( rm.error != null ) {
+                    String message = "    Case failed Slave: op = "+e.getOpName()+" reason "+rm.error+" matrix size = "+matrixSize+" memory = "+tools.getAllocatedMemory()+" mb";
+                    logStream.println(message);
+                    System.out.println(message);
+                    caseFailed = true;
+                    break;
+                }
+            }
         }
         return r;
     }

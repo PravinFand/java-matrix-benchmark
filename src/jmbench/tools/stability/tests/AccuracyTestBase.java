@@ -80,7 +80,12 @@ public abstract class AccuracyTestBase extends StabilityTestBase {
         }
 
         MatrixProcessorInterface operation = createAlgorithm();
-        
+
+        if( operation == null ) {
+            reason = OutputError.NOT_SUPPORTED;
+            return;
+        }
+
         try {
             operation.process(inputsB,outputB,1);
         } catch( DetectedException e ) {

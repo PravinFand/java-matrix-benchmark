@@ -125,7 +125,7 @@ public class PrintLibraryVersion {
         params[3] = classPath;
         params[4] = VersionSlave.class.getName()+"";
         params[5] = desc.version.getName();
-        params[6] = directorySave+"/"+desc.location.getLibraryDirName();
+        params[6] = directorySave+"/";
         return params;
     }
 

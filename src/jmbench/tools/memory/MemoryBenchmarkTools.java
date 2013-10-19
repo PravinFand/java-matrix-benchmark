@@ -21,6 +21,7 @@ package jmbench.tools.memory;
 
 import jmbench.tools.EvaluationTest;
 import jmbench.tools.EvaluatorSlave;
+import jmbench.tools.TestResults;
 import jmbench.tools.stability.UtilXmlSerialization;
 
 import java.io.*;
@@ -124,7 +125,7 @@ public class MemoryBenchmarkTools {
      * @param test
      * @return Amount of memory used in bytes.
      */
-    public long runTest( EvaluationTest test ) {
+    public long runTest( MemoryTest test ) {
 
         requestID++;
         failed = false;
@@ -154,7 +155,7 @@ public class MemoryBenchmarkTools {
             // print the output from the slave
             froze = monitorSlave2(test, pr, input, error,processID);
 
-            cleanUp(froze, pr, input, error);
+            cleanUp(froze, pr, input, error, test.getNameOperation());
 
             return memoryUsage;
         } catch (IOException e) {
@@ -484,7 +485,7 @@ public class MemoryBenchmarkTools {
      */
     private void cleanUp(boolean frozen,
                          Process pr,
-                         BufferedReader input, BufferedReader error)
+                         BufferedReader input, BufferedReader error, String nameOp )
             throws InterruptedException, IOException {
 
         // flush whatever is left
@@ -518,12 +519,26 @@ public class MemoryBenchmarkTools {
                         System.exit(0);
                     } else if( results.failed != EvaluatorSlave.FailReason.OUT_OF_MEMORY ) {
                         // don't log out of memory errors since they happen intentionally a lot
-                        errorStream.println("Failed! "+results.failed);
+                        errorStream.println("Failed! op = "+nameOp+" reason "+results.failed);
                         errorStream.println(results.detailedError);
-                        System.out.println("Failed! "+results.failed);
+                        System.out.println("Failed! op = "+nameOp+" reason "+results.failed);
                         System.out.println(results.detailedError);
                     }
                     failed = true;
+                }  else {
+                    // See if the slave caught an error.  Typically this will be the operation isn't supported or
+                    // sanity check failed
+                    for( TestResults tr : results.getResults() ) {
+                        MemoryTest.Results rm = (MemoryTest.Results)tr;
+
+                        if( rm.elapsedTime < 0 ) {
+                            String message = "    Case failed: Operation Not Supported: "+nameOp;
+                            errorStream.println(message);
+                            System.out.println(message);
+                            memoryUsage = -1;
+                            break;
+                        }
+                    }
                 }
             }
         } else {

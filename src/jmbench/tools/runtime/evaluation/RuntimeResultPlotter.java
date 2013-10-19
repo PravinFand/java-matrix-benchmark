@@ -92,7 +92,7 @@ public class RuntimeResultPlotter {
                     double weight = (1.0/refValue[i])/slowestOperationByMatrix[i];
 
                     double a = r.getResult(i);
-                    if( !Double.isNaN(a) ) {
+                    if( !Double.isNaN(a) && a >= 0 ) {
                         // its relative ranking compared to other libraries in this operation
                         double score = a/refValue[i];
                         libOverall.add(new OverallData(weight,score,i));
@@ -116,8 +116,8 @@ public class RuntimeResultPlotter {
 
             plot.addLibrary(libName,
                     addSample(libOverall,0,numMatrices,maxSamples),
-                    addSample(libOverall,numMatrices-3,numMatrices,maxSamples),
-                    addSample(libOverall,0,3,maxSamples));
+                    addSample(libOverall,numMatrices-5,numMatrices,maxSamples),
+                    addSample(libOverall,0,5,maxSamples));
         }
 
         if( showWindow )

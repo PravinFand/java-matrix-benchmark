@@ -111,6 +111,11 @@ public class MemoryTest extends EvaluationTest {
 
         MemoryProcessorInterface operation = createAlgorithm();
 
+        // see if the operation is supported
+        if( operation == null ) {
+            return new Results(-1);
+        }
+
         long start = System.currentTimeMillis();
         operation.process(inputs,outputs,N);
         long stop= System.currentTimeMillis();

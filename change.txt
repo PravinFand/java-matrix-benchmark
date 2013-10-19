@@ -8,6 +8,7 @@
 - Tweaked make file to build the application by default
 - Each library is fully described by a single LibraryDescription instead of spreading that information across several
   locations
+- Refined small matrices to be up to 10.  Before it was only 4
 
 
 ----- Version 0.9
