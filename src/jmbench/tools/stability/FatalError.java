@@ -29,5 +29,6 @@ public enum FatalError {
     FROZE,
     OUT_OF_MEMORY,
     RETURNED_NULL,
+    UNSUPPORTED,
     MISC
 }

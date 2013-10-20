@@ -108,6 +108,11 @@ public abstract class OverflowTestBase extends StabilityTestBase
 
         MatrixProcessorInterface operation = createAlgorithm();
 
+        if( operation == null ) {
+            reason = OutputError.NOT_SUPPORTED;
+            return false;
+        }
+
         try {
             operation.process(inputsB,outputB,1);
         } catch( DetectedException e ) {

@@ -122,9 +122,15 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
+
+            // S is a vector, need to convert into a matrix
+            DoubleMatrix SM = new DoubleMatrix(U.getColumns(), Vt.getRows());
+            for( int i = 0; i < S.rows; i++ )
+                SM.put(i,i,S.get(i));
+
             outputs[0] = new JBlasBenchmarkMatrix(U);
-            outputs[1] = new JBlasBenchmarkMatrix(S);
-            outputs[1] = new JBlasBenchmarkMatrix(Vt.transpose());
+            outputs[1] = new JBlasBenchmarkMatrix(SM);
+            outputs[2] = new JBlasBenchmarkMatrix(Vt);
             return elapsed;
         }
     }

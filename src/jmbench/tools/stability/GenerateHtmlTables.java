@@ -202,6 +202,10 @@ public class GenerateHtmlTables extends TablesCommon {
         String reason;
 
         switch( d.fatalError ) {
+            case UNSUPPORTED:
+                reason = "UNSUPPORTED";
+                break;
+
             case MISC:
                 reason = "MISC";
                 break;
@@ -249,7 +253,7 @@ public class GenerateHtmlTables extends TablesCommon {
 
     public static void main( String args[] ) {
 
-        String base = "/home/pja/projects/jmatbench/trunk/results/stability_2012_02";
+        String base = "results/stability_2013_10";
 
         System.out.println("= Small Matrices =");
         System.out.println();

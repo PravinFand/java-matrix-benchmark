@@ -100,7 +100,6 @@ public class MemoryConfig {
         ret.svd = true;
         ret.eig = true;
 
-
         return ret;
     }
 

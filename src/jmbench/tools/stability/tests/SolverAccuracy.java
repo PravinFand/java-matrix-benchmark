@@ -83,6 +83,11 @@ public class SolverAccuracy extends SolverCommon {
 
         MatrixProcessorInterface operation = createAlgorithm();
 
+        if( operation == null ) {
+            reason = OutputError.NOT_SUPPORTED;
+            return;
+        }
+
         try {
             operation.process(inputsB,outputB,1);
         } catch( DetectedException e ) {

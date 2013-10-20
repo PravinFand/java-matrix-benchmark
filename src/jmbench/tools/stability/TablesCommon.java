@@ -51,6 +51,7 @@ public abstract class TablesCommon {
 
     @SuppressWarnings({"unchecked"})
     public void plot() {
+//        System.out.println("loading files: ");
         String[] files = directory.list();
 
         Map<String, List> opMap = new HashMap<String,List>();
@@ -60,9 +61,11 @@ public abstract class TablesCommon {
 
             if( level0.isDirectory() ) {
                 String []files2 = level0.list();
+//                System.out.println(level0);
 
                 for( String name2 : files2 ) {
                     if( name2.contains(".xml") ) {
+//                        System.out.print(name2+" ");
 
                         String stripName = name2.substring(0,name2.length()-4);
                         name2 = level0.getPath()+"/"+name2;
@@ -80,6 +83,7 @@ public abstract class TablesCommon {
                     }
                 }
             }
+//            System.out.println();
 
         }
 
@@ -104,6 +108,9 @@ public abstract class TablesCommon {
                     names.add(lib.getPlotName());
             }
         }
+
+        // sort the names to ensure the order is consistent and not arbitrary
+        Collections.sort(names);
 
         return names;
     }

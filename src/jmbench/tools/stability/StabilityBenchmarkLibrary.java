@@ -25,6 +25,7 @@ import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.BenchmarkTools;
 import jmbench.tools.EvaluatorSlave;
 import jmbench.tools.TestResults;
+import jmbench.tools.runtime.RuntimeMeasurement;
 import jmbench.tools.stability.tests.*;
 import jmbench.tools.version.PrintLibraryVersion;
 

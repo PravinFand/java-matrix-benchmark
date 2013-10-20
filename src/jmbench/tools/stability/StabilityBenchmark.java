@@ -176,7 +176,7 @@ public class StabilityBenchmark {
 //    }
     public static void printHelp() {
         System.out.println("Stability Benchmark: The following options are valid:");
-        System.out.println("  --Config=<file>          |  COnfigure using the specified xml file.");
+        System.out.println("  --Config=<file>          |  Configure using the specified xml file.");
         System.out.println("  --Library=<lib>          |  To run a specific library only.  --Library=? will print a list");
         System.out.println();
         System.out.println("If no options are specified then a default configuration will be used.");

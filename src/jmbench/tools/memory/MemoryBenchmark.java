@@ -19,6 +19,7 @@
 
 package jmbench.tools.memory;
 
+import jmbench.impl.FactoryLibraryDescriptions;
 import jmbench.impl.LibraryDescription;
 import jmbench.tools.SystemInfo;
 import jmbench.tools.stability.UtilXmlSerialization;
@@ -102,18 +103,50 @@ public class MemoryBenchmark {
         }
     }
 
+    public static void printHelp() {
+        System.out.println("The following options are valid for memory benchmark:");
+        System.out.println("  --Config=<file>          |  Configure using the specified xml file.");
+        System.out.println("  --Library=<lib>          |  To run a specific library only.  --Library=? will print a list");
+    }
+
     public static void main( String args[] ) throws IOException, InterruptedException {
         MemoryBenchmark master = new MemoryBenchmark();
 
-        if( args.length > 0 ) {
-            System.out.println("Loading config from xml...");
-            MemoryConfig config = UtilXmlSerialization.deserializeXml(args[0]);
-            if( config == null )
-                throw new IllegalArgumentException("No config file found!");
+        boolean failed = false;
+        MemoryConfig config = MemoryConfig.createDefault();
 
-            master.performBenchmark(config);
+        System.out.println("** Parsing Command Line **");
+        System.out.println();
+        for( int i = 0; i < args.length; i++ ) {
+            String splits[] = args[i].split("=");
+
+            String flag = splits[0];
+
+            flag = flag.substring(2);
+
+            if( flag.compareTo("Config") == 0 ) {
+                if( splits.length != 2 ) {failed = true; break;}
+                System.out.println("Loading config: "+splits[1]);
+                config = UtilXmlSerialization.deserializeXml(splits[1]);
+            } else if( flag.compareTo("Library") == 0 ) {
+                if( splits.length != 2 ) {failed = true; break;}
+                LibraryDescription match = FactoryLibraryDescriptions.find(splits[1]);
+                if( match == null ) {
+                    failed = true;
+                    System.out.println("Can't find library.  See list below:");
+                    FactoryLibraryDescriptions.printAllNames();
+                    break;
+                }
+                config.libraries.clear();
+                config.libraries.add(match);
+            } else {
+                failed = true;
+            }
+        }
+        if( failed ) {
+            printHelp();
         } else {
-            master.performBenchmark(MemoryConfig.createDefault());
+            master.performBenchmark(config);
         }
     }
 }

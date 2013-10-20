@@ -118,7 +118,9 @@ public abstract class StabilityTestBase extends EvaluationTest {
 
         numResults = 0;
 
-        performTest();
+        try {
+            performTest();
+        } catch( FatalProblem ignore ){}
 
         return results;
     }
@@ -169,6 +171,10 @@ public abstract class StabilityTestBase extends EvaluationTest {
                 results.numGraceful++;
                 break;
 
+            case NOT_SUPPORTED:
+                results.fatalError = FatalError.UNSUPPORTED;
+                throw new FatalProblem();
+
             default:
                 throw new RuntimeException("Unknown reason: "+reason);
         }
@@ -186,6 +192,13 @@ public abstract class StabilityTestBase extends EvaluationTest {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Thrown when something goes wrong and it needs to escape
+     */
+    protected static class FatalProblem extends RuntimeException {
+
     }
 
     public Class<RuntimePerformanceFactory> getClassFactory() {

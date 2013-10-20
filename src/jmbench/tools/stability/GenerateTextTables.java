@@ -200,7 +200,7 @@ public class GenerateTextTables extends TablesCommon {
     }
 
     public static void main( String args[] ) {
-        GenerateTextTables p = new GenerateTextTables("results/1380494333815/small");
+        GenerateTextTables p = new GenerateTextTables("results/stability_2013_10/small");
 
         p.plot();
     }
