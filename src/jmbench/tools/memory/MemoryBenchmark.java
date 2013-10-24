@@ -25,7 +25,9 @@ import jmbench.tools.SystemInfo;
 import jmbench.tools.stability.UtilXmlSerialization;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.List;
 
 
@@ -78,16 +80,36 @@ public class MemoryBenchmark {
 
     private void processLibraries( List<LibraryDescription> libs, MemoryConfig config , long overhead ) {
 
-        for(  LibraryDescription desc : libs ) {
-            // run the benchmark
-            String libOutputDir = directorySave+"/"+desc.location.getSaveDirName();
+        for( int i = 0; i < config.matrixSizes.length; i++ ) {
 
-            MemoryBenchmarkLibrary bench = new MemoryBenchmarkLibrary(config,desc,libOutputDir,overhead);
+            int size = config.matrixSizes[i];
+            System.out.println("************ Starting size "+size);
 
-            bench.process();
+            File f = new File(directorySave+"/"+size);
+            f.mkdirs();
+            saveMatrixSize(directorySave+"/"+size+"/size.txt",size);
 
-            System.out.println("Finished Library Benchmark");
-            System.out.println();
+            for(  LibraryDescription desc : libs ) {
+                // run the benchmark
+                String libOutputDir = directorySave+"/"+size+"/"+desc.location.getSaveDirName();
+
+                MemoryBenchmarkLibrary bench = new MemoryBenchmarkLibrary(config,desc,libOutputDir,size,overhead);
+
+                bench.process();
+
+                System.out.println("Finished Library Benchmark");
+                System.out.println();
+            }
+        }
+    }
+
+    private void saveMatrixSize( String fileName , int size ) {
+        try {
+            PrintStream out = new PrintStream(fileName);
+            out.println(size);
+            out.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 

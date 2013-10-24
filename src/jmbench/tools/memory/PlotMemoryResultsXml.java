@@ -23,7 +23,7 @@ import jmbench.plots.MemoryRelativeBarPlot;
 import jmbench.tools.runtime.evaluation.PlotRuntimeResults;
 import jmbench.tools.stability.UtilXmlSerialization;
 
-import java.io.File;
+import java.io.*;
 import java.util.*;
 
 
@@ -57,13 +57,27 @@ public class PlotMemoryResultsXml {
     }
 
     public void plot() {
-        config = UtilXmlSerialization.deserializeXml(directory.getAbsolutePath()+"/config.xml");
+        config = UtilXmlSerialization.deserializeXml(directory.getAbsolutePath()+"/../config.xml");
         if( config == null )
             throw new RuntimeException("Couldn't load saved benchmark config file");
 
         Map<String, List<MemoryResults>> opMap = parseResults();
 
-        plotResults(opMap);
+        int size = readSize();
+        plotResults(opMap,size);
+    }
+
+    private int readSize() {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(directory.getAbsolutePath()+"/size.txt"));
+            String s = reader.readLine();
+            reader.close();
+            return Integer.parseInt(s);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Map<String, List<MemoryResults>> parseResults() {
@@ -111,8 +125,8 @@ public class PlotMemoryResultsXml {
         return opMap;
     }
 
-    private void plotResults( Map<String, List<MemoryResults>> opMap ) {
-        MemoryRelativeBarPlot plot = new MemoryRelativeBarPlot("Library Memory Usage: Size "+config.matrixSize);
+    private void plotResults( Map<String, List<MemoryResults>> opMap , int matrixSize ) {
+        MemoryRelativeBarPlot plot = new MemoryRelativeBarPlot("Library Memory Usage: Size "+matrixSize);
 
         // Sort the keys to ensure the order is the same each time
         List<String> keys = new ArrayList<String>(opMap.keySet());
@@ -189,8 +203,11 @@ public class PlotMemoryResultsXml {
 
         //dir = "results/memory_2010_04";
 
-        PlotMemoryResultsXml plotter = new PlotMemoryResultsXml(dir);
-
+        PlotMemoryResultsXml plotter = new PlotMemoryResultsXml(dir+"/1000");
+        plotter.plot();
+        plotter = new PlotMemoryResultsXml(dir+"/2000");
+        plotter.plot();
+        plotter = new PlotMemoryResultsXml(dir+"/3000");
         plotter.plot();
     }
 }

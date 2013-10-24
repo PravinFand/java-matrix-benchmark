@@ -47,7 +47,7 @@ public class MemoryConfig {
     public long memoryMaxMB;
 
     // number of rows/cols of tested matrices
-    public int matrixSize;
+    public int[] matrixSizes;
 
     // ops that it tests
     public boolean mult;
@@ -88,7 +88,7 @@ public class MemoryConfig {
         ret.numTrials = 3;
         ret.memoryMinMB = 50;
         ret.memoryMaxMB = 1024*2;
-        ret.matrixSize = 3000;
+        ret.matrixSizes = new int[]{1000,2000,3000};
         ret.memorySampleType = SampleType.PROC;
 
         ret.mult = true;
@@ -143,12 +143,12 @@ public class MemoryConfig {
         this.memoryMaxMB = memoryMaxMB;
     }
 
-    public int getMatrixSize() {
-        return matrixSize;
+    public int[] getMatrixSizes() {
+        return matrixSizes;
     }
 
-    public void setMatrixSize(int matrixSize) {
-        this.matrixSize = matrixSize;
+    public void setMatrixSizes(int[] matrixSizes) {
+        this.matrixSizes = matrixSizes;
     }
 
     public boolean isMult() {

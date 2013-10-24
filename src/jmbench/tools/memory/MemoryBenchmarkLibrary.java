@@ -26,10 +26,7 @@ import jmbench.tools.runtime.generator.*;
 import jmbench.tools.stability.UtilXmlSerialization;
 import jmbench.tools.version.PrintLibraryVersion;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -62,6 +59,7 @@ public class MemoryBenchmarkLibrary {
     public MemoryBenchmarkLibrary( MemoryConfig config ,
                                    LibraryDescription desc,
                                    String directorySave ,
+                                   int matrixSize ,
                                    long memoryOverhead )
     {
         this.rand = new Random(config.seed);
@@ -76,28 +74,28 @@ public class MemoryBenchmarkLibrary {
         tool.sampleType = config.memorySampleType;
 
         if( config.add )
-            addOperation(config, new AddGenerator(), "add", "C=A+B", libraryName, 0 , config.matrixSize);
+            addOperation(config, new AddGenerator(), "add", "C=A+B", libraryName, 0 , matrixSize);
 
         if( config.mult )
-            addOperation(config, new MultGenerator(), "mult", "C=A*B", libraryName, 0 , config.matrixSize);
+            addOperation(config, new MultGenerator(), "mult", "C=A*B", libraryName, 0 , matrixSize);
 
         if( config.multTransB )
-            addOperation(config, new MultTranBGenerator(), "multTransB", "C=A*B^T", libraryName, 0 , config.matrixSize);
+            addOperation(config, new MultTranBGenerator(), "multTransB", "C=A*B^T", libraryName, 0 , matrixSize);
 
         if( config.solveLinear )
-            addOperation(config, new SolveEqGenerator(), "solveEq", "solve m=n", libraryName, 0 , config.matrixSize);
+            addOperation(config, new SolveEqGenerator(), "solveEq", "solve m=n", libraryName, 0 , matrixSize);
 
         if( config.solveLS )
-            addOperation(config, new SolveOverGenerator(), "solveLS", "solve m>n", libraryName,0 , config.matrixSize);
+            addOperation(config, new SolveOverGenerator(), "solveLS", "solve m>n", libraryName,0 , matrixSize);
 
         if( config.invSymmPosDef )
-            addOperation(config, new InvertSymmPosDefGenerator(), "invertSymmPosDef", "inv |A| > 1", libraryName,0 , config.matrixSize);
+            addOperation(config, new InvertSymmPosDefGenerator(), "invertSymmPosDef", "inv |A| > 1", libraryName,0 , matrixSize);
 
         if( config.svd )
-            addOperation(config, new SvdGenerator(), "svd", "SVD", libraryName,0 , config.matrixSize/2 );
+            addOperation(config, new SvdGenerator(), "svd", "SVD", libraryName,0 , matrixSize/2 );
 
         if( config.eig )
-            addOperation(config, new EigSymmGenerator(), "eig", "Eigen", libraryName,0 , config.matrixSize);
+            addOperation(config, new EigSymmGenerator(), "eig", "Eigen", libraryName,0 , matrixSize);
 
         if( directorySave != null ) {
             setupOutputDirectory();
@@ -283,7 +281,7 @@ public class MemoryBenchmarkLibrary {
     public static void main( String []args ) {
         MemoryConfig config = MemoryConfig.createDefault();
 
-        MemoryBenchmarkLibrary benchmark = new MemoryBenchmarkLibrary(config, FactoryLibraryDescriptions.createEJML(),null,0);
+        MemoryBenchmarkLibrary benchmark = new MemoryBenchmarkLibrary(config, FactoryLibraryDescriptions.createEJML(),null,1000,0);
 
         benchmark.process();
     }
