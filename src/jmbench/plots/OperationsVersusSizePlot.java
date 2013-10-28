@@ -28,6 +28,7 @@ import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleInsets;
@@ -72,6 +73,10 @@ public class OperationsVersusSizePlot
         // one of the numbers is getting cropped.  this will make it fully visible
         chart.setPadding(new RectangleInsets(5,0,0,5));
 
+    }
+
+    public void setSubTitle( String title ) {
+        chart.addSubtitle(new TextTitle(title,new Font("SansSerif", Font.ITALIC, 12)));
     }
 
     public void setRange( double min , double max ) {
@@ -159,7 +164,7 @@ public class OperationsVersusSizePlot
         return series;
     }
 
-    private Color getColor( int num ) {
+    public static Color getColor( int num ) {
         switch( num ) {
             case 0:
                 return new Color(0f,0f,1f,0.6f);
@@ -205,7 +210,7 @@ public class OperationsVersusSizePlot
         }
     }
 
-    private Stroke getStroke(int num, float size, float patternSize ) {
+    public static Stroke getStroke(int num, float size, float patternSize ) {
         switch( num ) {
             case 0:
                 return SimpleStrokeFactory.createStroke("-",size,patternSize);

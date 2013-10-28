@@ -21,6 +21,7 @@ package jmbench.tools.runtime.evaluation;
 
 import jmbench.impl.LibraryLocation;
 import jmbench.plots.OperationsVersusSizePlot;
+import jmbench.plots.OverallRelativeAreaPlot;
 import jmbench.plots.SummaryWhiskerPlot;
 import jmbench.tools.runtime.RuntimeEvaluationMetrics;
 import jmbench.tools.runtime.RuntimeResults;
@@ -87,7 +88,7 @@ public class RuntimeResultPlotter {
                     libOverall = overallResults.get(r.label);
                 }
 
-                for( int i = 0; i < maxValidMatrix; i++ ) {
+                for( int i = 0; i <= maxValidMatrix; i++ ) {
                     // the weight is determined by how slow this operation is relative to the slowest
                     double weight = (1.0/refValue[i])/slowestOperationByMatrix[i];
 
@@ -129,7 +130,136 @@ public class RuntimeResultPlotter {
             plot.displayWindow(1000,450);
 
         if( savePDF )
-            plot.savePDF(outputDirectory+"/summary.pdf",1000,450);
+            plot.savePDF(outputDirectory+"/summary_bar.pdf",1000,450);
+    }
+
+    public static void summaryAreaPlot( List<RuntimePlotData> allResults , Reference referenceType ,
+                                        String outputDirectory ,
+                                        boolean savePDF ,
+                                        boolean showWindow ) {
+
+        Map<String,OverallSizeData> overallResults = new HashMap<String,OverallSizeData>();
+
+        // find the number of matrices sizes tested
+        int numMatrices = 0;
+        int sizes[] = null;
+        for( RuntimePlotData opResults : allResults ) {
+            if( opResults.matrixSize.length > numMatrices ) {
+                numMatrices = opResults.matrixSize.length;
+                sizes = opResults.matrixSize;
+            }
+        }
+
+        // find the relative speed of each operation for each matrix size so that they can be weighted
+        double slowestOperationByMatrix[] = new double[ numMatrices ];
+        for( RuntimePlotData opResults : allResults ) {
+            for( int i = 0; i < numMatrices; i++ ) {
+                double bestSpeed = opResults.findBest(i);
+
+                if( Double.isNaN(bestSpeed) )
+                    continue;
+
+                // convert from ops/sec to sec/op
+                bestSpeed = 1.0/bestSpeed;
+
+                if( bestSpeed > slowestOperationByMatrix[i] )
+                    slowestOperationByMatrix[i] = bestSpeed;
+            }
+        }
+
+        for( RuntimePlotData opResults : allResults ) {
+            int numMatrixSizes = opResults.matrixSize.length;
+
+            // find the performance for each matrix size that each library will
+            // be compared against
+            double refValue[] = new double[ numMatrixSizes ];
+            computeReferenceValues(opResults, referenceType, -1, numMatrixSizes, refValue);
+
+            // find the largest matrix with results in it
+            int maxValidMatrix = opResults.getNumMatrices();
+
+            for( RuntimePlotData.SourceResults r : opResults.libraries ) {
+                OverallSizeData libOverall;
+
+                if( !overallResults.containsKey(r.label)) {
+                    libOverall = new OverallSizeData(sizes.length);
+                    libOverall.plotLineType = r.plotLineType;
+                    overallResults.put(r.label,libOverall);
+                } else {
+                    libOverall = overallResults.get(r.label);
+                }
+
+                for( int i = 0; i <= maxValidMatrix; i++ ) {
+                    // the weight is determined by how slow this operation is relative to the slowest
+                    double weight = (1.0/refValue[i])/slowestOperationByMatrix[i];
+
+                    double a = r.getResult(i);
+                    if( !Double.isNaN(a) && a >= 0 ) {
+                        // its relative ranking compared to other libraries in this operation
+                        double score = a/refValue[i];
+                        libOverall.scoreWeighted[i] += score*weight;
+                        libOverall.weights[i] += weight;
+                    }
+                }
+            }
+        }
+
+        String title = "Summary of Runtime Performance";
+        OperationsVersusSizePlot plotLine = new OperationsVersusSizePlot(title,"Relative Average Speed");
+        plotLine.setSubTitle("Weighted by Operation Speed. Larger is Better.");
+        plotLine.setLogScale(false, true);
+        plotLine.setRange(0, 1.1);
+        OverallRelativeAreaPlot plotArea = new OverallRelativeAreaPlot(title,sizes);
+
+        // sort the names so that they appear in a consistent order
+        List<String> orderedNames = new ArrayList<String>();
+        orderedNames.addAll( overallResults.keySet());
+        Collections.sort(orderedNames);
+
+        double total[] = new double[ sizes.length ];
+        for( String libName : orderedNames ) {
+            OverallSizeData libOverall = overallResults.get(libName);
+
+            for( int i = 0; i < sizes.length; i++ ) {
+                double w = libOverall.weights[i];
+                if( w > 0 ) {
+                    total[i] += libOverall.scoreWeighted[i]/w;
+                }
+            }
+        }
+
+        for( String libName : orderedNames ) {
+            OverallSizeData libOverall = overallResults.get(libName);
+
+            double scoresLine[] = new double[ sizes.length ];
+            double scoresArea[] = new double[ sizes.length ];
+
+            for( int i = 0; i < sizes.length; i++ ) {
+                double w = libOverall.weights[i];
+                if( w > 0 ) {
+                    scoresLine[i] = libOverall.scoreWeighted[i]/w;
+                    scoresArea[i] = libOverall.scoreWeighted[i]/(w*total[i]);
+                } else {
+                    scoresLine[i] = Double.NaN;
+                    scoresArea[i] = Double.NaN;
+                }
+            }
+
+            plotLine.addResults(sizes, scoresLine, libName, sizes.length, libOverall.plotLineType);
+            plotArea.addLibrary(libName, libOverall.plotLineType, scoresArea);
+        }
+
+        if( showWindow ) {
+            plotLine.displayWindow(650, 450);
+            plotArea.displayWindow(700, 450);
+        }
+
+        try {Thread.sleep(500);} catch (InterruptedException e) {}
+
+        if( savePDF ) {
+            plotLine.savePDF(outputDirectory + "/summary_size.pdf", 650, 450);
+            plotArea.savePDF(outputDirectory + "/summary_stacked_area.pdf", 700, 450);
+        }
     }
 
 
@@ -170,6 +300,18 @@ public class RuntimeResultPlotter {
             this.weight = weight;
             this.score = score;
             this.matrixSize = matrixSize;
+        }
+    }
+
+    private static class OverallSizeData
+    {
+        double weights[];
+        double scoreWeighted[];
+        int plotLineType;
+
+        public OverallSizeData( int numSizes ) {
+            weights = new double[ numSizes ];
+            scoreWeighted = new double[ numSizes ];
         }
     }
 

@@ -26,7 +26,10 @@ import jmbench.tools.runtime.RuntimeResults;
 import jmbench.tools.stability.UtilXmlSerialization;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -43,7 +46,7 @@ public class PlotRuntimeResults {
     boolean plotNativeLibraries = true;
 
     // should it display results to the screen
-    boolean displayResults = true;
+    public static boolean displayResults = true;
 
     // only plot results more than this size
     int minMatrixSize = 0;
@@ -135,12 +138,12 @@ public class PlotRuntimeResults {
 
 
             RuntimeResultPlotter.variabilityPlots(l, fileNameVar,true,false);
-
-            RuntimeResultPlotter.relativePlots(plotData, refType,null,fileNameRel,plotData.plotName,true,true);
+            RuntimeResultPlotter.relativePlots(plotData, refType,null,fileNameRel,plotData.plotName,true,displayResults);
             RuntimeResultPlotter.absolutePlots(plotData, fileNameAbs,plotData.plotName,true,false);
         }
 
-        RuntimeResultPlotter.summaryPlots(allResults,refType,weightedSummary,outputDirectory.getPath()+"/plots",true,true);
+        RuntimeResultPlotter.summaryPlots(allResults,refType,weightedSummary,outputDirectory.getPath()+"/plots",true,displayResults);
+        RuntimeResultPlotter.summaryAreaPlot(allResults,refType,outputDirectory.getPath()+"/plots",true,displayResults);
     }
 
     /**
