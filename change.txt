@@ -1,6 +1,4 @@
 
-Future:  Guava StopWatch
-
 ----- Version 0.10
 
 2013/10/29

@@ -16,3 +16,7 @@
 - convert results to excel format
 
 - Create a memory leak test
+
+- Guava StopWatch for timing
+
+- Remove determinant() from standard benchmark
