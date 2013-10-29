@@ -1,6 +1,9 @@
------ Version 0.9
 
-2013
+Future:  Guava StopWatch
+
+----- Version 0.10
+
+2013/10/29
 
 - Factories are not created until a the new VM is launched
   * Avoids potentially contaminating the version info which is printed.  e.g. one library loads an older version first
@@ -9,6 +12,7 @@
 - Each library is fully described by a single LibraryDescription instead of spreading that information across several
   locations
 - Refined small matrices to be up to 10.  Before it was only 4
+- New summary plots for runtime results
 
 
 ----- Version 0.9
