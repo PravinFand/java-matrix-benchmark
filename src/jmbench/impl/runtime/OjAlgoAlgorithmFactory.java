@@ -31,6 +31,10 @@ import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.SpecializedOps;
 import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.matrix.decomposition.*;
+import org.ojalgo.matrix.decomposition.task.DeterminantTask;
+import org.ojalgo.matrix.decomposition.task.InverterTask;
+import org.ojalgo.matrix.decomposition.task.SolverTask;
+import org.ojalgo.matrix.decomposition.task.TaskException;
 import org.ojalgo.matrix.store.MatrixStore;
 import org.ojalgo.matrix.store.PhysicalStore;
 import org.ojalgo.matrix.store.PrimitiveDenseStore;
@@ -96,15 +100,12 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             final MatrixStore<Double> matA = inputs[0].getOriginal();
 
-            final LU<Double> lu = LUDecomposition.make(matA);
+            final DeterminantTask<Double> tmpTask = DeterminantTask.PRIMITIVE.make(matA, false);
 
             final long prev = System.nanoTime();
 
             for (long i = 0; i < numTrials; i++) {
-                if (!lu.compute(matA)) {
-                    throw new DetectedException("Decomposition failed");
-                }
-                lu.getDeterminant();
+                tmpTask.calculateDeterminant(matA);
             }
 
             return System.nanoTime() - prev;
@@ -143,18 +144,19 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
             final MatrixStore<Double> matA = inputs[0].getOriginal();
-
             MatrixStore<Double> result = null;
-            final LU<Double> lu = LUDecomposition.make(matA);
-            final DecompositionStore<Double> tmpAlloc = lu.preallocate(matA, matA);
+            
+            InverterTask<Double> tmpInverter = InverterTask.PRIMITIVE.make(matA, false);
+            final DecompositionStore<Double> tmpAlloc = tmpInverter.preallocate(matA);
 
             final long prev = System.nanoTime();
 
             for (long i = 0; i < numTrials; i++) {
-                if (!lu.compute(matA)) {
-                    throw new DetectedException("Decomposition failed");
+                try {
+                    result = tmpInverter.invert(matA, tmpAlloc);
+                } catch (TaskException ex) {
+                    throw new DetectedException(ex);
                 }
-                result = lu.getInverse(tmpAlloc);
             }
 
             final long elapsedTime = System.nanoTime() - prev;
@@ -168,18 +170,19 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
             final MatrixStore<Double> matA = inputs[0].getOriginal();
-
             MatrixStore<Double> inverse = null;
-            final Cholesky<Double> chol = CholeskyDecomposition.make(matA);
-            final DecompositionStore<Double> tmpAlloc = chol.preallocate(matA, matA);
+            
+            InverterTask<Double> tmpInverter = InverterTask.PRIMITIVE.make(matA, true);
+            final DecompositionStore<Double> tmpAlloc = tmpInverter.preallocate(matA);
 
             final long prev = System.nanoTime();
 
             for (long i = 0; i < numTrials; i++) {
-                if (!chol.compute(matA)) {
-                    throw new DetectedException("Decomposition failed");
+                try {
+                    inverse = tmpInverter.invert(matA, tmpAlloc);
+                } catch (TaskException ex) {
+                    throw new DetectedException(ex);
                 }
-                inverse = chol.getInverse(tmpAlloc);
             }
 
             final long elapsedTime = System.nanoTime() - prev;
@@ -319,16 +322,19 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             final PrimitiveDenseStore matA = inputs[0].getOriginal();
             final PrimitiveDenseStore matB = inputs[1].getOriginal();
-
             MatrixStore<Double> result = null;
-            final LU<Double> lu = LUDecomposition.make(matA);
-            final DecompositionStore<Double> tmpAlloc = lu.preallocate(matA, matB);
+            
+            SolverTask<Double> tmpSolver = SolverTask.PRIMITIVE.make(matA, matB, false);
+            final DecompositionStore<Double> tmpAlloc = tmpSolver.preallocate(matA, matB);
 
             final long prev = System.nanoTime();
 
             for (long i = 0; i < numTrials; i++) {
-                lu.compute(matA);
-                result = lu.solve(matB, tmpAlloc);
+                try {
+                    result = tmpSolver.solve(matA, matB, tmpAlloc);
+                } catch (TaskException ex) {
+                    throw new DetectedException(ex);
+                }
             }
 
             final long elapsedTime = System.nanoTime() - prev;
@@ -343,17 +349,19 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             final MatrixStore<Double> matA = inputs[0].getOriginal();
             final MatrixStore<Double> matB = inputs[1].getOriginal();
-
-            final QR<Double> qr = QRDecomposition.make(matA);
-            final DecompositionStore<Double> tmpAlloc = qr.preallocate(matA, matB);
-
             MatrixStore<Double> result = null;
+            
+            SolverTask<Double> tmpSolver = SolverTask.PRIMITIVE.make(matA, matB, false);
+            final DecompositionStore<Double> tmpAlloc = tmpSolver.preallocate(matA, matB);
 
             final long prev = System.nanoTime();
 
             for (long i = 0; i < numTrials; i++) {
-                qr.compute(matA);
-                result = qr.solve(matB, tmpAlloc);
+                try {
+                    result = tmpSolver.solve(matA, matB, tmpAlloc);
+                } catch (TaskException ex) {
+                    throw new DetectedException(ex);
+                }
             }
 
             final long elapsedTime = System.nanoTime() - prev;
@@ -404,7 +412,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
             final long prev = System.nanoTime();
 
             for (long i = 0; i < numTrials; i++) {
-                result.fillMatching(new TransposedStore<Double>(matA));
+                result.fillTransposed(matA);
             }
 
             final long elapsedTime = System.nanoTime() - prev;

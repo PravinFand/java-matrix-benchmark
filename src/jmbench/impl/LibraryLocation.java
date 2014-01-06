@@ -33,27 +33,25 @@ import java.util.List;
  */
 @SuppressWarnings({"unchecked"})
 public class LibraryLocation implements Serializable {
-    public static final LibraryLocation EJML = new LibraryLocation("EJML","ejml","ejml", false,false,0);
-    public static final LibraryLocation JAMA = new LibraryLocation("JAMA","jama","jama", false, false, 1);
-    public static final LibraryLocation MTJ = new LibraryLocation("MTJ","mtj","mtj", true, false, 2);
-    public static final LibraryLocation MTJ_NATIVE = new LibraryLocation("MTJ-N","mtj","mtj-native", true, true, 3);
-    public static final LibraryLocation SEJML = new LibraryLocation("SEJML","sejml","sejml", true, false, 4);
-    public static final LibraryLocation CM = new LibraryLocation("CommMath","commons-math", "commons-math", true, false, 5);
-    public static final LibraryLocation OJALGO = new LibraryLocation("ojAlgo","ojalgo","ojalgo", true, false, 6);
-    public static final LibraryLocation COLT = new LibraryLocation("Colt","colt","colt", true, false, 7);
-    public static final LibraryLocation PCOLT = new LibraryLocation("PColt","parallelcolt","parallelcolt", true, false, 8);
-    public static final LibraryLocation JBLAS = new LibraryLocation("JBLAS","jblas","jblas", true, true, 9);
-    public static final LibraryLocation UJMP = new LibraryLocation("UJMP","ujmp","ujmp", true,false, 10);
-    public static final LibraryLocation UJMP_NATIVE = new LibraryLocation("UJMP-N","ujmp","ujmp-native", true, true, 11);
-    public static final LibraryLocation LA4J = new LibraryLocation("la4j","la4j","la4j", true,false,12);
+    public static final LibraryLocation EJML = new LibraryLocation("EJML","ejml","ejml", false,0);
+    public static final LibraryLocation JAMA = new LibraryLocation("JAMA","jama","jama", false, 1);
+    public static final LibraryLocation MTJ = new LibraryLocation("MTJ","mtj","mtj", false, 2);
+    public static final LibraryLocation MTJ_NATIVE = new LibraryLocation("MTJ-N","mtj","mtj-native", true, 3);
+    public static final LibraryLocation SEJML = new LibraryLocation("SEJML","sejml","sejml", false, 4);
+    public static final LibraryLocation CM = new LibraryLocation("CommMath","commons-math", "commons-math", false, 5);
+    public static final LibraryLocation OJALGO = new LibraryLocation("ojAlgo","ojalgo","ojalgo", false, 6);
+    public static final LibraryLocation COLT = new LibraryLocation("Colt","colt","colt", false, 7);
+    public static final LibraryLocation PCOLT = new LibraryLocation("PColt","parallelcolt","parallelcolt", false, 8);
+    public static final LibraryLocation JBLAS = new LibraryLocation("JBLAS","jblas","jblas", true, 9);
+    public static final LibraryLocation UJMP = new LibraryLocation("UJMP","ujmp","ujmp", false, 10);
+    public static final LibraryLocation UJMP_NATIVE = new LibraryLocation("UJMP-N","ujmp","ujmp-native", true, 11);
+    public static final LibraryLocation LA4J = new LibraryLocation("la4j","la4j","la4j", false,12);
 
     public String plotName;
     // directory that it loads its libraries from
     public String libraryDirName;
     // directory the results are saved into
     public String saveDirName;
-    // does the slave need to load additional libraries
-    public boolean extraLibs;
     // if the library is native or not
     public boolean nativeCode;
 
@@ -61,12 +59,11 @@ public class LibraryLocation implements Serializable {
     public int plotLineType;
 
     public LibraryLocation(String plotName, String libraryDirName, String saveDirName,
-                           boolean extraLibs, boolean nativeCode, int plotLineType)
+                           boolean nativeCode, int plotLineType)
     {
         this.plotName = plotName;
         this.libraryDirName = libraryDirName;
         this.saveDirName = saveDirName;
-        this.extraLibs = extraLibs;
         this.nativeCode = nativeCode;
         this.plotLineType = plotLineType;
     }
@@ -134,14 +131,6 @@ public class LibraryLocation implements Serializable {
 
     public void setLibraryDirName(String libraryDirName) {
         this.libraryDirName = libraryDirName;
-    }
-
-    public boolean isExtraLibs() {
-        return extraLibs;
-    }
-
-    public void setExtraLibs(boolean extraLibs) {
-        this.extraLibs = extraLibs;
     }
 
     public int getPlotLineType() {
