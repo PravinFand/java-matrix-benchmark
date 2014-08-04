@@ -19,7 +19,6 @@
 
 package jmbench.impl;
 
-import jmbench.interfaces.MemoryFactory;
 import jmbench.interfaces.RuntimePerformanceFactory;
 
 /**
@@ -34,8 +33,6 @@ public class LibraryDescription {
     public Class<LibraryConfigure> configure;
     /** Creates functions for runtime benchmark */
     public Class<RuntimePerformanceFactory> factoryRuntime;
-    /** Creates functions for the memory benchmark */
-    public Class<MemoryFactory> factoryMemory;
     /** Used to extract the libraries version */
     public Class<LibraryVersion> version;
 

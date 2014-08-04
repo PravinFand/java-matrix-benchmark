@@ -26,7 +26,10 @@ import jmbench.tools.runtime.generator.*;
 import jmbench.tools.stability.UtilXmlSerialization;
 import jmbench.tools.version.PrintLibraryVersion;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -244,7 +247,7 @@ public class MemoryBenchmarkLibrary {
         tool.setMemory(config.memoryMinMB,maxMemory);
 
         MemoryTest test = new MemoryTest();
-        test.setup(desc.configure,desc.factoryMemory,task.gen,task.nameOperation,1,task.matrixSize);
+        test.setup(desc.configure,desc.factoryRuntime,task.gen,task.nameOperation,1,task.matrixSize);
         test.setRandomSeed(config.seed);
 
         return tool.runTest(test);

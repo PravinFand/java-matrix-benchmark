@@ -40,46 +40,46 @@ public interface RuntimePerformanceFactory extends LibraryFactory , MatrixFactor
     /**
      * Cholesky decomposition
      */
-    AlgorithmInterface chol();
+    MatrixProcessorInterface chol();
 
     /**
      * LU decomposition
      */
-    AlgorithmInterface lu();
+    MatrixProcessorInterface lu();
 
     /**
      * Singular Value Decomposition
      */
-    AlgorithmInterface svd();
+    MatrixProcessorInterface svd();
 
     /**
      * QR Decomposition
      */
-    AlgorithmInterface qr();
+    MatrixProcessorInterface qr();
 
     /**
      * Eigenvalue Decomposition
      */
-    AlgorithmInterface eigSymm();
+    MatrixProcessorInterface eigSymm();
 
     // should it test against asymmetric matrices?
-//    AlgorithmInterface eigASymm();
+//    MatrixProcessorInterface eigASymm();
 
 
     /**
      * Computes the determinant of a matrix.
      */
-    AlgorithmInterface det();
+    MatrixProcessorInterface det();
 
     /**
      * Inverts a square matrix.
      */
-    AlgorithmInterface invert();
+    MatrixProcessorInterface invert();
 
     /**
      * Inverts a square positive definite matrix.
      */
-    AlgorithmInterface invertSymmPosDef();
+    MatrixProcessorInterface invertSymmPosDef();
 
     /**
      * <p>
@@ -88,7 +88,7 @@ public interface RuntimePerformanceFactory extends LibraryFactory , MatrixFactor
      * C = A + B
      * </p>
      */
-    AlgorithmInterface add();
+    MatrixProcessorInterface add();
 
     /**
      * <p>
@@ -97,7 +97,7 @@ public interface RuntimePerformanceFactory extends LibraryFactory , MatrixFactor
      * C = A*B
      * </p>
      */
-    AlgorithmInterface mult();
+    MatrixProcessorInterface mult();
 
     /**
      * <p>
@@ -106,7 +106,7 @@ public interface RuntimePerformanceFactory extends LibraryFactory , MatrixFactor
      * C = A*B^T
      * </p>
      */
-    AlgorithmInterface multTransB();
+    MatrixProcessorInterface multTransB();
 
     /**
      * <p>
@@ -115,7 +115,7 @@ public interface RuntimePerformanceFactory extends LibraryFactory , MatrixFactor
      * b<sub>i,j</sub> = &gamma;a<sub>i,j</sub>
      * </p>
      */
-    AlgorithmInterface scale();
+    MatrixProcessorInterface scale();
 
     /**
      * Solve a system with square input matrix:<br>
@@ -124,7 +124,7 @@ public interface RuntimePerformanceFactory extends LibraryFactory , MatrixFactor
      * <br>
      * where A is an m by m matrix.
      */
-    AlgorithmInterface solveExact();
+    MatrixProcessorInterface solveExact();
 
     /**
      * Solve a system with a "tall" input matrix:<br>
@@ -133,12 +133,12 @@ public interface RuntimePerformanceFactory extends LibraryFactory , MatrixFactor
      * <br>
      * where A is an m by n matrix and m > n.
      */
-    AlgorithmInterface solveOver();
+    MatrixProcessorInterface solveOver();
 
     /**
      * Matrix transpose
      */
-    AlgorithmInterface transpose();
+    MatrixProcessorInterface transpose();
 
     BenchmarkMatrix convertToLib( DenseMatrix64F input );
 

@@ -20,8 +20,8 @@
 package jmbench.impl.runtime;
 
 import jmbench.impl.wrapper.La4jBenchmarkMatrix;
-import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
+import jmbench.interfaces.MatrixProcessorInterface;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
 import org.ejml.data.DenseMatrix64F;
@@ -41,11 +41,11 @@ import org.la4j.vector.Vector;
  */
 public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
     @Override
-    public AlgorithmInterface chol() {
+    public MatrixProcessorInterface chol() {
         return new Chol();
     }
 
-    public static class Chol implements AlgorithmInterface {
+    public static class Chol implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             Matrix a = inputs[0].getOriginal();
@@ -61,17 +61,19 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime() - prev;
-            outputs[0] = new La4jBenchmarkMatrix(L);
+            if( outputs != null ) {
+                outputs[0] = new La4jBenchmarkMatrix(L);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface lu() {
+    public MatrixProcessorInterface lu() {
         return new LU();
     }
 
-    public static class LU implements AlgorithmInterface {
+    public static class LU implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             Matrix a = inputs[0].getOriginal();
@@ -91,19 +93,21 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime() - prev;
-            outputs[0] = new La4jBenchmarkMatrix(L);
-            outputs[1] = new La4jBenchmarkMatrix(U);
-            outputs[2] = new La4jBenchmarkMatrix(P);
+            if( outputs != null ) {
+                outputs[0] = new La4jBenchmarkMatrix(L);
+                outputs[1] = new La4jBenchmarkMatrix(U);
+                outputs[2] = new La4jBenchmarkMatrix(P);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface svd() {
+    public MatrixProcessorInterface svd() {
         return new SVD();
     }
 
-    public static class SVD implements AlgorithmInterface {
+    public static class SVD implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             Matrix a = inputs[0].getOriginal();
@@ -123,19 +127,21 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime() - prev;
-            outputs[0] = new La4jBenchmarkMatrix(U);
-            outputs[1] = new La4jBenchmarkMatrix(S);
-            outputs[2] = new La4jBenchmarkMatrix(V);
+            if( outputs != null ) {
+                outputs[0] = new La4jBenchmarkMatrix(U);
+                outputs[1] = new La4jBenchmarkMatrix(S);
+                outputs[2] = new La4jBenchmarkMatrix(V);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface qr() {
+    public MatrixProcessorInterface qr() {
         return new QR();
     }
 
-    public static class QR implements AlgorithmInterface {
+    public static class QR implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             Matrix a = inputs[0].getOriginal();
@@ -153,18 +159,20 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime() - prev;
-            outputs[0] = new La4jBenchmarkMatrix(Q);
-            outputs[1] = new La4jBenchmarkMatrix(R);
+            if( outputs != null ) {
+                outputs[0] = new La4jBenchmarkMatrix(Q);
+                outputs[1] = new La4jBenchmarkMatrix(R);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface eigSymm() {
+    public MatrixProcessorInterface eigSymm() {
         return new Eig();
     }
 
-    public static class Eig implements AlgorithmInterface {
+    public static class Eig implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             Matrix a = inputs[0].getOriginal();
@@ -182,18 +190,20 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime() - prev;
-            outputs[0] = new La4jBenchmarkMatrix(D);
-            outputs[1] = new La4jBenchmarkMatrix(V);
+            if( outputs != null ) {
+                outputs[0] = new La4jBenchmarkMatrix(D);
+                outputs[1] = new La4jBenchmarkMatrix(V);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface det() {
+    public MatrixProcessorInterface det() {
         return new Det();
     }
 
-    public static class Det implements AlgorithmInterface {
+    public static class Det implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             Matrix a = inputs[0].getOriginal();
@@ -208,17 +218,17 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
     @Override
-    public AlgorithmInterface invert() {
+    public MatrixProcessorInterface invert() {
         return new SmartInverse();
     }
 
     @Override
-    public AlgorithmInterface invertSymmPosDef() {
+    public MatrixProcessorInterface invertSymmPosDef() {
         return new SmartInverse();
     }
 
 
-    public static class SmartInverse implements AlgorithmInterface {
+    public static class SmartInverse implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             Matrix a = inputs[0].getOriginal();
@@ -233,17 +243,19 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime() - prev;
-            outputs[0] = new La4jBenchmarkMatrix(A);
+            if( outputs != null ) {
+                outputs[0] = new La4jBenchmarkMatrix(A);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface add() {
+    public MatrixProcessorInterface add() {
         return new Add();
     }
 
-    public static class Add implements AlgorithmInterface {
+    public static class Add implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             Matrix a = inputs[0].getOriginal();
@@ -258,17 +270,19 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime() - prev;
-            outputs[0] = new La4jBenchmarkMatrix(C);
+            if( outputs != null ) {
+                outputs[0] = new La4jBenchmarkMatrix(C);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface mult() {
+    public MatrixProcessorInterface mult() {
         return new Mult();
     }
 
-    public static class Mult implements AlgorithmInterface {
+    public static class Mult implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             Matrix a = inputs[0].getOriginal();
@@ -283,17 +297,19 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime() - prev;
-            outputs[0] = new La4jBenchmarkMatrix(C);
+            if( outputs != null ) {
+                outputs[0] = new La4jBenchmarkMatrix(C);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface multTransB() {
+    public MatrixProcessorInterface multTransB() {
         return new MulTranB();
     }
 
-    public static class MulTranB implements AlgorithmInterface {
+    public static class MulTranB implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             Matrix a = inputs[0].getOriginal();
@@ -308,17 +324,19 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime() - prev;
-            outputs[0] = new La4jBenchmarkMatrix(C);
+            if( outputs != null ) {
+                outputs[0] = new La4jBenchmarkMatrix(C);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface scale() {
+    public MatrixProcessorInterface scale() {
         return new Scale();
     }
 
-    public static class Scale implements AlgorithmInterface {
+    public static class Scale implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             Matrix a = inputs[0].getOriginal();
@@ -332,22 +350,24 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime() - prev;
-            outputs[0] = new La4jBenchmarkMatrix(B);
+            if( outputs != null ) {
+                outputs[0] = new La4jBenchmarkMatrix(B);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface solveExact() {
+    public MatrixProcessorInterface solveExact() {
         return new SmartSolve();
     }
 
     @Override
-    public AlgorithmInterface solveOver() {
+    public MatrixProcessorInterface solveOver() {
         return new SmartSolve();
     }
 
-    public static class SmartSolve implements AlgorithmInterface {
+    public static class SmartSolve implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             Matrix a = inputs[0].getOriginal();
@@ -363,17 +383,19 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime() - prev;
-            outputs[0] = new La4jBenchmarkMatrix(La4jBenchmarkMatrix.toMatrix(X));
+            if( outputs != null ) {
+                outputs[0] = new La4jBenchmarkMatrix(La4jBenchmarkMatrix.toMatrix(X));
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface transpose() {
+    public MatrixProcessorInterface transpose() {
         return new Transpose();
     }
 
-    public static class Transpose implements AlgorithmInterface {
+    public static class Transpose implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             Matrix a = inputs[0].getOriginal();
@@ -387,7 +409,9 @@ public class La4jAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()- prev;
-            outputs[0] = new La4jBenchmarkMatrix(B);
+            if( outputs != null ) {
+                outputs[0] = new La4jBenchmarkMatrix(B);
+            }
             return elapsed;
         }
     }

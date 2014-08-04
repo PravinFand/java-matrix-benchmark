@@ -20,8 +20,8 @@
 package jmbench.impl.runtime;
 
 import jmbench.impl.wrapper.JBlasBenchmarkMatrix;
-import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
+import jmbench.interfaces.MatrixProcessorInterface;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
 import org.ejml.data.DenseMatrix64F;
@@ -44,11 +44,11 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
     }
 
     @Override
-    public AlgorithmInterface chol() {
+    public MatrixProcessorInterface chol() {
         return new Chol();
     }
 
-    public static class Chol implements AlgorithmInterface {
+    public static class Chol implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix matA = inputs[0].getOriginal();
@@ -62,17 +62,19 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JBlasBenchmarkMatrix(U.transpose());
+            if( outputs != null ) {
+                outputs[0] = new JBlasBenchmarkMatrix(U.transpose());
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface lu() {
+    public MatrixProcessorInterface lu() {
         return new LU();
     }
 
-    public static class LU implements AlgorithmInterface {
+    public static class LU implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix matA = inputs[0].getOriginal();
@@ -91,19 +93,21 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JBlasBenchmarkMatrix(L);
-            outputs[1] = new JBlasBenchmarkMatrix(U);
-            outputs[2] = new JBlasBenchmarkMatrix(P.transpose());
+            if( outputs != null ) {
+                outputs[0] = new JBlasBenchmarkMatrix(L);
+                outputs[1] = new JBlasBenchmarkMatrix(U);
+                outputs[2] = new JBlasBenchmarkMatrix(P.transpose());
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface svd() {
+    public MatrixProcessorInterface svd() {
         return new MySvd();
     }
 
-    public static class MySvd implements AlgorithmInterface {
+    public static class MySvd implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix matA = inputs[0].getOriginal();
@@ -123,25 +127,27 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
 
             long elapsed = System.nanoTime()-prev;
 
-            // S is a vector, need to convert into a matrix
-            DoubleMatrix SM = new DoubleMatrix(U.getColumns(), Vt.getRows());
-            for( int i = 0; i < S.rows; i++ )
-                SM.put(i,i,S.get(i));
+            if( outputs != null ) {
+                // S is a vector, need to convert into a matrix
+                DoubleMatrix SM = new DoubleMatrix(U.getColumns(), Vt.getRows());
+                for (int i = 0; i < S.rows; i++)
+                    SM.put(i, i, S.get(i));
 
-            outputs[0] = new JBlasBenchmarkMatrix(U);
-            outputs[1] = new JBlasBenchmarkMatrix(SM);
-            outputs[2] = new JBlasBenchmarkMatrix(Vt);
+                outputs[0] = new JBlasBenchmarkMatrix(U);
+                outputs[1] = new JBlasBenchmarkMatrix(SM);
+                outputs[2] = new JBlasBenchmarkMatrix(Vt);
+            }
             return elapsed;
         }
     }
 
 
     @Override
-    public AlgorithmInterface eigSymm() {
+    public MatrixProcessorInterface eigSymm() {
         return new MyEig();
     }
 
-    public static class MyEig implements AlgorithmInterface {
+    public static class MyEig implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix matA = inputs[0].getOriginal();
@@ -158,28 +164,30 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JBlasBenchmarkMatrix(D);
-            outputs[1] = new JBlasBenchmarkMatrix(V);
+            if( outputs != null ) {
+                outputs[0] = new JBlasBenchmarkMatrix(D);
+                outputs[1] = new JBlasBenchmarkMatrix(V);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface qr() {
+    public MatrixProcessorInterface qr() {
         return null;
     }
 
     @Override
-    public AlgorithmInterface det() {
+    public MatrixProcessorInterface det() {
         return null;
     }
 
     @Override
-    public AlgorithmInterface invert() {
+    public MatrixProcessorInterface invert() {
         return new Inv();
     }
 
-    public static class Inv implements AlgorithmInterface {
+    public static class Inv implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix matA = inputs[0].getOriginal();
@@ -194,17 +202,19 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JBlasBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new JBlasBenchmarkMatrix(result);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface invertSymmPosDef() {
+    public MatrixProcessorInterface invertSymmPosDef() {
         return new InvSymmPosDef();
     }
 
-    public static class InvSymmPosDef implements AlgorithmInterface {
+    public static class InvSymmPosDef implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix matA = inputs[0].getOriginal();
@@ -219,17 +229,19 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JBlasBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new JBlasBenchmarkMatrix(result);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface add() {
+    public MatrixProcessorInterface add() {
         return new Add();
     }
 
-    public static class Add implements AlgorithmInterface {
+    public static class Add implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix matA = inputs[0].getOriginal();
@@ -244,17 +256,19 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JBlasBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new JBlasBenchmarkMatrix(result);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface mult() {
+    public MatrixProcessorInterface mult() {
         return new Mult();
     }
 
-    public static class Mult implements AlgorithmInterface {
+    public static class Mult implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix matA = inputs[0].getOriginal();
@@ -269,17 +283,19 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JBlasBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new JBlasBenchmarkMatrix(result);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface multTransB() {
+    public MatrixProcessorInterface multTransB() {
         return new MulTranB();
     }
 
-    public static class MulTranB implements AlgorithmInterface {
+    public static class MulTranB implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix matA = inputs[0].getOriginal();
@@ -294,17 +310,19 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JBlasBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new JBlasBenchmarkMatrix(result);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface scale() {
+    public MatrixProcessorInterface scale() {
         return new Scale();
     }
 
-    public static class Scale implements AlgorithmInterface {
+    public static class Scale implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix matA = inputs[0].getOriginal();
@@ -318,22 +336,24 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JBlasBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new JBlasBenchmarkMatrix(result);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface solveExact() {
+    public MatrixProcessorInterface solveExact() {
         return new MySolve();
     }
 
     @Override
-    public AlgorithmInterface solveOver() {
+    public MatrixProcessorInterface solveOver() {
         return null;
     }
 
-    public static class MySolve implements AlgorithmInterface {
+    public static class MySolve implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix matA = inputs[0].getOriginal();
@@ -348,17 +368,19 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JBlasBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new JBlasBenchmarkMatrix(result);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface transpose() {
+    public MatrixProcessorInterface transpose() {
         return new Transpose();
     }
 
-    public static class Transpose implements AlgorithmInterface {
+    public static class Transpose implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DoubleMatrix matA = inputs[0].getOriginal();
@@ -372,7 +394,9 @@ public class JBlasAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new JBlasBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new JBlasBenchmarkMatrix(result);
+            }
             return elapsed;
         }
     }

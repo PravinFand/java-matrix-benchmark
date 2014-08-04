@@ -25,9 +25,9 @@ import cern.colt.matrix.impl.DenseDoubleMatrix2D;
 import cern.colt.matrix.linalg.*;
 import jmbench.impl.wrapper.ColtBenchmarkMatrix;
 import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
-import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.DetectedException;
+import jmbench.interfaces.MatrixProcessorInterface;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
 import org.ejml.data.DenseMatrix64F;
@@ -52,11 +52,11 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
     }
 
     @Override
-    public AlgorithmInterface chol() {
+    public MatrixProcessorInterface chol() {
         return new Chol();
     }
 
-    public static class Chol implements AlgorithmInterface {
+    public static class Chol implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -75,17 +75,19 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new ColtBenchmarkMatrix(L);
+            if( outputs != null ) {
+                outputs[0] = new ColtBenchmarkMatrix(L);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface lu() {
+    public MatrixProcessorInterface lu() {
         return new LU();
     }
 
-    public static class LU implements AlgorithmInterface {
+    public static class LU implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -112,19 +114,21 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new ColtBenchmarkMatrix(L);
-            outputs[1] = new ColtBenchmarkMatrix(U);
-            outputs[2] = new EjmlBenchmarkMatrix(SpecializedOps.pivotMatrix(null, pivot, pivot.length,false));
+            if( outputs != null ) {
+                outputs[0] = new ColtBenchmarkMatrix(L);
+                outputs[1] = new ColtBenchmarkMatrix(U);
+                outputs[2] = new EjmlBenchmarkMatrix(SpecializedOps.pivotMatrix(null, pivot, pivot.length, false));
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface svd() {
+    public MatrixProcessorInterface svd() {
         return new SVD();
     }
 
-    public static class SVD implements AlgorithmInterface {
+    public static class SVD implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -143,19 +147,21 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new ColtBenchmarkMatrix(U);
-            outputs[1] = new ColtBenchmarkMatrix(S);
-            outputs[2] = new ColtBenchmarkMatrix(V);
+            if( outputs != null ) {
+                outputs[0] = new ColtBenchmarkMatrix(U);
+                outputs[1] = new ColtBenchmarkMatrix(S);
+                outputs[2] = new ColtBenchmarkMatrix(V);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface eigSymm() {
+    public MatrixProcessorInterface eigSymm() {
         return new Eig();
     }
 
-    public static class Eig implements AlgorithmInterface {
+    public static class Eig implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -173,18 +179,20 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new ColtBenchmarkMatrix(D);
-            outputs[1] = new ColtBenchmarkMatrix(V);
+            if( outputs != null ) {
+                outputs[0] = new ColtBenchmarkMatrix(D);
+                outputs[1] = new ColtBenchmarkMatrix(V);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface qr() {
+    public MatrixProcessorInterface qr() {
         return new QR();
     }
 
-    public static class QR implements AlgorithmInterface {
+    public static class QR implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -202,18 +210,20 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new ColtBenchmarkMatrix(Q);
-            outputs[1] = new ColtBenchmarkMatrix(R);
+            if( outputs != null ) {
+                outputs[0] = new ColtBenchmarkMatrix(Q);
+                outputs[1] = new ColtBenchmarkMatrix(R);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface det() {
+    public MatrixProcessorInterface det() {
         return new Det();
     }
 
-    public static class Det implements AlgorithmInterface {
+    public static class Det implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -231,11 +241,11 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
     }
 
     @Override
-    public AlgorithmInterface invert() {
+    public MatrixProcessorInterface invert() {
         return new Inv();
     }
 
-    public static class Inv implements AlgorithmInterface {
+    public static class Inv implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -252,18 +262,20 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
 
             long elapsed = System.nanoTime()-prev;
 
-            outputs[0] = new ColtBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new ColtBenchmarkMatrix(result);
+            }
 
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface invertSymmPosDef() {
+    public MatrixProcessorInterface invertSymmPosDef() {
         return new InvSymmPosDef();
     }
 
-    public static class InvSymmPosDef implements AlgorithmInterface {
+    public static class InvSymmPosDef implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -279,17 +291,19 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsed = System.nanoTime()-prev;
-            outputs[0] = new ColtBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new ColtBenchmarkMatrix(result);
+            }
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface add() {
+    public MatrixProcessorInterface add() {
         return new Add();
     }
 
-    public static class Add implements AlgorithmInterface {
+    public static class Add implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -307,18 +321,20 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
 
             long elapsed = System.nanoTime()-prev;
 
-            outputs[0] = new ColtBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new ColtBenchmarkMatrix(result);
+            }
 
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface mult() {
+    public MatrixProcessorInterface mult() {
         return new Mult();
     }
 
-    public static class Mult implements AlgorithmInterface {
+    public static class Mult implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -335,18 +351,20 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
 
             long elapsed = System.nanoTime()-prev;
 
-            outputs[0] = new ColtBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new ColtBenchmarkMatrix(result);
+            }
 
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface multTransB() {
+    public MatrixProcessorInterface multTransB() {
         return new MulTranB();
     }
 
-    public static class MulTranB implements AlgorithmInterface {
+    public static class MulTranB implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -362,18 +380,20 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
 
             long elapsed = System.nanoTime()-prev;
 
-            outputs[0] = new ColtBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new ColtBenchmarkMatrix(result);
+            }
 
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface scale() {
+    public MatrixProcessorInterface scale() {
         return new Scale();
     }
 
-    public static class Scale implements AlgorithmInterface {
+    public static class Scale implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -390,23 +410,25 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
 
             long elapsed = System.nanoTime()-prev;
 
-            outputs[0] = new ColtBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new ColtBenchmarkMatrix(result);
+            }
 
             return elapsed;
         }
     }
 
     @Override
-    public AlgorithmInterface solveExact() {
+    public MatrixProcessorInterface solveExact() {
         return new Solve();
     }
 
     @Override
-    public AlgorithmInterface solveOver() {
+    public MatrixProcessorInterface solveOver() {
         return new Solve();
     }
 
-    public static class Solve implements AlgorithmInterface {
+    public static class Solve implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseDoubleMatrix2D matA = inputs[0].getOriginal();
@@ -421,14 +443,16 @@ public class ColtAlgorithmFactory implements RuntimePerformanceFactory {
                 result = alg.solve(matA,matB);
             }
 
-            outputs[0] = new ColtBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new ColtBenchmarkMatrix(result);
+            }
 
             return System.nanoTime()-prev;
         }
     }
 
     @Override
-    public AlgorithmInterface transpose() {
+    public MatrixProcessorInterface transpose() {
         // yep this is one of "those" libraries that just flags the matrix as being transposed
         return null;
     }

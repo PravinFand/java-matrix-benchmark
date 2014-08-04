@@ -20,7 +20,7 @@
 package jmbench.tools.memory;
 
 import jmbench.interfaces.BenchmarkMatrix;
-import jmbench.interfaces.MemoryProcessorInterface;
+import jmbench.interfaces.MatrixProcessorInterface;
 
 /**
  * A process that does nothing that is used to determine the system overhead of just launching
@@ -28,10 +28,10 @@ import jmbench.interfaces.MemoryProcessorInterface;
  *
  * @author Peter Abeles
  */
-public class OverheadProcess implements MemoryProcessorInterface {
+public class OverheadProcess implements MatrixProcessorInterface {
 
     @Override
-    public void process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
+    public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
         synchronized( this ) {
             long startTime = System.currentTimeMillis();
 
@@ -43,5 +43,6 @@ public class OverheadProcess implements MemoryProcessorInterface {
                 }
             }
         }
+        return 0;
     }
 }

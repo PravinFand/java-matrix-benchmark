@@ -21,9 +21,9 @@ package jmbench.impl.runtime;
 
 import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.impl.wrapper.MtjBenchmarkMatrix;
-import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.DetectedException;
+import jmbench.interfaces.MatrixProcessorInterface;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
 import no.uib.cipr.matrix.*;
@@ -47,11 +47,11 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
     }
 
     @Override
-    public AlgorithmInterface chol() {
+    public MatrixProcessorInterface chol() {
         return new Chol();
     }
 
-    public static class Chol implements AlgorithmInterface {
+    public static class Chol implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -74,17 +74,19 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new MtjBenchmarkMatrix(L);
+            if( outputs != null ) {
+                outputs[0] = new MtjBenchmarkMatrix(L);
+            }
             return elapsedTime;
         }
     }
 
     @Override
-    public AlgorithmInterface lu() {
+    public MatrixProcessorInterface lu() {
         return new LU();
     }
 
-    public static class LU implements AlgorithmInterface {
+    public static class LU implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -110,22 +112,24 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
 
             long elapsedTime = System.nanoTime()-prev;
 
-            // I believe that MTJ is generating some buggy row pivots since they go outside
-            // the matrix bounds
+            if( outputs != null ) {
+                // I believe that MTJ is generating some buggy row pivots since they go outside
+                // the matrix bounds
 
-            outputs[0] = new MtjBenchmarkMatrix(L);
-            outputs[1] = new MtjBenchmarkMatrix(U);
+                outputs[0] = new MtjBenchmarkMatrix(L);
+                outputs[1] = new MtjBenchmarkMatrix(U);
 //            outputs[2] = SpecializedOps.pivotMatrix(null, pivots, pivots.length);
+            }
             return elapsedTime;
         }
     }
 
     @Override
-    public AlgorithmInterface svd() {
+    public MatrixProcessorInterface svd() {
         return new MySVD();
     }
 
-    public static class MySVD implements AlgorithmInterface {
+    public static class MySVD implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -153,22 +157,24 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            int m = matA.numRows();
-            int n = matA.numColumns();
+            if( outputs != null ) {
+                int m = matA.numRows();
+                int n = matA.numColumns();
 
-            outputs[0] = new MtjBenchmarkMatrix(U);
-            outputs[1] = new EjmlBenchmarkMatrix(CommonOps.diagR(m,n,S));
-            outputs[2] = new MtjBenchmarkMatrix(Vt.transpose());
+                outputs[0] = new MtjBenchmarkMatrix(U);
+                outputs[1] = new EjmlBenchmarkMatrix(CommonOps.diagR(m, n, S));
+                outputs[2] = new MtjBenchmarkMatrix(Vt.transpose());
+            }
             return elapsedTime;
         }
     }
 
     @Override
-    public AlgorithmInterface eigSymm() {
+    public MatrixProcessorInterface eigSymm() {
         return new Eig();
     }
 
-    public static class Eig implements AlgorithmInterface {
+    public static class Eig implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -190,18 +196,20 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new EjmlBenchmarkMatrix(CommonOps.diag(D));
-            outputs[1] = new MtjBenchmarkMatrix(V);
+            if( outputs != null ) {
+                outputs[0] = new EjmlBenchmarkMatrix(CommonOps.diag(D));
+                outputs[1] = new MtjBenchmarkMatrix(V);
+            }
             return elapsedTime;
         }
     }
 
     @Override
-    public AlgorithmInterface qr() {
+    public MatrixProcessorInterface qr() {
         return new QR();
     }
 
-    public static class QR implements AlgorithmInterface {
+    public static class QR implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -224,23 +232,25 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new MtjBenchmarkMatrix(Q);
-            outputs[1] = new MtjBenchmarkMatrix(R);
+            if( outputs != null ) {
+                outputs[0] = new MtjBenchmarkMatrix(Q);
+                outputs[1] = new MtjBenchmarkMatrix(R);
+            }
             return elapsedTime;
         }
     }
 
     @Override
-    public AlgorithmInterface det() {
+    public MatrixProcessorInterface det() {
         return null;
     }
 
     @Override
-    public AlgorithmInterface invert() {
+    public MatrixProcessorInterface invert() {
         return new Inv();
     }
 
-    public static class Inv implements AlgorithmInterface {
+    public static class Inv implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -255,17 +265,19 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new MtjBenchmarkMatrix(inv);
+            if( outputs != null ) {
+                outputs[0] = new MtjBenchmarkMatrix(inv);
+            }
             return elapsedTime;
         }
     }
 
     @Override
-    public AlgorithmInterface invertSymmPosDef() {
+    public MatrixProcessorInterface invertSymmPosDef() {
         return new InvSymmPosDef();
     }
 
-    public static class InvSymmPosDef implements AlgorithmInterface {
+    public static class InvSymmPosDef implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -288,17 +300,19 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new MtjBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new MtjBenchmarkMatrix(result);
+            }
             return elapsedTime;
         }
     }
 
     @Override
-    public AlgorithmInterface add() {
+    public MatrixProcessorInterface add() {
         return new Add();
     }
 
-    public static class Add implements AlgorithmInterface {
+    public static class Add implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -315,17 +329,19 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new MtjBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new MtjBenchmarkMatrix(result);
+            }
             return elapsedTime;
         }
     }
 
     @Override
-    public AlgorithmInterface mult() {
+    public MatrixProcessorInterface mult() {
         return new Mult();
     }
 
-    public static class Mult implements AlgorithmInterface {
+    public static class Mult implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -340,17 +356,19 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new MtjBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new MtjBenchmarkMatrix(result);
+            }
             return elapsedTime;
         }
     }
 
     @Override
-    public AlgorithmInterface multTransB() {
+    public MatrixProcessorInterface multTransB() {
         return new MulTranB();
     }
 
-    public static class MulTranB implements AlgorithmInterface {
+    public static class MulTranB implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -365,17 +383,19 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new MtjBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new MtjBenchmarkMatrix(result);
+            }
             return elapsedTime;
         }
     }
 
     @Override
-    public AlgorithmInterface scale() {
+    public MatrixProcessorInterface scale() {
         return new Scale();
     }
 
-    public static class Scale implements AlgorithmInterface {
+    public static class Scale implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -391,22 +411,24 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new MtjBenchmarkMatrix(mod);
+            if( outputs != null ) {
+                outputs[0] = new MtjBenchmarkMatrix(mod);
+            }
             return elapsedTime;
         }
     }
 
     @Override
-    public AlgorithmInterface solveExact() {
+    public MatrixProcessorInterface solveExact() {
         return new Solve();
     }
 
     @Override
-    public AlgorithmInterface solveOver() {
+    public MatrixProcessorInterface solveOver() {
         return new Solve();
     }
 
-    public static class Solve implements AlgorithmInterface {
+    public static class Solve implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -421,17 +443,19 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new MtjBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new MtjBenchmarkMatrix(result);
+            }
             return elapsedTime;
         }
     }
 
     @Override
-    public AlgorithmInterface transpose() {
+    public MatrixProcessorInterface transpose() {
         return new Transpose();
     }
 
-    public static class Transpose implements AlgorithmInterface {
+    public static class Transpose implements MatrixProcessorInterface {
         @Override
         public long process(BenchmarkMatrix[] inputs, BenchmarkMatrix[] outputs, long numTrials) {
             DenseMatrix matA = inputs[0].getOriginal();
@@ -444,7 +468,9 @@ public class MtjAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             long elapsedTime = System.nanoTime()-prev;
-            outputs[0] = new MtjBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new MtjBenchmarkMatrix(result);
+            }
             return elapsedTime;
         }
     }

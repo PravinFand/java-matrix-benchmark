@@ -21,8 +21,8 @@ package jmbench.tools.memory;
 
 import jmbench.impl.LibraryConfigure;
 import jmbench.interfaces.BenchmarkMatrix;
-import jmbench.interfaces.MemoryFactory;
-import jmbench.interfaces.MemoryProcessorInterface;
+import jmbench.interfaces.MatrixProcessorInterface;
+import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.EvaluationTest;
 import jmbench.tools.TestResults;
 import jmbench.tools.runtime.InputOutputGenerator;
@@ -39,16 +39,17 @@ import java.util.Random;
  */
 public class MemoryTest extends EvaluationTest {
 
-    Class<MemoryFactory> classFactory;
+    Class<RuntimePerformanceFactory> classFactory;
     Class<LibraryConfigure> classConfigure;
     InputOutputGenerator gen;
     String nameOperation;
     int N;
     int size;
 
-    volatile MemoryFactory factory;
+    volatile RuntimePerformanceFactory factory;
 
-    public void setup( Class<LibraryConfigure> classConfigure, Class<MemoryFactory> classFactory , InputOutputGenerator gen ,
+    public void setup( Class<LibraryConfigure> classConfigure, Class<RuntimePerformanceFactory> classFactory ,
+                       InputOutputGenerator gen ,
                        String nameOperation , int N , int size ) {
         this.classConfigure = classConfigure;
         this.classFactory = classFactory;
@@ -98,7 +99,6 @@ public class MemoryTest extends EvaluationTest {
         Random rand = new Random(randomSeed);
 
         BenchmarkMatrix []inputs = gen != null ? gen.createInputs(factory,rand,false,size) : null;
-        BenchmarkMatrix []outputs = gen != null ? new BenchmarkMatrix[ gen.numOutputs() ] : null;
 
         double mod[] = null;
 
@@ -109,7 +109,7 @@ public class MemoryTest extends EvaluationTest {
             }
         }
 
-        MemoryProcessorInterface operation = createAlgorithm();
+        MatrixProcessorInterface operation = createAlgorithm();
 
         // see if the operation is supported
         if( operation == null ) {
@@ -117,7 +117,8 @@ public class MemoryTest extends EvaluationTest {
         }
 
         long start = System.currentTimeMillis();
-        operation.process(inputs,outputs,N);
+        // output is null since that might require creating new memory, which isn't strictly part of th test
+        operation.process(inputs,null,N);
         long stop= System.currentTimeMillis();
 
         if( gen != null ) {
@@ -160,14 +161,14 @@ public class MemoryTest extends EvaluationTest {
         }
     }
 
-    private MemoryProcessorInterface createAlgorithm() {
+    private MatrixProcessorInterface createAlgorithm() {
         if( nameOperation == null ) {
             return new OverheadProcess();
         }
 
         try {
             Method m = factory.getClass().getMethod(nameOperation);
-            return (MemoryProcessorInterface)m.invoke(factory);
+            return (MatrixProcessorInterface)m.invoke(factory);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
@@ -177,11 +178,11 @@ public class MemoryTest extends EvaluationTest {
         }
     }
 
-    public Class<MemoryFactory> getClassFactory() {
+    public Class<RuntimePerformanceFactory> getClassFactory() {
         return classFactory;
     }
 
-    public void setClassFactory(Class<MemoryFactory> classFactory) {
+    public void setClassFactory(Class<RuntimePerformanceFactory> classFactory) {
         this.classFactory = classFactory;
     }
 

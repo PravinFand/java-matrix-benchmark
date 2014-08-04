@@ -22,9 +22,9 @@ package jmbench.impl.runtime;
 import jmbench.PackageMatrixConversion;
 import jmbench.impl.wrapper.EjmlBenchmarkMatrix;
 import jmbench.impl.wrapper.OjAlgoBenchmarkMatrix;
-import jmbench.interfaces.AlgorithmInterface;
 import jmbench.interfaces.BenchmarkMatrix;
 import jmbench.interfaces.DetectedException;
+import jmbench.interfaces.MatrixProcessorInterface;
 import jmbench.interfaces.RuntimePerformanceFactory;
 import jmbench.tools.runtime.generator.ScaleGenerator;
 import org.ejml.data.DenseMatrix64F;
@@ -47,7 +47,7 @@ import org.ojalgo.matrix.store.TransposedStore;
 @SuppressWarnings({ "unchecked" })
 public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
-    public static class OpAdd implements AlgorithmInterface {
+    public static class OpAdd implements MatrixProcessorInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -63,12 +63,14 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
             }
 
             final long elapsedTime = System.nanoTime() - prev;
-            outputs[0] = new OjAlgoBenchmarkMatrix(result);
+            if( outputs != null ) {
+                outputs[0] = new OjAlgoBenchmarkMatrix(result);
+            }
             return elapsedTime;
         }
     }
 
-    public static class OpChol implements AlgorithmInterface {
+    public static class OpChol implements MatrixProcessorInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -88,13 +90,15 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
 
             final long elapsedTime = System.nanoTime() - prev;
 
-            outputs[0] = new OjAlgoBenchmarkMatrix(L);
+            if( outputs != null ) {
+                outputs[0] = new OjAlgoBenchmarkMatrix(L);
+            }
 
             return elapsedTime;
         }
     }
 
-    public static class OpDet implements AlgorithmInterface {
+    public static class OpDet implements MatrixProcessorInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -112,7 +116,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpEigSymm implements AlgorithmInterface {
+    public static class OpEigSymm implements MatrixProcessorInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -139,7 +143,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpInvert implements AlgorithmInterface {
+    public static class OpInvert implements MatrixProcessorInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -165,7 +169,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpInvertSymmPosDef implements AlgorithmInterface {
+    public static class OpInvertSymmPosDef implements MatrixProcessorInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -191,7 +195,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpLu implements AlgorithmInterface {
+    public static class OpLu implements MatrixProcessorInterface {
 
         // TODO change to what Anders said
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
@@ -225,7 +229,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpMult implements AlgorithmInterface {
+    public static class OpMult implements MatrixProcessorInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -246,7 +250,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpMultTransB implements AlgorithmInterface {
+    public static class OpMultTransB implements MatrixProcessorInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -267,7 +271,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpQr implements AlgorithmInterface {
+    public static class OpQr implements MatrixProcessorInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -294,7 +298,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpScale implements AlgorithmInterface {
+    public static class OpScale implements MatrixProcessorInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -316,7 +320,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpSolveExact implements AlgorithmInterface {
+    public static class OpSolveExact implements MatrixProcessorInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -343,7 +347,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpSolveOver implements AlgorithmInterface {
+    public static class OpSolveOver implements MatrixProcessorInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -370,7 +374,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpSvd implements AlgorithmInterface {
+    public static class OpSvd implements MatrixProcessorInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -401,7 +405,7 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
         }
     }
 
-    public static class OpTranspose implements AlgorithmInterface {
+    public static class OpTranspose implements MatrixProcessorInterface {
 
         public long process(final BenchmarkMatrix[] inputs, final BenchmarkMatrix[] outputs, final long numTrials) {
 
@@ -447,12 +451,12 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
     }
 
     @Override
-    public AlgorithmInterface add() {
+    public MatrixProcessorInterface add() {
         return new OpAdd();
     }
 
     @Override
-    public AlgorithmInterface chol() {
+    public MatrixProcessorInterface chol() {
         return new OpChol();
     }
 
@@ -473,67 +477,67 @@ public class OjAlgoAlgorithmFactory implements RuntimePerformanceFactory {
     }
 
     @Override
-    public AlgorithmInterface det() {
+    public MatrixProcessorInterface det() {
         return new OpDet();
     }
 
     @Override
-    public AlgorithmInterface eigSymm() {
+    public MatrixProcessorInterface eigSymm() {
         return new OpEigSymm();
     }
 
     @Override
-    public AlgorithmInterface invert() {
+    public MatrixProcessorInterface invert() {
         return new OpInvert();
     }
 
     @Override
-    public AlgorithmInterface invertSymmPosDef() {
+    public MatrixProcessorInterface invertSymmPosDef() {
         return new OpInvertSymmPosDef();
     }
 
     @Override
-    public AlgorithmInterface lu() {
+    public MatrixProcessorInterface lu() {
         return new OpLu();
     }
 
     @Override
-    public AlgorithmInterface mult() {
+    public MatrixProcessorInterface mult() {
         return new OpMult();
     }
 
     @Override
-    public AlgorithmInterface multTransB() {
+    public MatrixProcessorInterface multTransB() {
         return new OpMultTransB();
     }
 
     @Override
-    public AlgorithmInterface qr() {
+    public MatrixProcessorInterface qr() {
         return new OpQr();
     }
 
     @Override
-    public AlgorithmInterface scale() {
+    public MatrixProcessorInterface scale() {
         return new OpScale();
     }
 
     @Override
-    public AlgorithmInterface solveExact() {
+    public MatrixProcessorInterface solveExact() {
         return new OpSolveExact();
     }
 
     @Override
-    public AlgorithmInterface solveOver() {
+    public MatrixProcessorInterface solveOver() {
         return new OpSolveOver();
     }
 
     @Override
-    public AlgorithmInterface svd() {
+    public MatrixProcessorInterface svd() {
         return new OpSvd();
     }
 
     @Override
-    public AlgorithmInterface transpose() {
+    public MatrixProcessorInterface transpose() {
         return new OpTranspose();
     }
 

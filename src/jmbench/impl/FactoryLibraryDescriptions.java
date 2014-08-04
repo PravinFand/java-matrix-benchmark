@@ -20,7 +20,6 @@
 package jmbench.impl;
 
 import jmbench.impl.configure.*;
-import jmbench.impl.memory.*;
 import jmbench.impl.runtime.*;
 
 import java.util.ArrayList;
@@ -75,7 +74,6 @@ public class FactoryLibraryDescriptions {
         LibraryDescription ret = new LibraryDescription();
 
         ret.configure = (Class)DoNothingSpecialConfigure.class;
-        ret.factoryMemory = (Class)ColtMemoryFactory.class;
         ret.factoryRuntime = (Class)ColtAlgorithmFactory.class;
         ret.location = LibraryLocation.COLT;
         ret.version = (Class)AllLibraryVersion.Colt.class;
@@ -87,7 +85,6 @@ public class FactoryLibraryDescriptions {
         LibraryDescription ret = new LibraryDescription();
 
         ret.configure = (Class)DoNothingSpecialConfigure.class;
-        ret.factoryMemory = (Class) CommonsMathMemoryFactory.class;
         ret.factoryRuntime = (Class) CommonsMathAlgorithmFactory.class;
         ret.location = LibraryLocation.CM;
         ret.version = (Class)AllLibraryVersion.COMMONS.class;
@@ -99,7 +96,6 @@ public class FactoryLibraryDescriptions {
         LibraryDescription ret = new LibraryDescription();
 
         ret.configure = (Class)DoNothingSpecialConfigure.class;
-        ret.factoryMemory = (Class) EjmlMemoryFactory.class;
         ret.factoryRuntime = (Class) EjmlAlgorithmFactory.class;
         ret.location = LibraryLocation.EJML;
         ret.version = (Class)AllLibraryVersion.EJML.class;
@@ -111,7 +107,6 @@ public class FactoryLibraryDescriptions {
         LibraryDescription ret = new LibraryDescription();
 
         ret.configure = (Class)DoNothingSpecialConfigure.class;
-        ret.factoryMemory = (Class) JamaMemoryFactory.class;
         ret.factoryRuntime = (Class) JamaAlgorithmFactory.class;
         ret.location = LibraryLocation.JAMA;
         ret.version = (Class)AllLibraryVersion.JAMA.class;
@@ -123,7 +118,6 @@ public class FactoryLibraryDescriptions {
         LibraryDescription ret = new LibraryDescription();
 
         ret.configure = (Class)DoNothingSpecialConfigure.class;
-        ret.factoryMemory = (Class)JBlasMemoryFactory.class;
         ret.factoryRuntime = (Class)JBlasAlgorithmFactory.class;
         ret.location = LibraryLocation.JBLAS;
         ret.version = (Class)AllLibraryVersion.JBLAS.class;
@@ -135,7 +129,6 @@ public class FactoryLibraryDescriptions {
         LibraryDescription ret = new LibraryDescription();
 
         ret.configure = (Class)DoNothingSpecialConfigure.class;
-        ret.factoryMemory = (Class)La4jMemoryFactory.class;
         ret.factoryRuntime = (Class)La4jAlgorithmFactory.class;
         ret.location = LibraryLocation.LA4J;
         ret.version = (Class)AllLibraryVersion.LA4J.class;
@@ -147,7 +140,6 @@ public class FactoryLibraryDescriptions {
         LibraryDescription ret = new LibraryDescription();
 
         ret.configure = (Class)MtjLibraryConfigure.class;
-        ret.factoryMemory = (Class)MtjMemoryFactory.class;
         ret.factoryRuntime = (Class)MtjAlgorithmFactory.class;
         ret.location = LibraryLocation.MTJ;
         ret.version = (Class)AllLibraryVersion.MTJ.class;
@@ -159,7 +151,6 @@ public class FactoryLibraryDescriptions {
         LibraryDescription ret = new LibraryDescription();
 
         ret.configure = (Class)MtjNativeLibraryConfigure.class;
-        ret.factoryMemory = (Class)MtjMemoryFactory.class;
         ret.factoryRuntime = (Class)MtjAlgorithmFactory.class;
         ret.location = LibraryLocation.MTJ_NATIVE;
         ret.version = (Class)AllLibraryVersion.MTJ.class;
@@ -171,7 +162,6 @@ public class FactoryLibraryDescriptions {
         LibraryDescription ret = new LibraryDescription();
 
         ret.configure = (Class)DoNothingSpecialConfigure.class;
-        ret.factoryMemory = (Class)OjAlgoMemoryFactory.class;
         ret.factoryRuntime = (Class)OjAlgoAlgorithmFactory.class;
         ret.location = LibraryLocation.OJALGO;
         ret.version = (Class)AllLibraryVersion.OJALGO.class;
@@ -183,7 +173,6 @@ public class FactoryLibraryDescriptions {
         LibraryDescription ret = new LibraryDescription();
 
         ret.configure = (Class)DoNothingSpecialConfigure.class;
-        ret.factoryMemory = (Class)PColtMemoryFactory.class;
         ret.factoryRuntime = (Class)PColtAlgorithmFactory.class;
         ret.location = LibraryLocation.PCOLT;
         ret.version = (Class)AllLibraryVersion.PColt.class;
@@ -195,7 +184,6 @@ public class FactoryLibraryDescriptions {
         LibraryDescription ret = new LibraryDescription();
 
         ret.configure = (Class)DoNothingSpecialConfigure.class;
-        ret.factoryMemory = (Class)SejmlMemoryFactory.class;
         ret.factoryRuntime = (Class)SejmlAlgorithmFactory.class;
         ret.location = LibraryLocation.SEJML;
         ret.version = (Class)AllLibraryVersion.EJML.class;
@@ -207,7 +195,6 @@ public class FactoryLibraryDescriptions {
         LibraryDescription ret = new LibraryDescription();
 
         ret.configure = (Class)UjmpLibraryConfigure.class;
-        ret.factoryMemory = (Class)UjmpMemoryFactory.class;
         ret.factoryRuntime = (Class)UjmpAlgorithmFactory.class;
         ret.location = LibraryLocation.UJMP;
         ret.version = (Class)AllLibraryVersion.UJMP.class;
@@ -219,7 +206,6 @@ public class FactoryLibraryDescriptions {
         LibraryDescription ret = new LibraryDescription();
 
         ret.configure = (Class)UjmpNativeLibraryConfigure.class;
-        ret.factoryMemory = (Class)UjmpMemoryFactory.class;
         ret.factoryRuntime = (Class)UjmpAlgorithmFactory.class;
         ret.location = LibraryLocation.UJMP_NATIVE;
         ret.version = (Class)AllLibraryVersion.UJMP.class;

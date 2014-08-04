@@ -20,3 +20,15 @@
 - Guava StopWatch for timing
 
 - Remove determinant() from standard benchmark
+
+- Reduce size of smallest matrix in stability matrix from 10 to 6
+  * That's what people are focusing on for small matrix optimization
+- Summary chart for stability
+  * Break results down to pass, minor issue, failed
+- Switch to gradle?
+  * Download libraries when possible
+- Fix summary plot by intelligently cropping the tail
+- Weights for each operation is based on their theoretical complexity and not the fastest library
+- Penalize libraries which fail stability
+- Merge runtime and memory interfaces
+- Make it easier to add new operations

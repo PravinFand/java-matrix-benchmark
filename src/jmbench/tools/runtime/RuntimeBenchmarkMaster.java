@@ -27,6 +27,10 @@ import jmbench.tools.stability.UtilXmlSerialization;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -47,7 +51,11 @@ public class RuntimeBenchmarkMaster {
     private String directorySave;
 
     public RuntimeBenchmarkMaster() {
-        directorySave = "results/"+System.currentTimeMillis();
+        DateFormat df = new SimpleDateFormat("MM-dd-yyyy-HH:mm:ss");
+        Date today = Calendar.getInstance().getTime();
+        String reportDate = df.format(today);
+
+        directorySave = "results/"+reportDate;
     }
 
     public RuntimeBenchmarkMaster( String directory ) {
