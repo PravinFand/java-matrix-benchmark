@@ -86,10 +86,10 @@ public class MemoryBenchmarkLibrary {
             addOperation(config, new MultTranBGenerator(), "multTransB", "C=A*B^T", libraryName, 0 , matrixSize);
 
         if( config.solveLinear )
-            addOperation(config, new SolveEqGenerator(), "solveEq", "solve m=n", libraryName, 0 , matrixSize);
+            addOperation(config, new SolveEqGenerator(), "solveExact", "solve m=n", libraryName, 0 , matrixSize);
 
         if( config.solveLS )
-            addOperation(config, new SolveOverGenerator(), "solveLS", "solve m>n", libraryName,0 , matrixSize);
+            addOperation(config, new SolveOverGenerator(), "solveOver", "solve m>n", libraryName,0 , matrixSize);
 
         if( config.invSymmPosDef )
             addOperation(config, new InvertSymmPosDefGenerator(), "invertSymmPosDef", "inv |A| > 1", libraryName,0 , matrixSize);
@@ -98,7 +98,7 @@ public class MemoryBenchmarkLibrary {
             addOperation(config, new SvdGenerator(), "svd", "SVD", libraryName,0 , matrixSize/2 );
 
         if( config.eig )
-            addOperation(config, new EigSymmGenerator(), "eig", "Eigen", libraryName,0 , matrixSize);
+            addOperation(config, new EigSymmGenerator(), "eigSymm", "Eigen", libraryName,0 , matrixSize);
 
         if( directorySave != null ) {
             setupOutputDirectory();
